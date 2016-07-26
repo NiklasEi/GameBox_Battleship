@@ -1,0 +1,71 @@
+# ----------------------------------------------------------------------------#
+#                                                                             #
+#                              Battleship config                              #
+#                                                                             #
+# ----------------------------------------------------------------------------#
+
+# number of ships in the game (only 1 or 2)
+
+# size: 5 blocks
+aircraftCarrier: 1
+# size: 4 blocks
+battleship: 1
+# size: 3 blocks
+cruiser: 2
+# size: 2 blocks
+destroyer: 1
+
+
+# some stuff you can do when a game ends.
+onGameEnd:
+  # You can dispatch commands. Use %winner% for the playername of the winner and %looser% for the looser 
+  dispatchCommands:
+    enabled: false
+    commands:
+    - "give %winner% diamond 1"
+    - "tell %winner% congrats!"
+    - "tell %looser% next time you'll beat him!"
+  # You can broadcast. Use %winner% for the playername of the winner and %looser% for the looser 
+  broadcast:
+    enabled: false
+    messages:
+    - "%winner% won against %looser% in a game of Battleship!"
+    - "Do &2/bs %winner% &rto try beating the winner of the last game ;)"     
+
+
+# requires vault and an economy plugin
+economy:
+  enabled: false
+  # both players pay
+  cost: 0
+  # winner gets
+  reward: 0
+
+# use "Material:data" or "ID:data"
+# Some materials can not be displayed in an inventory, just test everything after changing
+# You are advised to use different materials. At least on the same grid
+#   otherwise the game could break
+materials:
+  yourGrid:
+    ship: "Iron_block"
+    lockedShip: "7"
+    miss: "160:3"
+    hit: "35:14"
+    water: "160:11"
+  othersGrid:
+    cover: "WOOL:7"
+    miss: "160:11"
+    hit: "Iron_block"
+
+    
+# Customise the timers used in the game (all times in seconds)
+timers:
+  # timer used during the ship-set part of the game
+  shipSetTimer:
+    countdown: 30
+  # timer used during the main part of the game
+  fireTimer:
+    countdown: 10
+  # timer used for the invitations
+  invitationTimer:
+    validFor: 15

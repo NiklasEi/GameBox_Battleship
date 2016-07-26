@@ -1,0 +1,26 @@
+name: Battleship
+author: Nikl
+main: me.nikl.battleship.Main
+version: 1.3.2
+commands:
+  battleship:
+    description: play the game
+    usage: /battleship
+    aliases: [bs]
+permissions:
+  battleship.*:
+    description: Gives all permissions
+    children:
+      battleship.admin: true
+  battleship.admin:
+    description: Gives all permissions
+    default: op
+    children:
+      battleship.play: true
+      battleship.reload: true
+  battleship.play:
+    description: You are allowed to play
+    default: true
+  battleship.reload:
+    description: You can reload the plugin
+    
