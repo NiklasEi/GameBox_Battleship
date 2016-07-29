@@ -15,6 +15,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import me.nikl.battleship.gui.HeadGUI;
 import net.milkbowl.vault.economy.Economy;
 
 public class Main extends JavaPlugin{
@@ -27,16 +28,24 @@ public class Main extends JavaPlugin{
 	public Boolean econEnabled;
 	public Double reward, price;
 	private int invitationValidFor;
+	public HeadGUI headGUI;
+	public Language lang;
+	public boolean disabled;
 	
 	@Override
 	public void onEnable(){
+		this.disabled = false;
 		this.con = new File(this.getDataFolder().toString() + File.separatorChar + "config.yml");
 
 		reload();
+		this.lang = new Language(this);
+		if(disabled) return;
 		getValuesFromConfig();
 
 		this.setManager(new GameManager(this));
         this.getCommand("battleship").setExecutor(new Commands(this));
+        this.headGUI = new HeadGUI(this);
+        this.getCommand("battleshipGUI").setExecutor(headGUI);
 	}
 	
 	private void getValuesFromConfig() {
@@ -94,6 +103,7 @@ public class Main extends JavaPlugin{
 			this.saveResource("config.yml", false);
 		}
 		reloadConfig();
+		
 		
 		this.econEnabled = false;
 		if(getConfig().getBoolean("economy.enabled")){

@@ -28,7 +28,7 @@ public class Waiting {
 		secondPlayer.sendMessage(colored(Main.prefix + " &2Do /bs to accept.    Expires in &4"+ manager.getPlugin().getInvitationValidFor() +" seconds&2!"));
 
 		this.setAge(0);
-		manager.getTimer().addWaiting(this);
+		//manager.getTimer().addWaiting(this);
 	}
 
 	public int getAge() {

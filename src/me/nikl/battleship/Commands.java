@@ -10,17 +10,19 @@ public class Commands implements CommandExecutor {
 	
 	private Main plugin;
 	private GameManager manager;
+	private Language lang;
 	
 	public Commands(Main plugin){
 		this.plugin = plugin;
 		this.manager = plugin.getManager();
+		this.lang = plugin.lang;
 	}
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String lable, String[] args) {
 		if(args.length == 0){
 			if(!(sender instanceof Player)){
-				sender.sendMessage(plugin.chatColor(Main.prefix + " You can only do that as a player!"));
+				sender.sendMessage(plugin.chatColor(Main.prefix + this.lang.CMD_ONLY_PLAYER));
 				return true;
 			}
 			/*
@@ -75,7 +77,7 @@ public class Commands implements CommandExecutor {
 			 * Here the new Wait() is made and if needed the first player will pay for the game
 			 */
 			if(!(sender instanceof Player)){
-				sender.sendMessage(plugin.chatColor(Main.prefix + " You can only do that as a player!"));
+				sender.sendMessage(plugin.chatColor(Main.prefix + this.lang.CMD_ONLY_PLAYER));
 				return true;
 			}
 			Player player = (Player) sender;
@@ -88,30 +90,18 @@ public class Commands implements CommandExecutor {
 				sender.sendMessage(plugin.chatColor(Main.prefix + " &4This player is not online!"));
 				return true;				
 			}
-			if(manager.isIngame(player.getUniqueId())){
-				sender.sendMessage(plugin.chatColor(Main.prefix + " &4You are ingame already!"));
+			if(manager.isIngame(second.getUniqueId())){
+				sender.sendMessage(plugin.chatColor(Main.prefix + " &4This player is already ingame!"));
 				return true;				
 			}
 			if(manager.getTimer().isSecond(second.getUniqueId())){
 				sender.sendMessage(plugin.chatColor(Main.prefix + " &4This player was already invited by someone!"));
 				return true;									
 			}
-			if(plugin.getEconEnabled()){
-				if(Main.econ.getBalance(player) >= plugin.getPrice()){
-					Main.econ.withdrawPlayer(player, plugin.getPrice());
-					sender.sendMessage(plugin.chatColor(Main.prefix + " &2You paid &4" + plugin.getPrice()));
-					new Waiting(manager, player.getUniqueId(), second.getUniqueId());
-					return true;					
-				} else {
-					player.sendMessage(plugin.chatColor(Main.prefix + " &4You do not have not enough money!"));
-					return true;
-				}
-			} else {
-				new Waiting(manager, player.getUniqueId(), second.getUniqueId());
-				return true;
-			}
+			manager.getTimer().invite(player.getUniqueId(), second.getUniqueId());
+			return true;
 		}
-		sender.sendMessage(plugin.chatColor(Main.prefix + " &4To start a game just do &2/mines"));
+		sender.sendMessage(plugin.chatColor(Main.prefix + " Do &2/bs [player] &r to invite someone. Or use the gui with &2/bsgui"));
 		return true;
 	}
 

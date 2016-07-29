@@ -4,6 +4,10 @@
 #                                                                             #
 # ----------------------------------------------------------------------------#
 
+# name of the language file (in the folder 'language')
+langFile: "lang_en.yml"
+
+
 # number of ships in the game (only 1 or 2)
 
 # size: 5 blocks

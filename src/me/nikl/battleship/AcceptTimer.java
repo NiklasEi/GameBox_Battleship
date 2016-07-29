@@ -16,8 +16,10 @@ import net.md_5.bungee.api.ChatColor;
 public class AcceptTimer extends BukkitRunnable{
 	private GameManager manager;
 	private Set<Waiting> waiting;
+	private Main plugin;
 	public AcceptTimer(GameManager manager){
 		this.manager = manager;
+		this.plugin = manager.getPlugin();
 		this.waiting = new HashSet<Waiting>();
 		
 		this.runTaskTimer(Main.getPlugin(Main.class), 0, 20);
@@ -84,5 +86,26 @@ public class AcceptTimer extends BukkitRunnable{
 	
 	public void removeWait(Waiting wait){
 		waiting.remove(wait);
+	}
+	
+	public boolean invite(UUID first, UUID second){
+		Player firstPlayer = Bukkit.getPlayer(first);
+		Player secondPlayer = Bukkit.getPlayer(second);
+		if(firstPlayer == null || secondPlayer == null) return false;		
+		
+		if(plugin.getEconEnabled()){
+			if(Main.econ.getBalance(firstPlayer) >= plugin.getPrice()){
+				Main.econ.withdrawPlayer(firstPlayer, plugin.getPrice());
+				firstPlayer.sendMessage(plugin.chatColor(Main.prefix + " &2You paid &4" + plugin.getPrice()));
+				addWaiting(new Waiting(manager, first, second));
+				return true;					
+			} else {
+				firstPlayer.sendMessage(plugin.chatColor(Main.prefix + " &4You do not have enough money!"));
+				return false;
+			}
+		} else {
+			addWaiting(new Waiting(manager, first, second));
+			return true;
+		}
 	}
 }

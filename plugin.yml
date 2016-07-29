@@ -1,12 +1,16 @@
 name: Battleship
 author: Nikl
 main: me.nikl.battleship.Main
-version: 1.3.2
+version: 1.4
 commands:
   battleship:
     description: play the game
     usage: /battleship
     aliases: [bs]
+  battleshipgui:
+    description: open gui
+    usage: /battleshipgui
+    aliases: [bsgui, bsinvite]
 permissions:
   battleship.*:
     description: Gives all permissions
