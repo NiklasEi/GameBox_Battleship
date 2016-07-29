@@ -1,0 +1,34 @@
+# use & for colors
+#   placeholders will be listed in front of the keys
+
+# messages and inventorytitles directly related to the game 
+game:
+  
+
+
+
+# Messages related to commands
+commandMessages:
+  noPermission: " &4 You do not have the required permission!"
+  onlyAsPlayer: " &4You can only do that as a player!"
+  playerIsOffline: " &4This player is not online!"
+  playerAlreadyIngame: " &4This player is already ingame!"
+  playerHasInviteAlready: " &4This player was already invited by someone!"
+  cannotInviteYourself: " &4You cannot invite yourself to a game ^^"
+  # display when wrong arguments are used
+  help:
+  - " &2To invite someone to a game do: /bs [player]"
+  - " &2Or use the GUI with /bsgui"
+  # here you can use:
+  #   name of the first player: %first%
+  #   name of the second player: %second%
+  #   time in seconds untli the invitation will run out: %time%
+  invite:
+    # these messages go to the player, that invite another player
+    messageToFirstPlayer:
+    - " &2You invited %second% to a game"
+    # these messages go to the player, that was invited by another player
+    messageToSecondPlayer:
+    - " &2%first% invited you to a game!"
+    - " &2Do /bs to accept.    Expires in &4%time% seconds&2!"
+  
