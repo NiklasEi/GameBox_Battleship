@@ -37,6 +37,8 @@ public class Game{
 	private boolean firstShipsSet, secondShipsSet;
 	// save the config
 	private FileConfiguration config;
+	// language class
+	private Language lang;
 	
 	// timer stuff during ship-set phase
 	private GameTimer timer;
@@ -48,6 +50,7 @@ public class Game{
 	public Game(Main plugin, UUID firstUUID, UUID secondUUID){
 		this.setState(GameState.BUILDING);
 		this.plugin = plugin;
+		this.lang = plugin.lang;
 		this.config = plugin.getConfig();
 		getValuesFromConfig();
 		this.manager = plugin.getManager();
@@ -749,11 +752,11 @@ public class Game{
 		}
 		if(plugin.getEconEnabled()){
 			Main.econ.depositPlayer(winner, plugin.getReward());
-			winner.sendMessage(manager.chatColor(Main.prefix + " &2You won &1" + plugin.getReward() + "&2!"));
+			winner.sendMessage(manager.chatColor(Main.prefix + lang.GAME_WON_MONEY.replaceAll("%reward%", plugin.getReward()+"")));
 		} else {
-			winner.sendMessage(manager.chatColor(Main.prefix + " &2You won the game!"));
+			winner.sendMessage(manager.chatColor(Main.prefix + lang.GAME_WON));
 		}
-		looser.sendMessage(manager.chatColor(Main.prefix + " &4You lost the game"));
+		looser.sendMessage(manager.chatColor(Main.prefix + lang.GAME_LOOSE));
 
 		onGameEnd(winner.getName(), looser.getName());
 		
@@ -1006,11 +1009,11 @@ public class Game{
 		if(!getState().equals(GameState.FINISHED)){
 			if(plugin.getEconEnabled()){
 				Main.econ.depositPlayer(winner, plugin.getReward());
-				winner.sendMessage(chatColor(Main.prefix + " &2You won &1" + plugin.getReward() + "&2! "+first.getName()+" was too slow."));
+				winner.sendMessage(chatColor(Main.prefix + lang.GAME_WON_MONEY_TOO_SLOW.replaceAll("%reward%", plugin.getReward()+"").replaceAll("%looser%", first.getName())));
 			} else {
-				winner.sendMessage(chatColor(Main.prefix + " &2You won! "+first.getName()+" was too slow."));
+				winner.sendMessage(chatColor(Main.prefix + lang.GAME_WON_TOO_SLOW.replaceAll("%looser%", first.getName())));
 			}
-			looser.sendMessage(chatColor(Main.prefix + " &4You were too slow"));
+			looser.sendMessage(chatColor(Main.prefix + lang.GAME_TOO_SLOW));
 			this.setClosingInv(true);
 			winner.closeInventory();
 			looser.closeInventory();

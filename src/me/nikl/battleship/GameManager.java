@@ -19,11 +19,13 @@ public class GameManager implements Listener{
 	private Main plugin;
 	private Set<Game> games;
 	private AcceptTimer timer;
+	private Language lang;
 	
 	public GameManager(Main plugin){
 		this.plugin = plugin;
 		this.timer = new AcceptTimer(this);
 		this.games = new HashSet<Game>();
+		this.lang = plugin.lang;
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 	
@@ -246,20 +248,20 @@ public class GameManager implements Listener{
 			if(!winner){
 				if(plugin.getEconEnabled()){
 					Main.econ.depositPlayer(second, plugin.getReward());
-					second.sendMessage(chatColor(Main.prefix + " &2You won &1" + plugin.getReward() + "&2! "+first.getName()+" gave up."));
+					second.sendMessage(chatColor(Main.prefix + lang.GAME_WON_MONEY_GAVE_UP.replaceAll("%reward%", plugin.getReward()+"").replaceAll("%looser%", first.getName())));
 				} else {
-					second.sendMessage(chatColor(Main.prefix + " &2You won! "+first.getName()+" gave up."));
+					second.sendMessage(chatColor(Main.prefix + lang.GAME_OTHER_GAVE_UP.replaceAll("%looser%", first.getName())));
 				}
-				first.sendMessage(chatColor(Main.prefix + " &4You gave up"));
+				first.sendMessage(chatColor(Main.prefix + lang.GAME_GAVE_UP));
 				second.closeInventory();
 			} else {
 				if(plugin.getEconEnabled()){
 					Main.econ.depositPlayer(first, plugin.getReward());
-					first.sendMessage(chatColor(Main.prefix + " &2You won &1" + plugin.getReward() + "&2! "+first.getName()+" gave up."));
+					first.sendMessage(chatColor(Main.prefix + lang.GAME_WON_MONEY_GAVE_UP.replaceAll("%reward%", plugin.getReward()+"").replaceAll("%looser%", second.getName())));
 				} else {
-					first.sendMessage(chatColor(Main.prefix + " &2You won! "+second.getName()+" gave up."));
+					first.sendMessage(chatColor(Main.prefix + lang.GAME_OTHER_GAVE_UP.replaceAll("%looser%", second.getName())));
 				}
-				second.sendMessage(chatColor(Main.prefix + " &4You gave up"));
+				second.sendMessage(chatColor(Main.prefix + lang.GAME_GAVE_UP));
 				first.closeInventory();				
 			}
 		} else {

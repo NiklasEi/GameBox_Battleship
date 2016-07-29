@@ -17,9 +17,11 @@ public class AcceptTimer extends BukkitRunnable{
 	private GameManager manager;
 	private Set<Waiting> waiting;
 	private Main plugin;
+	private Language lang;
 	public AcceptTimer(GameManager manager){
 		this.manager = manager;
 		this.plugin = manager.getPlugin();
+		this.lang = plugin.lang;
 		this.waiting = new HashSet<Waiting>();
 		
 		this.runTaskTimer(Main.getPlugin(Main.class), 0, 20);
@@ -35,14 +37,14 @@ public class AcceptTimer extends BukkitRunnable{
 				Player first = Bukkit.getPlayer(wait.getFirst());
 				Player second = Bukkit.getPlayer(wait.getSecond());
 				if(first != null){
-					first.sendMessage(colored(Main.prefix + " &4Your invite was not accepted"));
+					first.sendMessage(colored(Main.prefix + lang.GAME_INVITE_EXPIRED));
 					if(manager.getPlugin().getEconEnabled()){
 						Main.econ.depositPlayer(first, manager.getPlugin().getPrice());
-						first.sendMessage(colored(Main.prefix + " &2Your money has been returned"));
+						first.sendMessage(colored(Main.prefix + lang.GAME_INVITE_RETURNED_MONEY));
 					}
 				}
 				if(second != null){
-					second.sendMessage(colored(Main.prefix + " &4The invite has expired"));
+					second.sendMessage(colored(Main.prefix + lang.GAME_INVITE_EXPIRED));
 				}
 				waitI.remove();
 			}
@@ -96,11 +98,11 @@ public class AcceptTimer extends BukkitRunnable{
 		if(plugin.getEconEnabled()){
 			if(Main.econ.getBalance(firstPlayer) >= plugin.getPrice()){
 				Main.econ.withdrawPlayer(firstPlayer, plugin.getPrice());
-				firstPlayer.sendMessage(plugin.chatColor(Main.prefix + " &2You paid &4" + plugin.getPrice()));
+				firstPlayer.sendMessage(plugin.chatColor(Main.prefix + lang.GAME_PAYED.replaceAll("%cost%", plugin.getPrice()+"")));
 				addWaiting(new Waiting(manager, first, second));
 				return true;					
 			} else {
-				firstPlayer.sendMessage(plugin.chatColor(Main.prefix + " &4You do not have enough money!"));
+				firstPlayer.sendMessage(plugin.chatColor(Main.prefix + lang.GAME_NOT_ENOUGH_MONEY));
 				return false;
 			}
 		} else {

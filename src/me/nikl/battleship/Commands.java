@@ -32,13 +32,13 @@ public class Commands implements CommandExecutor {
 			 */
 			Player player = (Player) sender;
 			if(manager.isIngame(player.getUniqueId())){
-				player.sendMessage(plugin.chatColor(Main.prefix + " &4You are ingame already!"));
+				player.sendMessage(plugin.chatColor(Main.prefix + lang.CMD_PLAYER_INGAME));
 				return true;				
 			}
 			if(manager.getTimer().isSecond(player.getUniqueId())){
 				Player firstplayer = Bukkit.getPlayer(manager.getTimer().getWaiting(player.getUniqueId()).getFirst());
 				if(firstplayer == null){
-					player.sendMessage(plugin.chatColor(Main.prefix + " &4Whoever invited you is offline now..."));
+					player.sendMessage(plugin.chatColor(Main.prefix + lang.CMD_FIRST_OFFLINE));
 					manager.getTimer().removeWait(manager.getTimer().getWaiting(player.getUniqueId()));
 					return true;
 				}
@@ -46,28 +46,30 @@ public class Commands implements CommandExecutor {
 				if(plugin.getEconEnabled()){
 					if(Main.econ.getBalance(player) >= plugin.getPrice()){
 						Main.econ.withdrawPlayer(player, plugin.getPrice());
-						sender.sendMessage(plugin.chatColor(Main.prefix + " &2You paid &4" + plugin.getPrice()));
+						sender.sendMessage(plugin.chatColor(Main.prefix + lang.GAME_PAYED.replaceAll("%cost%", plugin.getPrice()+"")));
 						manager.startGame(firstplayer.getUniqueId(), player.getUniqueId());
 					} else {
-						player.sendMessage(plugin.chatColor(Main.prefix + " &4You do not have not enough money!"));
+						player.sendMessage(plugin.chatColor(Main.prefix + lang.GAME_NOT_ENOUGH_MONEY));
 						return true;
 					}
 				} else {
 					manager.startGame(firstplayer.getUniqueId(), player.getUniqueId());
 				}
 				manager.getTimer().removeWait(manager.getTimer().getWaiting(player.getUniqueId()));
-				player.sendMessage(plugin.chatColor(Main.prefix + " &2You accepted " + firstplayer.getName() +"'s invitation"));
+				player.sendMessage(plugin.chatColor(Main.prefix + lang.GAME_INVITE_ACCEPT.replaceAll("%first%", firstplayer.getName())));
 				return true;
 			}
-			sender.sendMessage(plugin.chatColor(Main.prefix + " &4To invite someone to a game do: /bs player"));
+			for(String message : this.lang.CMD_HELP)
+				sender.sendMessage(plugin.chatColor(Main.prefix + message));
 			return true;
 		} else if(args.length == 1 && args[0].equalsIgnoreCase("reload")){
 			if(sender.hasPermission("battleship.reload")){
 				plugin.reload();
-				sender.sendMessage(plugin.chatColor(Main.prefix + " &aPlugin was reloaded"));
+				sender.sendMessage(plugin.chatColor(Main.prefix + lang.CMD_RELOADED));
 				return true;
 			} else {
-				sender.sendMessage(plugin.chatColor(Main.prefix + " &4 You do not have the required permission!"));
+				for(String message : this.lang.CMD_HELP)
+					sender.sendMessage(plugin.chatColor(Main.prefix + message));
 				return true;
 			}
 		
@@ -77,31 +79,32 @@ public class Commands implements CommandExecutor {
 			 * Here the new Wait() is made and if needed the first player will pay for the game
 			 */
 			if(!(sender instanceof Player)){
-				sender.sendMessage(plugin.chatColor(Main.prefix + this.lang.CMD_ONLY_PLAYER));
+				sender.sendMessage(plugin.chatColor(Main.prefix + lang.CMD_ONLY_PLAYER));
 				return true;
 			}
 			Player player = (Player) sender;
 			if(player.getName().equals(args[0])){
-				player.sendMessage(plugin.chatColor(Main.prefix + " &4You cannot invite yourself to a game ^^"));
+				player.sendMessage(plugin.chatColor(Main.prefix + lang.CMD_NOT_YOURSELF));
 				return true;
 			}
 			Player second =  Bukkit.getPlayer(args[0]);
 			if(second == null){
-				sender.sendMessage(plugin.chatColor(Main.prefix + " &4This player is not online!"));
+				sender.sendMessage(plugin.chatColor(Main.prefix + lang.CMD_PLAYER_OFFLINE));
 				return true;				
 			}
 			if(manager.isIngame(second.getUniqueId())){
-				sender.sendMessage(plugin.chatColor(Main.prefix + " &4This player is already ingame!"));
+				sender.sendMessage(plugin.chatColor(Main.prefix + lang.CMD_PLAYER_INGAME));
 				return true;				
 			}
 			if(manager.getTimer().isSecond(second.getUniqueId())){
-				sender.sendMessage(plugin.chatColor(Main.prefix + " &4This player was already invited by someone!"));
+				sender.sendMessage(plugin.chatColor(Main.prefix + lang.CMD_PLAYER_HAS_INVITE));
 				return true;									
 			}
 			manager.getTimer().invite(player.getUniqueId(), second.getUniqueId());
 			return true;
 		}
-		sender.sendMessage(plugin.chatColor(Main.prefix + " Do &2/bs [player] &r to invite someone. Or use the gui with &2/bsgui"));
+		for(String message : this.lang.CMD_HELP)
+			sender.sendMessage(plugin.chatColor(Main.prefix + message));
 		return true;
 	}
 

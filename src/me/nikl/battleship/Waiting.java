@@ -10,6 +10,7 @@ public class Waiting {
 	private int age;
 	private UUID first;
 	private UUID second;
+	private Language lang;
 
 	public Waiting(GameManager manager, UUID first, UUID second){
 		this.setFirst(first);
@@ -20,12 +21,16 @@ public class Waiting {
 			return;
 		}
 		if(secondPlayer == null){
-			firstPlayer.sendMessage(colored(Main.prefix + " &4This player is offline!"));
+			firstPlayer.sendMessage(colored(Main.prefix + lang.CMD_PLAYER_OFFLINE));
 			return;
 		}
-		firstPlayer.sendMessage(colored(Main.prefix + " &2You invited " + secondPlayer.getName() + " to a game"));
-		secondPlayer.sendMessage(colored(Main.prefix + " &2" + firstPlayer.getName() + " invited you to a game!"));
-		secondPlayer.sendMessage(colored(Main.prefix + " &2Do /bs to accept.    Expires in &4"+ manager.getPlugin().getInvitationValidFor() +" seconds&2!"));
+		this.lang = manager.getPlugin().lang;
+		for(String message: lang.GAME_INVITE_FIRST){
+			firstPlayer.sendMessage(colored(Main.prefix + message.replaceAll("%first%", firstPlayer.getName()).replaceAll("%second%", secondPlayer.getName()).replaceAll("%time%", manager.getPlugin().getInvitationValidFor() + "")));
+		}
+		for(String message: lang.GAME_INVITE_SECOND){
+			secondPlayer.sendMessage(colored(Main.prefix + message.replaceAll("%first%", firstPlayer.getName()).replaceAll("%second%", secondPlayer.getName()).replaceAll("%time%", manager.getPlugin().getInvitationValidFor() + "")));
+		}
 
 		this.setAge(0);
 		//manager.getTimer().addWaiting(this);

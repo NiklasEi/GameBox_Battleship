@@ -105,6 +105,8 @@ public class Main extends JavaPlugin{
 		reloadConfig();
 		
 		
+		this.lang = new Language(this);
+		
 		this.econEnabled = false;
 		if(getConfig().getBoolean("economy.enabled")){
 			this.econEnabled = true;
