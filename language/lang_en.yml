@@ -2,9 +2,6 @@
 #   placeholders will be listed in front of the keys
 
 # messages and inventorytitles directly related to the game 
-test1: 5
-
-test2: 5
 game:
   # here you can use:
   #   name of the first player: %first%
@@ -50,7 +47,18 @@ game:
 inventoryTitles:
   # There will always be the page number behind that title!
   guiTitle: "Invite someone to a game    "
+  # use %count% for the number of ships to set
+  # use %timer% to display the timer
+  setShip1: "Set Carrier: %count% x 5 Blocks   &4%timer%"
+  setShip2: "Set Battleship: %count% x 4 Blocks  &4%timer%"
+  setShip3: "Set Cruiser: %count% x 3 Blocks   &4%timer%"
+  setShip4: "Set Destroyer: %count% x 2 Blocks  &4%timer%"
+  # %timer%
+  attacker: "&2Battleship   &rClick to fire!      &4%timer%"
+  defender: "&4Battleship   &rWatch out!         &2%timer%"  
   
+  won: "&2Battleship    &2You won!"
+  lost: "&2Battleship    &4You lost!"
 
 
 
