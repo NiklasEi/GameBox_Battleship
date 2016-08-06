@@ -10,15 +10,18 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import me.nikl.battleship.GameManager;
+import me.nikl.battleship.Language;
 import me.nikl.battleship.Main;
 
 public class GUIListener implements Listener{
 	
 	private Main plugin;
 	private GameManager manager;
+	private Language lang;
 	
 	public GUIListener(Main plugin){
 		this.plugin = plugin;
+		this.lang = plugin.lang;
 		this.manager = plugin.getManager();
 		
 		this.plugin.getServer().getPluginManager().registerEvents(this, plugin);
@@ -37,15 +40,15 @@ public class GUIListener implements Listener{
 		if(e.getCurrentItem().getItemMeta() instanceof SkullMeta){
 			Player target = Bukkit.getPlayer(((SkullMeta) e.getCurrentItem().getItemMeta()).getOwner());
 			if(target == null){
-				e.getWhoClicked().sendMessage(plugin.chatColor(Main.prefix + " &4This player is not online!"));
+				e.getWhoClicked().sendMessage(plugin.chatColor(Main.prefix + lang.CMD_PLAYER_OFFLINE));
 				return;
 			}
 			if(manager.isIngame(target.getUniqueId())){
-				e.getWhoClicked().sendMessage(plugin.chatColor(Main.prefix + " &4This player is already ingame!"));
+				e.getWhoClicked().sendMessage(plugin.chatColor(Main.prefix + lang.CMD_PLAYER_INGAME));
 				return;				
 			}
 			if(manager.getTimer().isSecond(target.getUniqueId())){
-				e.getWhoClicked().sendMessage(plugin.chatColor(Main.prefix + " &4This player was already invited by someone!"));
+				e.getWhoClicked().sendMessage(plugin.chatColor(Main.prefix + lang.CMD_PLAYER_HAS_INVITE));
 				return;									
 			}
 			manager.getTimer().invite(e.getWhoClicked().getUniqueId(), target.getUniqueId());
