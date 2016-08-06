@@ -34,7 +34,7 @@ onGameEnd:
     enabled: false
     messages:
     - "%winner% won against %looser% in a game of Battleship!"
-    - "Do &2/bs %winner% &rto try beating the winner of the last game ;)"     
+    - "Do &2/bs %winner% &rto try against %winner% yourself ;)"     
 
 
 # requires vault and an economy plugin
