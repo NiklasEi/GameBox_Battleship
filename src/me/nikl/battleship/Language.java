@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
 import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -26,6 +25,7 @@ public class Language {
 		GAME_TOO_SLOW, GAME_WON_MONEY_TOO_SLOW, GAME_WON_TOO_SLOW, GAME_INVITE_EXPIRED, GAME_INVITE_RETURNED_MONEY;
 	public String TITLE_GUI;
 	public List<String> CMD_HELP, GAME_INVITE_FIRST, GAME_INVITE_SECOND;
+	private YamlConfiguration defaultLang;
 	
 	public Language(Main plugin){
 		this.plugin = plugin;
@@ -85,14 +85,14 @@ public class Language {
 
 	private List<String> getStringList(String path) {
 		if(!langFile.isList(path)){
-			return Arrays.asList(" &4StringList missing in Language file (" + path +")");
+			return defaultLang.getStringList(path);
 		}
 		return langFile.getStringList(path);
 	}
 
 	private String getString(String path) {
 		if(!langFile.isString(path)){
-			return " &4String missing in language file! (" + path + ")";
+			return defaultLang.getString(path);
 		}
 		return langFile.getString(path);
 	}
@@ -113,7 +113,7 @@ public class Language {
 		try {
 		
 			// read this file into InputStream
-			String fileName = "language" + File.separator + "lang_en.yml";
+			String fileName = "language/lang_en.yml";
 			inputStream = plugin.getResource(fileName);
 
 			// write the inputStream to a FileOutputStream
@@ -146,14 +146,6 @@ public class Language {
 				}
 
 			}
-		}
-		try {
-			FileConfiguration defaultLang =  YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(defaultFile), "UTF-8"));
-			for(String ke : defaultLang.getKeys(false)){
-				Bukkit.getConsoleSender().sendMessage(ke);
-			}
-		} catch (UnsupportedEncodingException | FileNotFoundException e2) {
-			e2.printStackTrace();
 		}
 		if(!plugin.getConfig().isSet("langFile")){
 			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&4*******************************************************"));
@@ -209,6 +201,32 @@ public class Language {
 				e1.printStackTrace();
 			}
 			return true;	
+		}
+		try {
+			this.defaultLang =  YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(defaultFile), "UTF-8"));
+			int count = 0;
+			for(String key : defaultLang.getKeys(true)){
+				if(defaultLang.isString(key)){
+					if(!this.langFile.isString(key)){// there is a message missing
+						if(count == 0){
+							Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', Main.prefix + " &4*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*"));
+							Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', Main.prefix + " &4Missing Message(s) in your language file!"));
+						}
+						Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', Main.prefix + " " + key));
+						count++;
+					}
+				}
+			}
+			if(count > 0){
+				Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', Main.prefix + ""));
+				Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', Main.prefix + " &4Game will use default messages for these paths"));
+				Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', Main.prefix + ""));
+				Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', Main.prefix + " &4Please get an updated language file"));
+				Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', Main.prefix + " &4Or add the listed Paths by hand"));
+				Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', Main.prefix + " &4*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*"));
+			}
+		} catch (UnsupportedEncodingException | FileNotFoundException e2) {
+			e2.printStackTrace();
 		}
 		return true;
 		
