@@ -47,9 +47,15 @@ public class HeadGUI implements CommandExecutor {
 		}
 		Player player = (Player) sender;
 		if(args.length == 0){
-			guis.add(new GUI(player.getUniqueId()));
-			return true;
+			if(Bukkit.getOnlinePlayers().size() > 1){
+				guis.add(new GUI(player.getUniqueId()));
+				return true;
+			} else {
+				sender.sendMessage(plugin.chatColor(Main.prefix + lang.CMD_ONLY_ONE_ONLINE));
+				return true;
+			}
 		}
+
 		
 		
 		for(String message : this.lang.CMD_HELP)
@@ -86,7 +92,7 @@ public class HeadGUI implements CommandExecutor {
 			this.inv = new Inventory[pageNum];
 			
 			for(int invPage = 0; invPage < pageNum; invPage ++){
-				this.inv[invPage] = Bukkit.createInventory(null, 54, "Invite someone to a game      " + (invPage+1));
+				this.inv[invPage] = Bukkit.createInventory(null, 54, lang.TITLE_GUI+ "   " + (invPage+1));
 			}
 			
 			

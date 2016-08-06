@@ -38,7 +38,6 @@ public class Main extends JavaPlugin{
 		this.con = new File(this.getDataFolder().toString() + File.separatorChar + "config.yml");
 
 		reload();
-		this.lang = new Language(this);
 		if(disabled) return;
 		getValuesFromConfig();
 

@@ -2,6 +2,9 @@
 #   placeholders will be listed in front of the keys
 
 # messages and inventorytitles directly related to the game 
+test1: 5
+
+test2: 5
 game:
   # here you can use:
   #   name of the first player: %first%
@@ -44,6 +47,9 @@ game:
   #   use %looser% for the name of the player that gave up
   otherTooSlow: " &2You won! %looser% was too slow."
   
+inventoryTitles:
+  # There will always be the page number behind that title!
+  guiTitle: "Invite someone to a game    "
   
 
 
@@ -58,6 +64,8 @@ commandMessages:
   playerHasInviteAlready: " &4This player was already invited by someone!"
   cannotInviteYourself: " &4You cannot invite yourself to a game ^^"
   pluginReloaded: " &aPlugin was reloaded"
+  # send if someone is alone on the server and tries to open the GUI
+  aloneOnServer: " &4No one else is online at the moment"
   # displayed when wrong arguments are used
   help:
   - " &2To invite someone to a game do: /bs [player]"
