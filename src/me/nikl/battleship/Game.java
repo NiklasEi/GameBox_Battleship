@@ -129,11 +129,11 @@ public class Game{
 			othersHit.setItemMeta(metaothersHit);
 			othersHit.setAmount(1);
 		}
-		this.firstCurrentState = "Set Carrier: " + numCarrier +" x 5 Blocks   &4";
-		this.secondCurrentState = "Set Carrier: " + numCarrier +" x 5 Blocks   &4";
-		this.firstOwn = Bukkit.getServer().createInventory(null, 54, ChatColor.translateAlternateColorCodes('&', firstCurrentState + shipSetTime));
+		this.firstCurrentState = lang.TITLE_SET_SHIP_1.replaceAll("%count%", numCarrier+"");
+		this.secondCurrentState = lang.TITLE_SET_SHIP_1.replaceAll("%count%", numCarrier+"");
+		this.firstOwn = Bukkit.getServer().createInventory(null, 54, ChatColor.translateAlternateColorCodes('&', firstCurrentState.replaceAll("%timer%", shipSetTime+"")));
 		this.firstOthers = Bukkit.getServer().createInventory(null, 54, ChatColor.translateAlternateColorCodes('&', "Battleship"));
-		this.secondOwn = Bukkit.getServer().createInventory(null, 54, ChatColor.translateAlternateColorCodes('&', secondCurrentState + shipSetTime));
+		this.secondOwn = Bukkit.getServer().createInventory(null, 54, ChatColor.translateAlternateColorCodes('&', secondCurrentState.replaceAll("%timer%", shipSetTime+"")));
 		this.secondOthers = Bukkit.getServer().createInventory(null, 54, ChatColor.translateAlternateColorCodes('&', "Battleship"));
 
 		BuildGrids();
@@ -352,44 +352,44 @@ public class Game{
 			this.timer.cancel();
 			setShipsSet(true, false); // reset shipset info for both players
 			setShipsSet(false, false);
-			setFirstCurrentState("Set Battleship: " + numBattleship +" x 4 Blocks  &4");
-			setSecondCurrentState("Set Battleship: " + numBattleship +" x 4 Blocks  &4");
-			firstOwn = setState(firstCurrentState + shipSetTime, firstOwn);
-			secondOwn = setState(secondCurrentState + shipSetTime, secondOwn);
+			setFirstCurrentState(lang.TITLE_SET_SHIP_2.replaceAll("%count%", numBattleship+""));
+			setSecondCurrentState(lang.TITLE_SET_SHIP_2.replaceAll("%count%", numBattleship+""));
+			firstOwn = setState(firstCurrentState.replaceAll("%timer%", shipSetTime+""), firstOwn);
+			secondOwn = setState(secondCurrentState.replaceAll("%timer%", shipSetTime+""), secondOwn);
 			this.timer = new GameTimer(this);
 		} else if(state.equals(GameState.SETTING_SHIP3)){
 			this.timer.cancel();
 			setShipsSet(true, false); // reset shipset info for both players
 			setShipsSet(false, false);
-			setFirstCurrentState("Set Cruiser: " + numCruiser +" x 3 Blocks   &4");
-			setSecondCurrentState("Set Cruiser: " + numCruiser +" x 3 Blocks   &4");
-			firstOwn = setState(firstCurrentState + shipSetTime, firstOwn);
-			secondOwn = setState(secondCurrentState + shipSetTime, secondOwn);
+			setFirstCurrentState(lang.TITLE_SET_SHIP_3.replaceAll("%count%", numCruiser+""));
+			setSecondCurrentState(lang.TITLE_SET_SHIP_3.replaceAll("%count%", numCruiser+""));
+			firstOwn = setState(firstCurrentState.replaceAll("%timer%", shipSetTime+""), firstOwn);
+			secondOwn = setState(secondCurrentState.replaceAll("%timer%", shipSetTime+""), secondOwn);
 			this.timer = new GameTimer(this);
 		} else if(state.equals(GameState.SETTING_SHIP4)){
 			this.timer.cancel();
 			setShipsSet(true, false); // reset shipset info for both players
 			setShipsSet(false, false);
-			setFirstCurrentState("Set Destroyer: " + numDestroyer +" x 2 Blocks  &4");
-			setSecondCurrentState("Set Destroyer: " + numDestroyer +" x 2 Blocks  &4");
-			firstOwn = setState(firstCurrentState + shipSetTime, firstOwn);
-			secondOwn = setState(secondCurrentState + shipSetTime, secondOwn);
+			setFirstCurrentState(lang.TITLE_SET_SHIP_4.replaceAll("%count%", numDestroyer+""));
+			setSecondCurrentState(lang.TITLE_SET_SHIP_4.replaceAll("%count%", numDestroyer+""));
+			firstOwn = setState(firstCurrentState.replaceAll("%timer%", shipSetTime+""), firstOwn);
+			secondOwn = setState(secondCurrentState.replaceAll("%timer%", shipSetTime+""), secondOwn);
 			this.timer = new GameTimer(this);
 		} else if(state.equals(GameState.FIRST_TURN)){
 			this.timer.cancel();
-			setFirstCurrentState("&2Battleship   " + "&rClick to fire!      &4");
-			setSecondCurrentState("&4Battleship   " + "&rWatch out!         &2");
-			firstOwn = setState(firstCurrentState + fireTime, firstOwn);
-			secondOwn = setState(secondCurrentState + fireTime, secondOwn);
+			setFirstCurrentState(lang.TITLE_ATTACKER);
+			setSecondCurrentState(lang.TITLE_DEFENDER);
+			firstOwn = setState(firstCurrentState.replaceAll("%timer%", fireTime+""), firstOwn);
+			secondOwn = setState(secondCurrentState.replaceAll("%timer%", fireTime+""), secondOwn);
 			showInventory(true, false);
 			showInventory(false, true);
 			this.timer = new GameTimer(this);
 		} else if(state.equals(GameState.SECOND_TURN)){
 			this.timer.cancel();
-			setFirstCurrentState("&4Battleship   " + "&rWatch out!         &2");
-			setSecondCurrentState("&2Battleship   " + "&rClick to fire!      &4");
-			firstOwn = setState(firstCurrentState + fireTime, firstOwn);
-			secondOwn = setState(secondCurrentState + fireTime, secondOwn);
+			setFirstCurrentState(lang.TITLE_DEFENDER);
+			setSecondCurrentState(lang.TITLE_ATTACKER);
+			firstOwn = setState(firstCurrentState.replaceAll("%timer%", fireTime+""), firstOwn);
+			secondOwn = setState(secondCurrentState.replaceAll("%timer%", fireTime+""), secondOwn);
 			showInventory(true, true);
 			showInventory(false, false);
 			this.timer = new GameTimer(this);
@@ -666,10 +666,10 @@ public class Game{
 
 	public void readyToStart() {
 		this.timer.cancel();
-		firstOwn = setState("&4Battleship   " + "&rWatch out! &2", firstOwn);
-		secondOwn = setState("&4Battleship   " + "&rWatch out! &2", secondOwn);
-		firstOthers = setState("&2Battleship   " + "&rClick to fire! &4", firstOthers);
-		secondOthers = setState("&2Battleship   " + "&rClick to fire! &4", secondOthers);
+		firstOwn = setState(lang.TITLE_DEFENDER.replaceAll("%timer%", fireTime+""), firstOwn);
+		secondOwn = setState(lang.TITLE_DEFENDER.replaceAll("%timer%", fireTime+""), secondOwn);
+		firstOthers = setState(lang.TITLE_ATTACKER.replaceAll("%timer%", fireTime+""), firstOthers);
+		secondOthers = setState(lang.TITLE_ATTACKER.replaceAll("%timer%", fireTime+""), secondOthers);
 	}
 
 
@@ -742,13 +742,13 @@ public class Game{
 		if(isFirst){
 			winner = Bukkit.getPlayer(this.getFirstUUID());
 			looser = Bukkit.getPlayer(this.getSecondUUID());
-			firstOwn = setState("&2Battleship   " + "&2You won!", firstOwn);
-			secondOwn = setState("&2Battleship   " + "&4You lost!", secondOwn);
+			firstOwn = setState(lang.TITLE_WON, firstOwn);
+			secondOwn = setState(lang.TITLE_LOST, secondOwn);
 		} else {
 			looser = Bukkit.getPlayer(this.getFirstUUID());
 			winner = Bukkit.getPlayer(this.getSecondUUID());
-			firstOwn = setState("&2Battleship   " + "&4You lost!", firstOwn);
-			secondOwn = setState("&2Battleship   " + "&2You won!", secondOwn);
+			firstOwn = setState(lang.TITLE_LOST, firstOwn);
+			secondOwn = setState(lang.TITLE_WON, secondOwn);
 		}
 		if(plugin.getEconEnabled()){
 			Main.econ.depositPlayer(winner, plugin.getReward());
@@ -834,8 +834,8 @@ public class Game{
 
 
 	public void setShipSetState(int time) {
-		firstOwn = setState(firstCurrentState + time, firstOwn);
-		secondOwn = setState(secondCurrentState + time, secondOwn);
+		firstOwn = setState(firstCurrentState.replaceAll("%timer%", time+""), firstOwn);
+		secondOwn = setState(secondCurrentState.replaceAll("%timer%", time+""), secondOwn);
 		showInventory(true, true);
 		showInventory(false, true);
 	}
@@ -1035,13 +1035,13 @@ public class Game{
 
 	public void setFireState(int time) {
 		if(state.equals(GameState.FIRST_TURN)){
-			firstOthers = setState(firstCurrentState + time, firstOthers);
-			secondOwn = setState(secondCurrentState + time, secondOwn);
+			firstOthers = setState(firstCurrentState.replaceAll("%timer%", time+""), firstOthers);
+			secondOwn = setState(secondCurrentState.replaceAll("%timer%", time+""), secondOwn);
 			showInventory(true, false);
 			showInventory(false, true);		
 		} else if (state.equals(GameState.SECOND_TURN)){
-			firstOwn = setState(firstCurrentState + time, firstOwn);
-			secondOthers = setState(secondCurrentState + time, secondOthers);
+			firstOwn = setState(firstCurrentState.replaceAll("%timer%", time+""), firstOwn);
+			secondOthers = setState(secondCurrentState.replaceAll("%timer%", time+""), secondOthers);
 			showInventory(true, true);
 			showInventory(false, false);				
 		}
