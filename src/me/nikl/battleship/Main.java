@@ -3,9 +3,12 @@ package me.nikl.battleship;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.util.UUID;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,14 +18,15 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import me.nikl.battleship.game.GameManager;
 import me.nikl.battleship.gui.HeadGUI;
 import net.milkbowl.vault.economy.Economy;
 
 public class Main extends JavaPlugin{
 
 	private GameManager manager;
-	private FileConfiguration config;
-	private File con;
+	private FileConfiguration config, stats;
+	private File con, sta;
 	public static Economy econ = null;
 	public static String prefix = "[&3Battleship&r]";
 	public Boolean econEnabled;
@@ -36,6 +40,7 @@ public class Main extends JavaPlugin{
 	public void onEnable(){
 		this.disabled = false;
 		this.con = new File(this.getDataFolder().toString() + File.separatorChar + "config.yml");
+		this.sta = new File(this.getDataFolder().toString() + File.separatorChar + "stats.yml");
 
 		reload();
 		if(disabled) return;
@@ -61,7 +66,11 @@ public class Main extends JavaPlugin{
 
 	@Override
 	public void onDisable(){
-		
+		try {
+			this.stats.save(sta);
+		} catch (IOException e) {
+			getLogger().log(Level.SEVERE, "Could not save statistics", e);
+		}		
 	}
 	
     private boolean setupEconomy(){
@@ -101,7 +110,21 @@ public class Main extends JavaPlugin{
 		if(!con.exists()){
 			this.saveResource("config.yml", false);
 		}
+		if(!sta.exists()){
+			try {
+				sta.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		reloadConfig();
+		
+		// load statsfile
+		try {
+			this.stats = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(this.sta), "UTF-8"));
+		} catch (UnsupportedEncodingException | FileNotFoundException e) {
+			e.printStackTrace();
+		} 
 		
 		
 		this.lang = new Language(this);
@@ -123,6 +146,19 @@ public class Main extends JavaPlugin{
 		}
 	}
 
+	public void addWinToStatistics(UUID player) {
+		if(this.stats == null) return;
+		if(!stats.isInt(player.toString() + "." + "won")){
+			stats.set(player.toString() + "." + "won", 1);
+			return;
+		}
+		this.stats.set(player.toString() + "." + "won", (this.stats.getInt(player.toString() + "." + "won")+1));
+	}
+	
+	public FileConfiguration getStatistics(){
+		return this.stats;
+	}
+	
 	public void setManager(GameManager manager) {
 		this.manager = manager;
 	}
