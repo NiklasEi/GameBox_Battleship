@@ -9,9 +9,9 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import me.nikl.battleship.GameManager;
 import me.nikl.battleship.Language;
 import me.nikl.battleship.Main;
+import me.nikl.battleship.game.GameManager;
 
 public class GUIListener implements Listener{
 	

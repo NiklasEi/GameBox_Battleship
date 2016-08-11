@@ -6,6 +6,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import me.nikl.battleship.game.GameManager;
+
 public class Waiting {
 	private int age;
 	private UUID first;

@@ -1,6 +1,8 @@
-package me.nikl.battleship;
+package me.nikl.battleship.game;
 
 import org.bukkit.scheduler.BukkitRunnable;
+
+import me.nikl.battleship.Main;
 
 public class GameTimer extends BukkitRunnable{
 	

@@ -1,4 +1,4 @@
-package me.nikl.battleship;
+package me.nikl.battleship.game;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,6 +14,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import me.nikl.battleship.Language;
+import me.nikl.battleship.Main;
 
 public class Game{
 	// items that make up the game
