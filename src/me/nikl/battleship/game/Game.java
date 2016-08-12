@@ -45,7 +45,7 @@ public class Game{
 	
 	// timer stuff during ship-set phase
 	private GameTimer timer;
-	private int shipSetTime, fireTime;
+	private int shipSetTime, fireTime, changeTime;
 	private String firstCurrentState, secondCurrentState;
 	
 	private Main plugin;
@@ -141,7 +141,7 @@ public class Game{
 
 		BuildGrids();
 		
-		this.state = GameState.SETTING_SHIP1;
+		setState(GameState.SETTING_SHIP1);
 		this.timer = new GameTimer(this);
 		
 		showInventory(true, true);
@@ -150,15 +150,18 @@ public class Game{
 	}
 	
 	private void getValuesFromConfig() {
-		if(!config.isConfigurationSection("timers") || !config.isInt("timers.shipSetTimer.countdown") || !config.isInt("timers.fireTimer.countdown")){
+		Bukkit.getConsoleSender().sendMessage("called    " + !config.isInt("timers.changingGrids.countdown")); // XXX
+		if(!config.isConfigurationSection("timers") || !config.isInt("timers.shipSetTimer.countdown") || !config.isInt("timers.fireTimer.countdown") || !config.isInt("timers.changingGrids.countdown")){
 			Bukkit.getConsoleSender().sendMessage(chatColor(Main.prefix + " &4No 'timers' section or invalid values in 'timers' section"));
 			Bukkit.getConsoleSender().sendMessage(chatColor(Main.prefix + " &4Using default values!"));
 			this.shipSetTime = 30;
 			this.fireTime = 10;
+			this.changeTime = 3;
 		} else {
 			ConfigurationSection timer = config.getConfigurationSection("timers");
 			this.shipSetTime = timer.getInt("shipSetTimer.countdown");
 			this.fireTime = timer.getInt("fireTimer.countdown");
+			this.changeTime = timer.getInt("changingGrids.countdown");
 		}
 	}
 
@@ -183,6 +186,14 @@ public class Game{
 	 * Only use this function to show a new inv. so the game always knows who is seeing which inv.
 	 */
 	void showInventory(boolean isFirst, boolean ownInv) {
+		Bukkit.getConsoleSender().sendMessage(" ************************************************");
+		Bukkit.getConsoleSender().sendMessage("showing inv.    isfirst: " + isFirst + "    ownInv: " + ownInv);
+		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+
+		Bukkit.getConsoleSender().sendMessage("called by " + stackTraceElements[2].getMethodName() + "Line   " + stackTraceElements[2].getLineNumber());
+		Bukkit.getConsoleSender().sendMessage("called by " + stackTraceElements[3].getMethodName() + "Line   " + stackTraceElements[3].getLineNumber());
+		Bukkit.getConsoleSender().sendMessage("called by " + stackTraceElements[4].getMethodName() + "Line   " + stackTraceElements[4].getLineNumber());
+		Bukkit.getConsoleSender().sendMessage(" ************************************************");
 		setClosingInv(true);
 		if(isFirst){
 			setFirstSeesOwn(ownInv);
@@ -350,8 +361,12 @@ public class Game{
 	}
 
 	public void setState(GameState state) {
+		Bukkit.getConsoleSender().sendMessage("Setting state to : " + state.toString());
 		this.state = state;
-		if(state.equals(GameState.SETTING_SHIP2)){
+		switch (state){
+		
+		case SETTING_SHIP2:
+			
 			this.timer.cancel();
 			setShipsSet(true, false); // reset shipset info for both players
 			setShipsSet(false, false);
@@ -359,8 +374,10 @@ public class Game{
 			setSecondCurrentState(lang.TITLE_SET_SHIP_2.replaceAll("%count%", numBattleship+""));
 			firstOwn = setState(firstCurrentState.replaceAll("%timer%", shipSetTime+""), firstOwn);
 			secondOwn = setState(secondCurrentState.replaceAll("%timer%", shipSetTime+""), secondOwn);
+			showInventory(true, true);
+			showInventory(false, true);
 			this.timer = new GameTimer(this);
-		} else if(state.equals(GameState.SETTING_SHIP3)){
+		case SETTING_SHIP3:
 			this.timer.cancel();
 			setShipsSet(true, false); // reset shipset info for both players
 			setShipsSet(false, false);
@@ -369,7 +386,7 @@ public class Game{
 			firstOwn = setState(firstCurrentState.replaceAll("%timer%", shipSetTime+""), firstOwn);
 			secondOwn = setState(secondCurrentState.replaceAll("%timer%", shipSetTime+""), secondOwn);
 			this.timer = new GameTimer(this);
-		} else if(state.equals(GameState.SETTING_SHIP4)){
+		case SETTING_SHIP4:
 			this.timer.cancel();
 			setShipsSet(true, false); // reset shipset info for both players
 			setShipsSet(false, false);
@@ -378,26 +395,44 @@ public class Game{
 			firstOwn = setState(firstCurrentState.replaceAll("%timer%", shipSetTime+""), firstOwn);
 			secondOwn = setState(secondCurrentState.replaceAll("%timer%", shipSetTime+""), secondOwn);
 			this.timer = new GameTimer(this);
-		} else if(state.equals(GameState.FIRST_TURN)){
+		case FIRST_TURN:
 			this.timer.cancel();
 			setFirstCurrentState(lang.TITLE_ATTACKER);
 			setSecondCurrentState(lang.TITLE_DEFENDER);
-			firstOwn = setState(firstCurrentState.replaceAll("%timer%", fireTime+""), firstOwn);
+			firstOthers = setState(firstCurrentState.replaceAll("%timer%", fireTime+""), firstOthers);
 			secondOwn = setState(secondCurrentState.replaceAll("%timer%", fireTime+""), secondOwn);
 			showInventory(true, false);
 			showInventory(false, true);
 			this.timer = new GameTimer(this);
-		} else if(state.equals(GameState.SECOND_TURN)){
+		case SECOND_TURN:
 			this.timer.cancel();
 			setFirstCurrentState(lang.TITLE_DEFENDER);
 			setSecondCurrentState(lang.TITLE_ATTACKER);
 			firstOwn = setState(firstCurrentState.replaceAll("%timer%", fireTime+""), firstOwn);
-			secondOwn = setState(secondCurrentState.replaceAll("%timer%", fireTime+""), secondOwn);
+			secondOthers = setState(secondCurrentState.replaceAll("%timer%", fireTime+""), secondOthers);
 			showInventory(true, true);
 			showInventory(false, false);
 			this.timer = new GameTimer(this);
-		} else if(state.equals(GameState.FINISHED)){
-			this.timer.cancel();			
+		case FINISHED:
+			this.timer.cancel();	
+			
+		case CHANGING:
+			setFirstCurrentState(lang.TITLE_CHANGING);
+			setSecondCurrentState(lang.TITLE_CHANGING);
+			if(firstSeesOwn){
+				firstOwn = setState(firstCurrentState.replaceAll("%timer%", changeTime+""), firstOwn);
+			} else {
+				firstOthers = setState(firstCurrentState.replaceAll("%timer%", changeTime+""), firstOthers);				
+			}
+			if(secondSeesOwn){
+				secondOwn = setState(secondCurrentState.replaceAll("%timer%", changeTime+""), secondOwn);				
+			} else {
+				secondOthers = setState(secondCurrentState.replaceAll("%timer%", changeTime+""), secondOthers);				
+			}
+			
+		
+		default:
+			break;
 		}
 	}
 
@@ -1048,6 +1083,32 @@ public class Game{
 			showInventory(true, true);
 			showInventory(false, false);				
 		}
+	}
+
+	public int getChangeTime() {
+		return this.changeTime;
+	}
+
+	public void changeAttacker(boolean newAttacker) {
+		this.cancelTimer();
+		this.timer = new GameTimer(this, newAttacker);
+	}
+
+	public void setChangingState(int time) {
+		if(firstSeesOwn){
+			firstOwn = setState(firstCurrentState.replaceAll("%timer%", time+""), firstOwn);
+			secondOthers = setState(secondCurrentState.replaceAll("%timer%", time+""), secondOthers);
+			showInventory(true, true);
+			showInventory(false, false);
+			
+		} else {
+			firstOthers = setState(firstCurrentState.replaceAll("%timer%", time+""), firstOthers);
+			secondOwn = setState(secondCurrentState.replaceAll("%timer%", time+""), secondOwn);
+			showInventory(true, false);
+			showInventory(false, true);
+			
+		}
+		Bukkit.getConsoleSender().sendMessage("Changing title   time: "+time); // XXX
 	}
 	
 }
