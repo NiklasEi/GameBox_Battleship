@@ -26,6 +26,7 @@ public class Language {
 	public String TITLE_GUI, TITLE_SET_SHIP_1, TITLE_SET_SHIP_2, TITLE_SET_SHIP_3, TITLE_SET_SHIP_4, TITLE_ATTACKER, TITLE_DEFENDER, TITLE_WON, TITLE_LOST;
 	public List<String> CMD_HELP, GAME_INVITE_FIRST, GAME_INVITE_SECOND;
 	private YamlConfiguration defaultLang;
+	public String TITLE_CHANGING;
 	
 	public Language(Main plugin){
 		this.plugin = plugin;
@@ -49,6 +50,8 @@ public class Language {
 		this.TITLE_DEFENDER = getString("inventoryTitles.defender");
 		this.TITLE_WON = getString("inventoryTitles.won");		
 		this.TITLE_LOST = getString("inventoryTitles.lost");
+
+		this.TITLE_CHANGING = getString("inventoryTitles.changingGrids");
 		
 	}
 
