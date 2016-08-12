@@ -52,7 +52,7 @@ public class GameManager implements Listener{
 		}
 		boolean isFirst = isFirst(player.getUniqueId(), game);
 		int slot = e.getSlot();
-		
+		Bukkit.getConsoleSender().sendMessage("State is: " + game.getState().toString()); // XXX
 		switch(game.getState()){
 		
 		case SETTING_SHIP1:
@@ -175,7 +175,8 @@ public class GameManager implements Listener{
 			if(!isFirst) return;
 			if(game.isCover(e.getCurrentItem())){
 				if(!game.fire(isFirst, slot)){
-					game.setState(GameState.SECOND_TURN);
+					game.changeAttacker(false);
+					//game.setState(GameState.SECOND_TURN);
 				} else if(game.isWon(isFirst)){
 					game.setState(GameState.FINISHED);
 					game.won(isFirst);
@@ -188,7 +189,8 @@ public class GameManager implements Listener{
 			if(isFirst) return;
 			if(game.isCover(e.getCurrentItem())){
 				if(!game.fire(isFirst, slot)){
-					game.setState(GameState.FIRST_TURN);
+					game.changeAttacker(true);
+					//game.setState(GameState.FIRST_TURN);
 				} else if(game.isWon(isFirst)){
 					game.setState(GameState.FINISHED);
 					game.won(isFirst);
