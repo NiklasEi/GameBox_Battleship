@@ -377,6 +377,7 @@ public class Game{
 			showInventory(true, true);
 			showInventory(false, true);
 			this.timer = new GameTimer(this);
+			break;
 		case SETTING_SHIP3:
 			this.timer.cancel();
 			setShipsSet(true, false); // reset shipset info for both players
@@ -386,6 +387,7 @@ public class Game{
 			firstOwn = setState(firstCurrentState.replaceAll("%timer%", shipSetTime+""), firstOwn);
 			secondOwn = setState(secondCurrentState.replaceAll("%timer%", shipSetTime+""), secondOwn);
 			this.timer = new GameTimer(this);
+			break;
 		case SETTING_SHIP4:
 			this.timer.cancel();
 			setShipsSet(true, false); // reset shipset info for both players
@@ -395,6 +397,7 @@ public class Game{
 			firstOwn = setState(firstCurrentState.replaceAll("%timer%", shipSetTime+""), firstOwn);
 			secondOwn = setState(secondCurrentState.replaceAll("%timer%", shipSetTime+""), secondOwn);
 			this.timer = new GameTimer(this);
+			break;
 		case FIRST_TURN:
 			this.timer.cancel();
 			setFirstCurrentState(lang.TITLE_ATTACKER);
@@ -404,6 +407,7 @@ public class Game{
 			showInventory(true, false);
 			showInventory(false, true);
 			this.timer = new GameTimer(this);
+			break;
 		case SECOND_TURN:
 			this.timer.cancel();
 			setFirstCurrentState(lang.TITLE_DEFENDER);
@@ -413,8 +417,10 @@ public class Game{
 			showInventory(true, true);
 			showInventory(false, false);
 			this.timer = new GameTimer(this);
+			break;
 		case FINISHED:
-			this.timer.cancel();	
+			this.timer.cancel();
+			break;	
 			
 		case CHANGING:
 			setFirstCurrentState(lang.TITLE_CHANGING);
@@ -429,6 +435,7 @@ public class Game{
 			} else {
 				secondOthers = setState(secondCurrentState.replaceAll("%timer%", changeTime+""), secondOthers);				
 			}
+			break;
 			
 		
 		default:
