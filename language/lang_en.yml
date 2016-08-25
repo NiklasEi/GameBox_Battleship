@@ -57,7 +57,7 @@ inventoryTitles:
   attacker: "&2Battleship   &rClick to fire!      &4%timer%"
   defender: "&4Battleship   &rWatch out!         &2%timer%"  
   
-  changingGrids: "&2Battleship   &rChanging Grids  &4%timer%"
+  changingGrids: "&2Battleship   &rChanging Grids  &2%timer%"
   
   won: "&2Battleship    &2You won!"
   lost: "&2Battleship    &4You lost!"
