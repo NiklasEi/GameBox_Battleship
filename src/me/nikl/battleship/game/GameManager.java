@@ -13,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import me.nikl.battleship.AcceptTimer;
 import me.nikl.battleship.Language;
@@ -52,7 +53,7 @@ public class GameManager implements Listener{
 		}
 		boolean isFirst = isFirst(player.getUniqueId(), game);
 		int slot = e.getSlot();
-		Bukkit.getConsoleSender().sendMessage("State is: " + game.getState().toString()); // XXX
+		//Bukkit.getConsoleSender().sendMessage("State is: " + game.getState().toString()); // XXX
 		switch(game.getState()){
 		
 		case SETTING_SHIP1:
@@ -281,6 +282,38 @@ public class GameManager implements Listener{
 			
 		}
 	}
+
+	@EventHandler
+	public void onLeave(PlayerQuitEvent e){
+		if(!isIngame(e.getPlayer().getUniqueId())){
+			return;
+		}
+		Game game = getGame(e.getPlayer().getUniqueId());
+		game.cancelTimer();
+		boolean first = isFirst(e.getPlayer().getUniqueId(), game);
+		UUID winner;
+		if(first){
+			winner = game.getSecondUUID();
+		} else {
+			winner = game.getFirstUUID();
+		}
+		Player winnerP = Bukkit.getPlayer(winner);
+		if(winnerP == null) return;
+		removeGame(getGame(e.getPlayer().getUniqueId()));
+		
+		if(!game.getState().equals(GameState.FINISHED)){
+			if(plugin.getEconEnabled()){
+				Main.econ.depositPlayer(winnerP, plugin.getReward());
+				winnerP.sendMessage(chatColor(Main.prefix + lang.GAME_WON_MONEY_GAVE_UP.replaceAll("%reward%", plugin.getReward()+"").replaceAll("%looser%", e.getPlayer().getName())));
+			} else {
+				winnerP.sendMessage(chatColor(Main.prefix + lang.GAME_OTHER_GAVE_UP.replaceAll("%looser%", e.getPlayer().getName())));
+			}
+			winnerP.closeInventory();
+		} else {
+			winnerP.closeInventory();
+		}
+	}
+	
 	
 	public void startGame(UUID firstUUID, UUID secondUUID){
 		games.add(new Game(plugin, firstUUID, secondUUID));
