@@ -1,6 +1,5 @@
 package me.nikl.battleship.game;
 
-import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.nikl.battleship.Main;
@@ -33,7 +32,7 @@ public class GameTimer extends BukkitRunnable{
 		this.state = "changing";
 		this.time = game.getChangeTime();
 		game.setState(GameState.CHANGING);
-		Bukkit.getConsoleSender().sendMessage("created timer     time: "+time); // XXX
+		//Bukkit.getConsoleSender().sendMessage("created timer     time: "+time); // XXX
 		
 		this.runTaskTimer(Main.getPlugin(Main.class), 20, 20);	
 	}
@@ -49,7 +48,6 @@ public class GameTimer extends BukkitRunnable{
 				game.fireTimeRanOut();
 				this.cancel();
 			} else if(state.equals("changing")){
-				Bukkit.getConsoleSender().sendMessage("changing states now"); // XXX
 				if(newAttacker){
 					game.setState(GameState.FIRST_TURN);
 				} else {
@@ -63,7 +61,7 @@ public class GameTimer extends BukkitRunnable{
 	}
 
 	private boolean myRun() {
-		if(time > 0){
+		if(time > 1){
 			time--;
 			if(state.equals("ships")){
 				game.setShipSetState(time);
