@@ -8,5 +8,11 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/Niklas/Desktop/Test/plugins/Vault.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Niklas/Desktop/Test/spigot-1.10.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Niklas/Desktop/Test/spigot-1.8.8.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Niklas/Desktop/Test/spigot-1.9.4.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Niklas/Desktop/Test/spigot-1.8.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Niklas/Desktop/Test/spigot-1.8.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Niklas/Desktop/Test/spigot-1.9.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
