@@ -20,6 +20,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import me.nikl.battleship.game.GameManager;
 import me.nikl.battleship.gui.HeadGUI;
+import me.nikl.battleship.update.*;
 import net.milkbowl.vault.economy.Economy;
 
 public class Main extends JavaPlugin{
@@ -35,9 +36,17 @@ public class Main extends JavaPlugin{
 	public HeadGUI headGUI;
 	public Language lang;
 	public boolean disabled;
+	private InvTitle updater;
 	
 	@Override
 	public void onEnable(){
+        if (!setupUpdater()) {
+            getLogger().severe("Your server version is not compatible with this plugin!");
+
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
+        
 		this.disabled = false;
 		this.con = new File(this.getDataFolder().toString() + File.separatorChar + "config.yml");
 		this.sta = new File(this.getDataFolder().toString() + File.separatorChar + "stats.yml");
@@ -52,6 +61,40 @@ public class Main extends JavaPlugin{
         this.getCommand("battleshipGUI").setExecutor(headGUI);
 	}
 	
+	private boolean setupUpdater() {  String version;
+
+	    try {
+	        version = Bukkit.getServer().getClass().getPackage().getName().replace(".",  ",").split(",")[3];
+	    } catch (ArrayIndexOutOfBoundsException whatVersionAreYouUsingException) {
+	        return false;
+	    }
+	
+	    getLogger().info("Your server is running version " + version);
+	
+	    if (version.equals("v1_10_R1")) {
+	        updater = new Update_1_10_R1();
+	        
+	    } else if (version.equals("v1_9_R2")) {
+	        updater = new Update_1_9_R2();
+	        
+	    } else if (version.equals("v1_9_R1")) {
+	        updater = new Update_1_9_R1();
+	        
+	    } else if (version.equals("v1_8_R3")) {
+	        updater = new Update_1_8_R3();
+	        
+	    } else if (version.equals("v1_8_R2")) {
+	        updater = new Update_1_8_R2();
+	        
+	    } else if (version.equals("v1_8_R1")) {
+	        updater = new Update_1_8_R1();
+	    }
+	    return updater != null;
+	}
+
+	public InvTitle getUpdater(){
+		return this.updater;
+	}
 	private void getValuesFromConfig() {
 		FileConfiguration config = getConfig();
 		if(!config.isConfigurationSection("timers") || !config.isInt("timers.invitationTimer.validFor")){
@@ -66,11 +109,13 @@ public class Main extends JavaPlugin{
 
 	@Override
 	public void onDisable(){
-		try {
-			this.stats.save(sta);
-		} catch (IOException e) {
-			getLogger().log(Level.SEVERE, "Could not save statistics", e);
-		}		
+		if(stats!=null){
+			try {
+				this.stats.save(sta);
+			} catch (IOException e) {
+				getLogger().log(Level.SEVERE, "Could not save statistics", e);
+			}		
+		}
 	}
 	
     private boolean setupEconomy(){
