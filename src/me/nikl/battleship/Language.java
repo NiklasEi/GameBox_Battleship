@@ -121,6 +121,7 @@ public class Language {
 
 			// write the inputStream to a FileOutputStream
 			defaultFile = new File(plugin.getDataFolder().toString() + File.separatorChar + "language" + File.separatorChar + "default.yml");
+			defaultFile.getParentFile().mkdirs();
 			outputStream = new FileOutputStream(defaultFile);
 
 			int read = 0;
