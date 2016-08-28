@@ -17,6 +17,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import me.nikl.battleship.Language;
 import me.nikl.battleship.Main;
+import me.nikl.battleship.update.InvTitle;
 
 public class Game{
 	// items that make up the game
@@ -42,15 +43,19 @@ public class Game{
 	private FileConfiguration config;
 	// language class
 	private Language lang;
+	// updater for the invetory titles
+	private InvTitle updater;
 	
 	// timer stuff during ship-set phase
 	private GameTimer timer;
 	private int shipSetTime, fireTime, changeTime;
+	private int currentTime;
 	private String firstCurrentState, secondCurrentState;
 	
 	private Main plugin;
 	
 	public Game(Main plugin, UUID firstUUID, UUID secondUUID){
+		this.updater = plugin.getUpdater();
 		this.setState(GameState.BUILDING);
 		this.plugin = plugin;
 		this.lang = plugin.lang;
@@ -78,60 +83,9 @@ public class Game{
 		}
 		getShipNumbers();
 		if(!getMaterials()){
-			Bukkit.getConsoleSender().sendMessage(plugin.chatColor(Main.prefix+" &4Failed to load materials from config"));
-			Bukkit.getConsoleSender().sendMessage(plugin.chatColor(Main.prefix+" &4Using default materials"));
-			
-			this.ownShip = new ItemStack(Material.IRON_BLOCK);
-			ItemMeta metaownShip = ownShip.getItemMeta();
-			metaownShip.setDisplayName("Ship");
-			ownShip.setItemMeta(metaownShip);
-			ownShip.setAmount(1);
-
-			this.lockedShip = new ItemStack(Material.BEDROCK);
-			ItemMeta metaLockedShip = lockedShip.getItemMeta();
-			metaLockedShip.setDisplayName("Ship");
-			lockedShip.setItemMeta(metaLockedShip);
-			lockedShip.setAmount(1);
-			
-			this.ownWater = new ItemStack(Material.ENDER_PORTAL);
-			ItemMeta metaownWater = ownWater.getItemMeta();
-			metaownWater.setDisplayName("Water");
-			ownWater.setItemMeta(metaownWater);
-			ownWater.setAmount(1);
-			
-			this.ownMiss = new ItemStack(Material.WOOL);
-			ownMiss.setDurability((short) 13);
-			ItemMeta metaownMiss = ownMiss.getItemMeta();
-			metaownMiss.setDisplayName("Yeah! A miss!");
-			ownMiss.setItemMeta(metaownMiss);
-			ownMiss.setAmount(1);
-			
-			this.ownHit = new ItemStack(Material.WOOL);
-			ownHit.setDurability((short) 14);
-			ItemMeta metaownHit = ownHit.getItemMeta();
-			metaownHit.setDisplayName("Damn! A hit...");
-			ownHit.setItemMeta(metaownHit);
-			ownHit.setAmount(1);
-			
-			this.othersCover = new ItemStack(Material.WOOL);
-			othersCover.setDurability((short) 7);
-			ItemMeta metaothersCover = othersCover.getItemMeta();
-			metaothersCover.setDisplayName("Cover");
-			othersCover.setItemMeta(metaothersCover);
-			othersCover.setAmount(1);
-			
-			this.othersMiss = new ItemStack(Material.ENDER_PORTAL);
-			ItemMeta metaothersMiss = othersMiss.getItemMeta();
-			metaothersMiss.setDisplayName("That did not hit...");
-			othersMiss.setItemMeta(metaothersMiss);
-			othersMiss.setAmount(1);
-			
-			this.othersHit = new ItemStack(Material.IRON_BLOCK);
-			ItemMeta metaothersHit = othersHit.getItemMeta();
-			metaothersHit.setDisplayName("Booom! Gotcha");
-			othersHit.setItemMeta(metaothersHit);
-			othersHit.setAmount(1);
+			setDefaultMaterials();
 		}
+		currentTime = shipSetTime;
 		this.firstCurrentState = lang.TITLE_SET_SHIP_1.replaceAll("%count%", numCarrier+"");
 		this.secondCurrentState = lang.TITLE_SET_SHIP_1.replaceAll("%count%", numCarrier+"");
 		this.firstOwn = Bukkit.getServer().createInventory(null, 54, ChatColor.translateAlternateColorCodes('&', firstCurrentState.replaceAll("%timer%", shipSetTime+"")));
@@ -148,10 +102,10 @@ public class Game{
 		showInventory(false, true);
 		//Bukkit.getConsoleSender().sendMessage("first sees own: " + firstSeesOwn + "second sees own: " + secondSeesOwn); // XXX
 	}
-	
+
+
 	private void getValuesFromConfig() {
-		Bukkit.getConsoleSender().sendMessage("called    " + !config.isInt("timers.changingGrids.countdown")); // XXX
-		if(!config.isConfigurationSection("timers") || !config.isInt("timers.shipSetTimer.countdown") || !config.isInt("timers.fireTimer.countdown") || !config.isInt("timers.changingGrids.countdown")){
+		if(!config.isConfigurationSection("timers")){
 			Bukkit.getConsoleSender().sendMessage(chatColor(Main.prefix + " &4No 'timers' section or invalid values in 'timers' section"));
 			Bukkit.getConsoleSender().sendMessage(chatColor(Main.prefix + " &4Using default values!"));
 			this.shipSetTime = 30;
@@ -159,12 +113,28 @@ public class Game{
 			this.changeTime = 3;
 		} else {
 			ConfigurationSection timer = config.getConfigurationSection("timers");
-			this.shipSetTime = timer.getInt("shipSetTimer.countdown");
-			this.fireTime = timer.getInt("fireTimer.countdown");
-			this.changeTime = timer.getInt("changingGrids.countdown");
+			if(!timer.isSet("shipSetTimer.countdown") || !timer.isInt("shipSetTimer.countdown")){
+				Bukkit.getConsoleSender().sendMessage(chatColor(Main.prefix + " &4Using default value for shipSetTimer"));
+				this.shipSetTime = 30;
+			} else {
+				this.shipSetTime = timer.getInt("shipSetTimer.countdown");
+			}
+			if(!timer.isSet("fireTimer.countdown") || !timer.isInt("fireTimer.countdown")){
+				Bukkit.getConsoleSender().sendMessage(chatColor(Main.prefix + " &4Using default value for fireTimer!"));
+				this.fireTime = 10;
+			} else {
+				this.fireTime = timer.getInt("fireTimer.countdown");
+			}
+			if(!timer.isSet("changingGrids.countdown") || !timer.isInt("changingGrids.countdown")){
+				Bukkit.getConsoleSender().sendMessage(chatColor(Main.prefix + " &4Using default value for changingGrids!"));
+				this.changeTime = 3;
+			} else {
+				this.changeTime = timer.getInt("changingGrids.countdown");
+			}
 		}
 	}
 
+	
 	GameTimer getTimer(){
 		return this.timer;
 	}
@@ -186,14 +156,14 @@ public class Game{
 	 * Only use this function to show a new inv. so the game always knows who is seeing which inv.
 	 */
 	void showInventory(boolean isFirst, boolean ownInv) {
-		Bukkit.getConsoleSender().sendMessage(" ************************************************");
+		/*Bukkit.getConsoleSender().sendMessage(" ************************************************");
 		Bukkit.getConsoleSender().sendMessage("showing inv.    isfirst: " + isFirst + "    ownInv: " + ownInv);
 		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
 
 		Bukkit.getConsoleSender().sendMessage("called by " + stackTraceElements[2].getMethodName() + "Line   " + stackTraceElements[2].getLineNumber());
 		Bukkit.getConsoleSender().sendMessage("called by " + stackTraceElements[3].getMethodName() + "Line   " + stackTraceElements[3].getLineNumber());
 		Bukkit.getConsoleSender().sendMessage("called by " + stackTraceElements[4].getMethodName() + "Line   " + stackTraceElements[4].getLineNumber());
-		Bukkit.getConsoleSender().sendMessage(" ************************************************");
+		Bukkit.getConsoleSender().sendMessage(" ************************************************");*/
 		setClosingInv(true);
 		if(isFirst){
 			setFirstSeesOwn(ownInv);
@@ -202,13 +172,15 @@ public class Game{
 			} else {
 				first.openInventory(firstOthers);				
 			}
+			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
 		} else {
 			setSecondSeesOwn(ownInv);
 			if(ownInv){
 				second.openInventory(secondOwn);
 			} else {
 				second.openInventory(secondOthers);				
-			}			
+			}	
+			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));		
 		}
 		setClosingInv(false);
 	}
@@ -266,160 +238,105 @@ public class Game{
 		
 	}
 
-	private boolean getMaterials() {
-		boolean worked = true;
-
-	    Material mat = null;
-	    int data = 0;
-	    for(String key : Arrays.asList("yourGrid.ship", "yourGrid.lockedShip", "yourGrid.miss", "yourGrid.hit", "yourGrid.water", "othersGrid.cover", "othersGrid.miss", "othersGrid.hit")){
-		    if(!config.isSet("materials." + key)) return false;
-	    	String value = config.getString("materials." + key);
-		    String[] obj = value.split(":");
-	
-		    if (obj.length == 2) {
-		        try {
-		            mat = Material.matchMaterial(obj[0]);
-		        } catch (Exception e) {
-		            worked = false; // material name doesn't exist
-		        }
-	
-		        try {
-		            data = Integer.valueOf(obj[1]);
-		        } catch (NumberFormatException e) {
-		        	worked = false; // data not a number
-		        }
-		    } else {
-		        try {
-		            mat = Material.matchMaterial(value);
-		        } catch (Exception e) {
-		            worked = false; // material name doesn't exist
-		        }
-		    }
-		    if(mat == null) return false;
-		    if(key.equals("yourGrid.ship")){
-				this.ownShip = new ItemStack(mat, 1);
-				if (obj.length == 2) ownShip.setDurability((short) data);
-				ItemMeta meta = ownShip.getItemMeta();
-				meta.setDisplayName("Ship");
-				ownShip.setItemMeta(meta);
-
-		    } else if(key.equals("yourGrid.lockedShip")){
-		    	this.lockedShip = new ItemStack(mat, 1);
-		    	if (obj.length == 2) lockedShip.setDurability((short) data);
-		    	ItemMeta meta = lockedShip.getItemMeta();
-		    	meta.setDisplayName("Locked ship");
-		    	lockedShip.setItemMeta(meta);
-		    	
-		    } else if(key.equals("yourGrid.miss")){
-				this.ownMiss = new ItemStack(mat, 1);
-				if (obj.length == 2) ownMiss.setDurability((short) data);
-				ItemMeta meta = ownMiss.getItemMeta();
-				meta.setDisplayName("Yeah! A miss!");
-				ownMiss.setItemMeta(meta);
-		    	
-		    } else if(key.equals("yourGrid.hit")){
-				this.ownHit = new ItemStack(mat, 1);
-				if (obj.length == 2) ownHit.setDurability((short) data);
-				ItemMeta meta = ownHit.getItemMeta();
-				meta.setDisplayName("Damn! A hit...");
-				ownHit.setItemMeta(meta);
-		    	
-		    } else if(key.equals("yourGrid.water")){
-				this.ownWater = new ItemStack(mat, 1);
-				if (obj.length == 2) ownWater.setDurability((short) data);
-				ItemMeta meta = ownWater.getItemMeta();
-				meta.setDisplayName("Water");
-				ownWater.setItemMeta(meta); 	
-				
-		    } else if(key.equals("othersGrid.cover")){
-				this.othersCover = new ItemStack(mat, 1);
-				if (obj.length == 2) othersCover.setDurability((short) data);
-				ItemMeta meta = othersCover.getItemMeta();
-				meta.setDisplayName("Cover");
-				othersCover.setItemMeta(meta); 	
-				
-		    } else if(key.equals("othersGrid.miss")){
-				this.othersMiss = new ItemStack(mat, 1);
-				if (obj.length == 2) othersMiss.setDurability((short) data);
-				ItemMeta meta = othersMiss.getItemMeta();
-				meta.setDisplayName("That did not hit...");
-				othersMiss.setItemMeta(meta); 	
-				
-		    } else if(key.equals("othersGrid.hit")){
-				this.othersHit = new ItemStack(mat, 1);
-				if (obj.length == 2) othersHit.setDurability((short) data);
-				ItemMeta meta = othersHit.getItemMeta();
-				meta.setDisplayName("Booom! Gotcha");
-				othersHit.setItemMeta(meta); 	
-		    }
-	    }
-		return worked;
-	}
 
 	public GameState getState() {
 		return state;
 	}
 
 	public void setState(GameState state) {
-		Bukkit.getConsoleSender().sendMessage("Setting state to : " + state.toString());
 		this.state = state;
 		switch (state){
 		
 		case SETTING_SHIP2:
 			
 			this.timer.cancel();
+			currentTime = shipSetTime;
 			setShipsSet(true, false); // reset shipset info for both players
 			setShipsSet(false, false);
 			setFirstCurrentState(lang.TITLE_SET_SHIP_2.replaceAll("%count%", numBattleship+""));
 			setSecondCurrentState(lang.TITLE_SET_SHIP_2.replaceAll("%count%", numBattleship+""));
-			firstOwn = setState(firstCurrentState.replaceAll("%timer%", shipSetTime+""), firstOwn);
-			secondOwn = setState(secondCurrentState.replaceAll("%timer%", shipSetTime+""), secondOwn);
+			//firstOwn = setState(firstCurrentState.replaceAll("%timer%", shipSetTime+""), firstOwn);
+			//secondOwn = setState(secondCurrentState.replaceAll("%timer%", shipSetTime+""), secondOwn);
 			showInventory(true, true);
 			showInventory(false, true);
+			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
+			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
+			break;
+			
 		case SETTING_SHIP3:
 			this.timer.cancel();
+			currentTime = shipSetTime;
 			setShipsSet(true, false); // reset shipset info for both players
 			setShipsSet(false, false);
 			setFirstCurrentState(lang.TITLE_SET_SHIP_3.replaceAll("%count%", numCruiser+""));
 			setSecondCurrentState(lang.TITLE_SET_SHIP_3.replaceAll("%count%", numCruiser+""));
-			firstOwn = setState(firstCurrentState.replaceAll("%timer%", shipSetTime+""), firstOwn);
-			secondOwn = setState(secondCurrentState.replaceAll("%timer%", shipSetTime+""), secondOwn);
+			//firstOwn = setState(firstCurrentState.replaceAll("%timer%", shipSetTime+""), firstOwn);
+			//secondOwn = setState(secondCurrentState.replaceAll("%timer%", shipSetTime+""), secondOwn);
+			showInventory(true, true);
+			showInventory(false, true);
+			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
+			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
+			break;
+			
 		case SETTING_SHIP4:
 			this.timer.cancel();
+			currentTime = shipSetTime;
 			setShipsSet(true, false); // reset shipset info for both players
 			setShipsSet(false, false);
 			setFirstCurrentState(lang.TITLE_SET_SHIP_4.replaceAll("%count%", numDestroyer+""));
 			setSecondCurrentState(lang.TITLE_SET_SHIP_4.replaceAll("%count%", numDestroyer+""));
-			firstOwn = setState(firstCurrentState.replaceAll("%timer%", shipSetTime+""), firstOwn);
-			secondOwn = setState(secondCurrentState.replaceAll("%timer%", shipSetTime+""), secondOwn);
+			//firstOwn = setState(firstCurrentState.replaceAll("%timer%", shipSetTime+""), firstOwn);
+			//secondOwn = setState(secondCurrentState.replaceAll("%timer%", shipSetTime+""), secondOwn);
+			showInventory(true, true);
+			showInventory(false, true);
+			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
+			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
+			break;
+			
 		case FIRST_TURN:
 			this.timer.cancel();
+			currentTime = fireTime;
 			setFirstCurrentState(lang.TITLE_ATTACKER);
 			setSecondCurrentState(lang.TITLE_DEFENDER);
-			firstOthers = setState(firstCurrentState.replaceAll("%timer%", fireTime+""), firstOthers);
-			secondOwn = setState(secondCurrentState.replaceAll("%timer%", fireTime+""), secondOwn);
+			//firstOthers = setState(firstCurrentState.replaceAll("%timer%", fireTime+""), firstOthers);
+			//secondOwn = setState(secondCurrentState.replaceAll("%timer%", fireTime+""), secondOwn);
 			showInventory(true, false);
 			showInventory(false, true);
+			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
+			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
+			break;
+			
 		case SECOND_TURN:
 			this.timer.cancel();
+			currentTime = fireTime;
 			setFirstCurrentState(lang.TITLE_DEFENDER);
 			setSecondCurrentState(lang.TITLE_ATTACKER);
-			firstOwn = setState(firstCurrentState.replaceAll("%timer%", fireTime+""), firstOwn);
-			secondOthers = setState(secondCurrentState.replaceAll("%timer%", fireTime+""), secondOthers);
+			//firstOwn = setState(firstCurrentState.replaceAll("%timer%", fireTime+""), firstOwn);
+			//secondOthers = setState(secondCurrentState.replaceAll("%timer%", fireTime+""), secondOthers);
 			showInventory(true, true);
 			showInventory(false, false);
+			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
+			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
+			break;
+			
 		case FINISHED:
 			this.timer.cancel();	
+			break;
+			
 			
 		case CHANGING:
+			this.timer.cancel();
+			currentTime = changeTime;
 			setFirstCurrentState(lang.TITLE_CHANGING);
 			setSecondCurrentState(lang.TITLE_CHANGING);
-			if(firstSeesOwn){
+			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
+			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
+			/*if(firstSeesOwn){
 				firstOwn = setState(firstCurrentState.replaceAll("%timer%", changeTime+""), firstOwn);
 			} else {
 				firstOthers = setState(firstCurrentState.replaceAll("%timer%", changeTime+""), firstOthers);				
@@ -428,7 +345,9 @@ public class Game{
 				secondOwn = setState(secondCurrentState.replaceAll("%timer%", changeTime+""), secondOwn);				
 			} else {
 				secondOthers = setState(secondCurrentState.replaceAll("%timer%", changeTime+""), secondOthers);				
-			}
+			}*/
+			break;
+			
 			
 		
 		default:
@@ -741,6 +660,9 @@ public class Game{
 				secondOwn.setItem(slot, ownHit);
 				this.timer.cancel();
 				this.timer = new GameTimer(this);
+				currentTime = fireTime;
+				updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
+				updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 				return true;
 			} else {
 				firstOthers.setItem(slot, othersMiss);
@@ -753,6 +675,9 @@ public class Game{
 				firstOwn.setItem(slot, ownHit);
 				this.timer.cancel();
 				this.timer = new GameTimer(this);
+				currentTime = fireTime;
+				updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
+				updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 				return true;
 			} else {
 				secondOthers.setItem(slot, othersMiss);
@@ -780,13 +705,17 @@ public class Game{
 		if(isFirst){
 			winner = Bukkit.getPlayer(this.getFirstUUID());
 			looser = Bukkit.getPlayer(this.getSecondUUID());
-			firstOwn = setState(lang.TITLE_WON, firstOwn);
-			secondOwn = setState(lang.TITLE_LOST, secondOwn);
+			//firstOwn = setState(lang.TITLE_WON, firstOwn);
+			//secondOwn = setState(lang.TITLE_LOST, secondOwn);
+			updater.updateTitle(first, chatColor(lang.TITLE_WON));
+			updater.updateTitle(second, chatColor(lang.TITLE_LOST));
 		} else {
 			looser = Bukkit.getPlayer(this.getFirstUUID());
 			winner = Bukkit.getPlayer(this.getSecondUUID());
-			firstOwn = setState(lang.TITLE_LOST, firstOwn);
-			secondOwn = setState(lang.TITLE_WON, secondOwn);
+			//firstOwn = setState(lang.TITLE_LOST, firstOwn);
+			//secondOwn = setState(lang.TITLE_WON, secondOwn);
+			updater.updateTitle(first, chatColor(lang.TITLE_LOST));
+			updater.updateTitle(second, chatColor(lang.TITLE_WON));
 		}
 		if(plugin.getEconEnabled()){
 			Main.econ.depositPlayer(winner, plugin.getReward());
@@ -798,8 +727,8 @@ public class Game{
 
 		onGameEnd(winner.getName(), looser.getName());
 		
-		showInventory(true, true);
-		showInventory(false, true);
+		//showInventory(true, true);
+		//showInventory(false, true);
 	}
 	
 	public void onGameEnd(String winner, String looser){
@@ -872,10 +801,13 @@ public class Game{
 
 
 	public void setShipSetState(int time) {
-		firstOwn = setState(firstCurrentState.replaceAll("%timer%", time+""), firstOwn);
-		secondOwn = setState(secondCurrentState.replaceAll("%timer%", time+""), secondOwn);
-		showInventory(true, true);
-		showInventory(false, true);
+		//firstOwn = setState(firstCurrentState.replaceAll("%timer%", time+""), firstOwn);
+		//secondOwn = setState(secondCurrentState.replaceAll("%timer%", time+""), secondOwn);
+		//showInventory(true, true);
+		//showInventory(false, true);
+		currentTime = time;
+		updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", time+"")));
+		updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", time+"")));
 	}
 
 	public void forceNextState() {
@@ -1073,15 +1005,21 @@ public class Game{
 
 	public void setFireState(int time) {
 		if(state.equals(GameState.FIRST_TURN)){
-			firstOthers = setState(firstCurrentState.replaceAll("%timer%", time+""), firstOthers);
+			/*firstOthers = setState(firstCurrentState.replaceAll("%timer%", time+""), firstOthers);
 			secondOwn = setState(secondCurrentState.replaceAll("%timer%", time+""), secondOwn);
 			showInventory(true, false);
-			showInventory(false, true);		
+			showInventory(false, true);		*/
+			currentTime = time;
+			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", time+"")));
+			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", time+"")));
 		} else if (state.equals(GameState.SECOND_TURN)){
-			firstOwn = setState(firstCurrentState.replaceAll("%timer%", time+""), firstOwn);
+			/*firstOwn = setState(firstCurrentState.replaceAll("%timer%", time+""), firstOwn);
 			secondOthers = setState(secondCurrentState.replaceAll("%timer%", time+""), secondOthers);
 			showInventory(true, true);
-			showInventory(false, false);				
+			showInventory(false, false);*/	
+			currentTime = time;
+			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", time+"")));
+			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", time+"")));			
 		}
 	}
 
@@ -1096,19 +1034,171 @@ public class Game{
 
 	public void setChangingState(int time) {
 		if(firstSeesOwn){
-			firstOwn = setState(firstCurrentState.replaceAll("%timer%", time+""), firstOwn);
+			/*firstOwn = setState(firstCurrentState.replaceAll("%timer%", time+""), firstOwn);
 			secondOthers = setState(secondCurrentState.replaceAll("%timer%", time+""), secondOthers);
 			showInventory(true, true);
-			showInventory(false, false);
+			showInventory(false, false);*/
+			currentTime = time;
+			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", time+"")));
+			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", time+"")));
 			
 		} else {
-			firstOthers = setState(firstCurrentState.replaceAll("%timer%", time+""), firstOthers);
+			/*firstOthers = setState(firstCurrentState.replaceAll("%timer%", time+""), firstOthers);F
 			secondOwn = setState(secondCurrentState.replaceAll("%timer%", time+""), secondOwn);
 			showInventory(true, false);
-			showInventory(false, true);
+			showInventory(false, true);*/
+			currentTime = time;
+			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", time+"")));
+			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", time+"")));
 			
 		}
-		Bukkit.getConsoleSender().sendMessage("Changing title   time: "+time); // XXX
+		//Bukkit.getConsoleSender().sendMessage("Changing title   time: "+time); // XXX
+	}
+
+	private boolean getMaterials() {
+		boolean worked = true;
+
+	    Material mat = null;
+	    int data = 0;
+	    for(String key : Arrays.asList("yourGrid.ship", "yourGrid.lockedShip", "yourGrid.miss", "yourGrid.hit", "yourGrid.water", "othersGrid.cover", "othersGrid.miss", "othersGrid.hit")){
+		    if(!config.isSet("materials." + key)) return false;
+	    	String value = config.getString("materials." + key);
+		    String[] obj = value.split(":");
+	
+		    if (obj.length == 2) {
+		        try {
+		            mat = Material.matchMaterial(obj[0]);
+		        } catch (Exception e) {
+		            worked = false; // material name doesn't exist
+		        }
+	
+		        try {
+		            data = Integer.valueOf(obj[1]);
+		        } catch (NumberFormatException e) {
+		        	worked = false; // data not a number
+		        }
+		    } else {
+		        try {
+		            mat = Material.matchMaterial(value);
+		        } catch (Exception e) {
+		            worked = false; // material name doesn't exist
+		        }
+		    }
+		    if(mat == null) return false;
+		    if(key.equals("yourGrid.ship")){
+				this.ownShip = new ItemStack(mat, 1);
+				if (obj.length == 2) ownShip.setDurability((short) data);
+				ItemMeta meta = ownShip.getItemMeta();
+				meta.setDisplayName("Ship");
+				ownShip.setItemMeta(meta);
+
+		    } else if(key.equals("yourGrid.lockedShip")){
+		    	this.lockedShip = new ItemStack(mat, 1);
+		    	if (obj.length == 2) lockedShip.setDurability((short) data);
+		    	ItemMeta meta = lockedShip.getItemMeta();
+		    	meta.setDisplayName("Locked ship");
+		    	lockedShip.setItemMeta(meta);
+		    	
+		    } else if(key.equals("yourGrid.miss")){
+				this.ownMiss = new ItemStack(mat, 1);
+				if (obj.length == 2) ownMiss.setDurability((short) data);
+				ItemMeta meta = ownMiss.getItemMeta();
+				meta.setDisplayName("Yeah! A miss!");
+				ownMiss.setItemMeta(meta);
+		    	
+		    } else if(key.equals("yourGrid.hit")){
+				this.ownHit = new ItemStack(mat, 1);
+				if (obj.length == 2) ownHit.setDurability((short) data);
+				ItemMeta meta = ownHit.getItemMeta();
+				meta.setDisplayName("Damn! A hit...");
+				ownHit.setItemMeta(meta);
+		    	
+		    } else if(key.equals("yourGrid.water")){
+				this.ownWater = new ItemStack(mat, 1);
+				if (obj.length == 2) ownWater.setDurability((short) data);
+				ItemMeta meta = ownWater.getItemMeta();
+				meta.setDisplayName("Water");
+				ownWater.setItemMeta(meta); 	
+				
+		    } else if(key.equals("othersGrid.cover")){
+				this.othersCover = new ItemStack(mat, 1);
+				if (obj.length == 2) othersCover.setDurability((short) data);
+				ItemMeta meta = othersCover.getItemMeta();
+				meta.setDisplayName("Cover");
+				othersCover.setItemMeta(meta); 	
+				
+		    } else if(key.equals("othersGrid.miss")){
+				this.othersMiss = new ItemStack(mat, 1);
+				if (obj.length == 2) othersMiss.setDurability((short) data);
+				ItemMeta meta = othersMiss.getItemMeta();
+				meta.setDisplayName("That did not hit...");
+				othersMiss.setItemMeta(meta); 	
+				
+		    } else if(key.equals("othersGrid.hit")){
+				this.othersHit = new ItemStack(mat, 1);
+				if (obj.length == 2) othersHit.setDurability((short) data);
+				ItemMeta meta = othersHit.getItemMeta();
+				meta.setDisplayName("Booom! Gotcha");
+				othersHit.setItemMeta(meta); 	
+		    }
+	    }
+		return worked;
+	}
+	
+	private void setDefaultMaterials() {
+		Bukkit.getConsoleSender().sendMessage(plugin.chatColor(Main.prefix+" &4Failed to load materials from config"));
+		Bukkit.getConsoleSender().sendMessage(plugin.chatColor(Main.prefix+" &4Using default materials"));
+		
+		this.ownShip = new ItemStack(Material.IRON_BLOCK);
+		ItemMeta metaownShip = ownShip.getItemMeta();
+		metaownShip.setDisplayName("Ship");
+		ownShip.setItemMeta(metaownShip);
+		ownShip.setAmount(1);
+
+		this.lockedShip = new ItemStack(Material.BEDROCK);
+		ItemMeta metaLockedShip = lockedShip.getItemMeta();
+		metaLockedShip.setDisplayName("Ship");
+		lockedShip.setItemMeta(metaLockedShip);
+		lockedShip.setAmount(1);
+		
+		this.ownWater = new ItemStack(Material.ENDER_PORTAL);
+		ItemMeta metaownWater = ownWater.getItemMeta();
+		metaownWater.setDisplayName("Water");
+		ownWater.setItemMeta(metaownWater);
+		ownWater.setAmount(1);
+		
+		this.ownMiss = new ItemStack(Material.WOOL);
+		ownMiss.setDurability((short) 13);
+		ItemMeta metaownMiss = ownMiss.getItemMeta();
+		metaownMiss.setDisplayName("Yeah! A miss!");
+		ownMiss.setItemMeta(metaownMiss);
+		ownMiss.setAmount(1);
+		
+		this.ownHit = new ItemStack(Material.WOOL);
+		ownHit.setDurability((short) 14);
+		ItemMeta metaownHit = ownHit.getItemMeta();
+		metaownHit.setDisplayName("Damn! A hit...");
+		ownHit.setItemMeta(metaownHit);
+		ownHit.setAmount(1);
+		
+		this.othersCover = new ItemStack(Material.WOOL);
+		othersCover.setDurability((short) 7);
+		ItemMeta metaothersCover = othersCover.getItemMeta();
+		metaothersCover.setDisplayName("Cover");
+		othersCover.setItemMeta(metaothersCover);
+		othersCover.setAmount(1);
+		
+		this.othersMiss = new ItemStack(Material.ENDER_PORTAL);
+		ItemMeta metaothersMiss = othersMiss.getItemMeta();
+		metaothersMiss.setDisplayName("That did not hit...");
+		othersMiss.setItemMeta(metaothersMiss);
+		othersMiss.setAmount(1);
+		
+		this.othersHit = new ItemStack(Material.IRON_BLOCK);
+		ItemMeta metaothersHit = othersHit.getItemMeta();
+		metaothersHit.setDisplayName("Booom! Gotcha");
+		othersHit.setItemMeta(metaothersHit);
+		othersHit.setAmount(1);		
 	}
 	
 }
