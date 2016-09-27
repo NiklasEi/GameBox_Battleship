@@ -247,11 +247,10 @@ public class GameManager implements Listener{
 				second.closeInventory();
 			}
 		}
-		if(e.getPlayer().getUniqueId().equals(game.getFirstUUID())){
-			winner = false;
-		} else {
-			winner = true;
-		}
+		
+		// if first player closed second player won and the other way around
+		winner = !e.getPlayer().getUniqueId().equals(game.getFirstUUID());
+		
 		removeGame(getGame(e.getPlayer().getUniqueId()));
 		if(!game.getState().equals(GameState.FINISHED)){
 			if(!winner){

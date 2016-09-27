@@ -1,5 +1,7 @@
-package me.nikl.battleship;
+package me.nikl.battleship.commands;
 
+import me.nikl.battleship.Language;
+import me.nikl.battleship.Main;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -21,7 +23,7 @@ public class Commands implements CommandExecutor {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String lable, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if(args.length == 0){
 			if(!(sender instanceof Player)){
 				sender.sendMessage(plugin.chatColor(Main.prefix + this.lang.CMD_ONLY_PLAYER));

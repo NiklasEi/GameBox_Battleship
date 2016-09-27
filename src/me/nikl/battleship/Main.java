@@ -10,6 +10,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 import java.util.logging.Level;
 
+import me.nikl.battleship.commands.Commands;
+import me.nikl.battleship.commands.TopCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -59,6 +61,7 @@ public class Main extends JavaPlugin{
         this.getCommand("battleship").setExecutor(new Commands(this));
         this.headGUI = new HeadGUI(this);
         this.getCommand("battleshipGUI").setExecutor(headGUI);
+		this.getCommand("battleshipTop").setExecutor(new TopCommand(this));
 	}
 	
 	private boolean setupUpdater() {  String version;

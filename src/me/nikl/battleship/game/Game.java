@@ -149,21 +149,13 @@ public class Game{
 		this.secondCurrentState = secondCurrentState;
 	}
 	
-	/*
+	/**
 	 * First argument defines the player
 	 * Second argument defines the inventory own/others
 	 * 
 	 * Only use this function to show a new inv. so the game always knows who is seeing which inv.
 	 */
 	void showInventory(boolean isFirst, boolean ownInv) {
-		/*Bukkit.getConsoleSender().sendMessage(" ************************************************");
-		Bukkit.getConsoleSender().sendMessage("showing inv.    isfirst: " + isFirst + "    ownInv: " + ownInv);
-		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-
-		Bukkit.getConsoleSender().sendMessage("called by " + stackTraceElements[2].getMethodName() + "Line   " + stackTraceElements[2].getLineNumber());
-		Bukkit.getConsoleSender().sendMessage("called by " + stackTraceElements[3].getMethodName() + "Line   " + stackTraceElements[3].getLineNumber());
-		Bukkit.getConsoleSender().sendMessage("called by " + stackTraceElements[4].getMethodName() + "Line   " + stackTraceElements[4].getLineNumber());
-		Bukkit.getConsoleSender().sendMessage(" ************************************************");*/
 		setClosingInv(true);
 		if(isFirst){
 			setFirstSeesOwn(ownInv);
@@ -1057,13 +1049,28 @@ public class Game{
 
 	private boolean getMaterials() {
 		boolean worked = true;
+		
 
 	    Material mat = null;
 	    int data = 0;
 	    for(String key : Arrays.asList("yourGrid.ship", "yourGrid.lockedShip", "yourGrid.miss", "yourGrid.hit", "yourGrid.water", "othersGrid.cover", "othersGrid.miss", "othersGrid.hit")){
-		    if(!config.isSet("materials." + key)) return false;
-	    	String value = config.getString("materials." + key);
+		    
+			// get the material information
+			String value;
+			if(!config.isSet("materials." + key + ".material")){
+				if(!config.isSet("materials." + key ) || !config.isString("materials." + key )){
+					return false;
+				} else {
+					// TODO: 9/26/16 get rid of this in later versions or find a better solution
+					// version 1.6 or older
+					Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', Main.prefix + " &4You are using an outdated config file!"));
+					value = config.getString("materials." + key);
+				}
+			} else {
+				value = config.getString("materials." + key + ".material");
+			}
 		    String[] obj = value.split(":");
+			
 	
 		    if (obj.length == 2) {
 		        try {
@@ -1090,6 +1097,9 @@ public class Game{
 				if (obj.length == 2) ownShip.setDurability((short) data);
 				ItemMeta meta = ownShip.getItemMeta();
 				meta.setDisplayName("Ship");
+				// if a name was specified use it instead of default
+				if(config.isSet("materials." + key + ".name") || config.isString("materials." + key + ".name"))
+					meta.setDisplayName(config.getString("materials." + key +".name"));
 				ownShip.setItemMeta(meta);
 
 		    } else if(key.equals("yourGrid.lockedShip")){
@@ -1097,6 +1107,9 @@ public class Game{
 		    	if (obj.length == 2) lockedShip.setDurability((short) data);
 		    	ItemMeta meta = lockedShip.getItemMeta();
 		    	meta.setDisplayName("Locked ship");
+				// if a name was specified use it instead of default
+				if(config.isSet("materials." + key + ".name") || config.isString("materials." + key + ".name"))
+					meta.setDisplayName(config.getString("materials." + key +".name"));
 		    	lockedShip.setItemMeta(meta);
 		    	
 		    } else if(key.equals("yourGrid.miss")){
@@ -1104,6 +1117,9 @@ public class Game{
 				if (obj.length == 2) ownMiss.setDurability((short) data);
 				ItemMeta meta = ownMiss.getItemMeta();
 				meta.setDisplayName("Yeah! A miss!");
+				// if a name was specified use it instead of default
+				if(config.isSet("materials." + key + ".name") || config.isString("materials." + key + ".name"))
+					meta.setDisplayName(config.getString("materials." + key +".name"));
 				ownMiss.setItemMeta(meta);
 		    	
 		    } else if(key.equals("yourGrid.hit")){
@@ -1111,6 +1127,9 @@ public class Game{
 				if (obj.length == 2) ownHit.setDurability((short) data);
 				ItemMeta meta = ownHit.getItemMeta();
 				meta.setDisplayName("Damn! A hit...");
+				// if a name was specified use it instead of default
+				if(config.isSet("materials." + key + ".name") || config.isString("materials." + key + ".name"))
+					meta.setDisplayName(config.getString("materials." + key +".name"));
 				ownHit.setItemMeta(meta);
 		    	
 		    } else if(key.equals("yourGrid.water")){
@@ -1118,6 +1137,9 @@ public class Game{
 				if (obj.length == 2) ownWater.setDurability((short) data);
 				ItemMeta meta = ownWater.getItemMeta();
 				meta.setDisplayName("Water");
+				// if a name was specified use it instead of default
+				if(config.isSet("materials." + key + ".name") || config.isString("materials." + key + ".name"))
+					meta.setDisplayName(config.getString("materials." + key +".name"));
 				ownWater.setItemMeta(meta); 	
 				
 		    } else if(key.equals("othersGrid.cover")){
@@ -1125,6 +1147,9 @@ public class Game{
 				if (obj.length == 2) othersCover.setDurability((short) data);
 				ItemMeta meta = othersCover.getItemMeta();
 				meta.setDisplayName("Cover");
+				// if a name was specified use it instead of default
+				if(config.isSet("materials." + key + ".name") || config.isString("materials." + key + ".name"))
+					meta.setDisplayName(config.getString("materials." + key +".name"));
 				othersCover.setItemMeta(meta); 	
 				
 		    } else if(key.equals("othersGrid.miss")){
@@ -1132,6 +1157,9 @@ public class Game{
 				if (obj.length == 2) othersMiss.setDurability((short) data);
 				ItemMeta meta = othersMiss.getItemMeta();
 				meta.setDisplayName("That did not hit...");
+				// if a name was specified use it instead of default
+				if(config.isSet("materials." + key + ".name") || config.isString("materials." + key + ".name"))
+					meta.setDisplayName(config.getString("materials." + key +".name"));
 				othersMiss.setItemMeta(meta); 	
 				
 		    } else if(key.equals("othersGrid.hit")){
@@ -1139,6 +1167,9 @@ public class Game{
 				if (obj.length == 2) othersHit.setDurability((short) data);
 				ItemMeta meta = othersHit.getItemMeta();
 				meta.setDisplayName("Booom! Gotcha");
+				// if a name was specified use it instead of default
+				if(config.isSet("materials." + key + ".name") || config.isString("materials." + key + ".name"))
+					meta.setDisplayName(config.getString("materials." + key +".name"));
 				othersHit.setItemMeta(meta); 	
 		    }
 	    }

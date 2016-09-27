@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -25,10 +26,12 @@ public class HeadGUI implements CommandExecutor {
 	private Main plugin;
 	private Set<GUI> guis;
 	private Language lang;
+	private FileConfiguration stats;
 	
 	public HeadGUI(Main plugin){
 		this.plugin = plugin;
 		this.lang = plugin.lang;
+		this.stats = plugin.getStatistics();
 		this.guis = new HashSet<GUI>();
 		new GUIListener(plugin);
 	}
@@ -109,6 +112,13 @@ public class HeadGUI implements CommandExecutor {
 				ArrayList<String> skullLore = new ArrayList<String>();
 				
 				skullLore.add(ChatColor.GOLD + "Click to invite ");
+				if(stats.isSet(player.getUniqueId().toString())){
+					skullLore.add(ChatColor.BLUE + "");
+					skullLore.add(ChatColor.BLUE + "Wins: " + stats.getString(player.getUniqueId().toString()));
+				} else {
+					skullLore.add(ChatColor.BLUE + "");
+					skullLore.add(ChatColor.BLUE + "Wins: 0");
+				}
 				
 				skullMeta.setOwner(player.getName());
 				skullMeta.setLore(skullLore);

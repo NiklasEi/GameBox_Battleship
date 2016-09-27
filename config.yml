@@ -5,9 +5,11 @@
 # ----------------------------------------------------------------------------#
 
 # name of the language file (in the folder 'language')
-#   the default.yml file is overwriten on every server restart! This means you will have to use the other files to customize the messages, but since i am adding messages regulary in updates 
+#   the default.yml file is overwriten on every server restart!
+#   This means you will have to use the other files to customize the messages, but since i am adding messages regulary in updates
 #   you can use the default file if you just want to have the up to date english default messages
 langFile: "default.yml"
+
 
 
 # number of ships in the game (only 1 or 2)
@@ -21,6 +23,10 @@ cruiser: 2
 # size: 2 blocks
 destroyer: 1
 
+gameRules:
+  # if this is true players can shoot again after a hit and the grids will change after every miss
+  #   if it is false the grid will change after every shot regardless of hit/miss
+  fireAgainAfterHit: true
 
 # some stuff you can do when a game ends.
 onGameEnd:
@@ -53,15 +59,31 @@ economy:
 #   otherwise the game could break
 materials:
   yourGrid:
-    ship: "Iron_block"
-    lockedShip: "7"
-    miss: "160:3"
-    hit: "35:14"
-    water: "160:11"
+    ship:
+      material: "Iron_block"
+      name: "ship"
+    lockedShip:
+      material: "7"
+      name: "Locked ship"
+    miss:
+      material: "160:3"
+      name: "Yeah! A miss!"
+    hit:
+      material: "35:14"
+      name: "Damn! A hit..."
+    water:
+      material: "160:11"
+      name: "Water"
   othersGrid:
-    cover: "WOOL:7"
-    miss: "160:11"
-    hit: "Iron_block"
+    cover:
+      material: "WOOL:7"
+      name: "Cover"
+    miss:
+      material: "160:11"
+      name: "That did not hit..."
+    hit:
+      material: "Iron_block"
+      name: "Booom! Gotcha"
 
     
 # Customise the timers used in the game (all times in seconds)
