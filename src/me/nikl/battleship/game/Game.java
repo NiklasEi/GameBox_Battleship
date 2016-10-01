@@ -53,6 +53,7 @@ public class Game{
 	private String firstCurrentState, secondCurrentState;
 	
 	private Main plugin;
+	public boolean ruleFireAgainAfterHit;
 	
 	public Game(Main plugin, UUID firstUUID, UUID secondUUID){
 		this.updater = plugin.getUpdater();
@@ -132,6 +133,8 @@ public class Game{
 				this.changeTime = timer.getInt("changingGrids.countdown");
 			}
 		}
+		this.ruleFireAgainAfterHit = (config.isSet("gameRules.fireAgainAfterHit") &&
+				config.isBoolean("gameRules.fireAgainAfterHit")) ? config.getBoolean("gameRules.fireAgainAfterHit") : true;
 	}
 
 	
@@ -701,6 +704,8 @@ public class Game{
 			//secondOwn = setState(lang.TITLE_LOST, secondOwn);
 			updater.updateTitle(first, chatColor(lang.TITLE_WON));
 			updater.updateTitle(second, chatColor(lang.TITLE_LOST));
+			plugin.addWinToStatistics(this.getFirstUUID());
+			plugin.addLooseToStatistics(this.getSecondUUID());
 		} else {
 			looser = Bukkit.getPlayer(this.getFirstUUID());
 			winner = Bukkit.getPlayer(this.getSecondUUID());
@@ -708,6 +713,8 @@ public class Game{
 			//secondOwn = setState(lang.TITLE_WON, secondOwn);
 			updater.updateTitle(first, chatColor(lang.TITLE_LOST));
 			updater.updateTitle(second, chatColor(lang.TITLE_WON));
+			plugin.addWinToStatistics(this.getSecondUUID());
+			plugin.addLooseToStatistics(this.getFirstUUID());
 		}
 		if(plugin.getEconEnabled()){
 			Main.econ.depositPlayer(winner, plugin.getReward());
@@ -958,10 +965,6 @@ public class Game{
 		return fireTime;
 	}
 
-	public void setFireTime(int fireTime) {
-		this.fireTime = fireTime;
-	}
-
 	public void fireTimeRanOut() {
 		boolean isFirst;
 		isFirst = this.state.equals(GameState.FIRST_TURN)? true : false;
@@ -980,6 +983,9 @@ public class Game{
 			winner.closeInventory();
 			looser.closeInventory();
 			this.setClosingInv(false);
+			
+			plugin.addWinToStatistics(winner.getUniqueId());
+			plugin.addLooseToStatistics(looser.getUniqueId());
 		} else {
 			this.setClosingInv(true);
 			winner.closeInventory();
