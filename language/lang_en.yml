@@ -80,4 +80,11 @@ commandMessages:
   help:
   - " &2To invite someone to a game do: /bs [player]"
   - " &2Or use the GUI with /bsgui"
+  # message send if there are no saved stats
+  noTopList: " &4No stats available!"
+  # here you can specify how the top 10 will be displayed
+  topListHead: "&a+ - + -  &3Battleship  Top 10  &a- + - +"
+  # %rank% -> Rank of the player      %name% name of the player       %won% number of won games
+  topListStructure: "%rank%. &6 %name%    &1Wins: %won%"
+  topListTail: "&a+ - + - + - + - + - + - + - + - + - +"
   
