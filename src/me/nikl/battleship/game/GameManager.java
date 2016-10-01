@@ -78,10 +78,10 @@ public class GameManager implements Listener{
 				game.setState("&2Battleship   " + "&rWaiting...", isFirst, true);
 				if(game.getShipsSet(!isFirst, true)){
 					game.setState(GameState.SETTING_SHIP2);
-					game.showInventory(!isFirst, true);
+					//game.showInventory(!isFirst, true);
 				}
 			}
-			game.showInventory(isFirst, true);
+			//game.showInventory(isFirst, true);
 			//e.getWhoClicked().sendMessage("number of games: " + games.size()); // XXX
 			return;
 			
@@ -105,10 +105,10 @@ public class GameManager implements Listener{
 				game.setState("&2Battleship   &rWaiting...", isFirst, true);
 				if(game.getShipsSet(!isFirst, true)){
 					game.setState(GameState.SETTING_SHIP3);
-					game.showInventory(!isFirst, true);
+					//game.showInventory(!isFirst, true);
 				}
 			}
-			game.showInventory(isFirst, true);
+			//game.showInventory(isFirst, true);
 			return;
 			
 		case SETTING_SHIP3:
@@ -131,10 +131,10 @@ public class GameManager implements Listener{
 				game.setState("&2Battleship   " + "&rWaiting...", isFirst, true);
 				if(game.getShipsSet(!isFirst, true)){
 					game.setState(GameState.SETTING_SHIP4);
-					game.showInventory(!isFirst, true);
+					//game.showInventory(!isFirst, true);
 				}
 			}
-			game.showInventory(isFirst, true);
+			//game.showInventory(isFirst, true);
 			return;
 			
 		case SETTING_SHIP4:
@@ -163,7 +163,7 @@ public class GameManager implements Listener{
 					return;
 				}
 			}
-			game.showInventory(isFirst, true);
+			//game.showInventory(isFirst, true);
 			return;
 			
 		case BUILDING:
@@ -178,10 +178,15 @@ public class GameManager implements Listener{
 				if(!game.fire(isFirst, slot)){
 					game.changeAttacker(false);
 					//game.setState(GameState.SECOND_TURN);
-				} else if(game.isWon(isFirst)){
-					game.setState(GameState.FINISHED);
-					game.won(isFirst);
-					plugin.addWinToStatistics(e.getWhoClicked().getUniqueId());
+				} else {
+					if(game.isWon(isFirst)){
+						game.setState(GameState.FINISHED);
+						game.won(isFirst);
+					} else {
+						if(!game.ruleFireAgainAfterHit){
+							game.changeAttacker(false);
+						}
+					}
 				}
 			}
 			break;
@@ -192,10 +197,15 @@ public class GameManager implements Listener{
 				if(!game.fire(isFirst, slot)){
 					game.changeAttacker(true);
 					//game.setState(GameState.FIRST_TURN);
-				} else if(game.isWon(isFirst)){
-					game.setState(GameState.FINISHED);
-					game.won(isFirst);
-					plugin.addWinToStatistics(e.getWhoClicked().getUniqueId());
+				} else {
+					if(game.isWon(isFirst)){
+						game.setState(GameState.FINISHED);
+						game.won(isFirst);
+					} else {
+						if(!game.ruleFireAgainAfterHit){
+							game.changeAttacker(true);
+						}
+					}
 				}
 			}
 			break;
@@ -262,6 +272,8 @@ public class GameManager implements Listener{
 				}
 				first.sendMessage(chatColor(Main.prefix + lang.GAME_GAVE_UP));
 				second.closeInventory();
+				plugin.addWinToStatistics(second.getUniqueId());
+				plugin.addLooseToStatistics(first.getUniqueId());
 			} else {
 				if(plugin.getEconEnabled()){
 					Main.econ.depositPlayer(first, plugin.getReward());
@@ -270,8 +282,11 @@ public class GameManager implements Listener{
 					first.sendMessage(chatColor(Main.prefix + lang.GAME_OTHER_GAVE_UP.replaceAll("%looser%", second.getName())));
 				}
 				second.sendMessage(chatColor(Main.prefix + lang.GAME_GAVE_UP));
-				first.closeInventory();				
+				first.closeInventory();
+				plugin.addWinToStatistics(first.getUniqueId());
+				plugin.addLooseToStatistics(second.getUniqueId());
 			}
+			
 		} else {
 			if(!winner){
 				second.closeInventory();
@@ -296,6 +311,10 @@ public class GameManager implements Listener{
 		} else {
 			winner = game.getFirstUUID();
 		}
+		
+		plugin.addWinToStatistics(winner);
+		plugin.addLooseToStatistics(e.getPlayer().getUniqueId());
+		
 		Player winnerP = Bukkit.getPlayer(winner);
 		if(winnerP == null) return;
 		removeGame(getGame(e.getPlayer().getUniqueId()));
@@ -352,24 +371,6 @@ public class GameManager implements Listener{
 	public boolean isSecond(UUID uuid, Game game){
 		if(game.getSecondUUID().equals(uuid)){
 			return true;
-		}
-		return false;
-	}
-	
-	public boolean isSecond(UUID uuid){
-		for(Game game : games){
-			if(isSecond(uuid, game)){
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public boolean isFirst(UUID uuid){
-		for(Game game : games){
-			if(isFirst(uuid, game)){
-				return true;
-			}
 		}
 		return false;
 	}
