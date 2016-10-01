@@ -24,6 +24,7 @@ public class Language {
 	public String GAME_PAYED, GAME_NOT_ENOUGH_MONEY, GAME_WON_MONEY, GAME_WON_MONEY_GAVE_UP, GAME_WON, GAME_INVITE_ACCEPT, GAME_LOOSE, GAME_GAVE_UP, GAME_OTHER_GAVE_UP,
 		GAME_TOO_SLOW, GAME_WON_MONEY_TOO_SLOW, GAME_WON_TOO_SLOW, GAME_INVITE_EXPIRED, GAME_INVITE_RETURNED_MONEY;
 	public String TITLE_GUI, TITLE_SET_SHIP_1, TITLE_SET_SHIP_2, TITLE_SET_SHIP_3, TITLE_SET_SHIP_4, TITLE_ATTACKER, TITLE_DEFENDER, TITLE_WON, TITLE_LOST;
+	public String CMD_NO_TOP_LIST, CMD_TOP_HEAD, CMD_TOP_TAIL, CMD_TOP_STRUCTURE;
 	
 	public List<String> CMD_HELP, GAME_INVITE_FIRST, GAME_INVITE_SECOND;
 	private YamlConfiguration defaultLang;
@@ -87,6 +88,12 @@ public class Language {
 		this.CMD_NOT_YOURSELF = getString("commandMessages.cannotInviteYourself");
 		this.CMD_FIRST_OFFLINE = getString("commandMessages.firstPlayerIsOffline");
 		this.CMD_RELOADED = getString("commandMessages.pluginReloaded");
+		
+		
+		this.CMD_NO_TOP_LIST = getString("commandMessages.noTopList");
+		this.CMD_TOP_HEAD = getString("commandMessages.topListHead");
+		this.CMD_TOP_TAIL = getString("commandMessages.topListTail");
+		this.CMD_TOP_STRUCTURE = getString("commandMessages.topListStructure");
 		
 
 		this.CMD_ONLY_ONE_ONLINE = getString("commandMessages.aloneOnServer");
