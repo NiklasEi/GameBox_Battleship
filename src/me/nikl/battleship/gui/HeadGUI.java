@@ -114,7 +114,7 @@ public class HeadGUI implements CommandExecutor {
 				skullLore.add(ChatColor.GOLD + "Click to invite ");
 				if(stats.isSet(player.getUniqueId().toString())){
 					skullLore.add(ChatColor.BLUE + "");
-					skullLore.add(ChatColor.BLUE + "Wins: " + stats.getString(player.getUniqueId().toString()));
+					skullLore.add(ChatColor.BLUE + "Wins: " + stats.getInt(player.getUniqueId().toString() + ".won"));
 				} else {
 					skullLore.add(ChatColor.BLUE + "");
 					skullLore.add(ChatColor.BLUE + "Wins: 0");
