@@ -55,13 +55,6 @@ public class Main extends JavaPlugin{
 
 		reload();
 		if(disabled) return;
-		getValuesFromConfig();
-
-		this.setManager(new GameManager(this));
-        this.getCommand("battleship").setExecutor(new Commands(this));
-        this.headGUI = new HeadGUI(this);
-        this.getCommand("battleshipGUI").setExecutor(headGUI);
-		this.getCommand("battleshipTop").setExecutor(new TopCommand(this));
 	}
 	
 	private boolean setupUpdater() {  String version;
@@ -72,7 +65,7 @@ public class Main extends JavaPlugin{
 	        return false;
 	    }
 	
-	    getLogger().info("Your server is running version " + version);
+	    //getLogger().info("Your server is running version " + version);
 	
 	    if (version.equals("v1_10_R1")) {
 	        updater = new Update_1_10_R1();
@@ -167,6 +160,15 @@ public class Main extends JavaPlugin{
 		}
 		reloadConfig();
 		
+		// if this method was not called from onEnable stats is not null and has to be saved to the file first!
+		if(stats!=null){
+			try {
+				this.stats.save(sta);
+			} catch (IOException e) {
+				getLogger().log(Level.SEVERE, "Could not save statistics", e);
+			}
+		}
+		
 		// load statsfile
 		try {
 			this.stats = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(this.sta), "UTF-8"));
@@ -192,15 +194,32 @@ public class Main extends JavaPlugin{
 				getServer().getPluginManager().disablePlugin(this);
 			}
 		}
+		
+		getValuesFromConfig();
+		
+		this.setManager(new GameManager(this));
+		this.getCommand("battleship").setExecutor(new Commands(this));
+		this.headGUI = new HeadGUI(this);
+		this.getCommand("battleshipGUI").setExecutor(headGUI);
+		this.getCommand("battleshipTop").setExecutor(new TopCommand(this));
 	}
 
-	public void addWinToStatistics(UUID player) {
+	public void addWinToStatistics(UUID uuid) {
 		if(this.stats == null) return;
-		if(!stats.isInt(player.toString() + "." + "won")){
-			stats.set(player.toString() + "." + "won", 1);
+		if(!stats.isInt(uuid.toString() + "." + "won")){
+			stats.set(uuid.toString() + "." + "won", 1);
 			return;
 		}
-		this.stats.set(player.toString() + "." + "won", (this.stats.getInt(player.toString() + "." + "won")+1));
+		this.stats.set(uuid.toString() + "." + "won", (this.stats.getInt(uuid.toString() + "." + "won")+1));
+	}
+	
+	public void addLooseToStatistics(UUID uuid) {
+		if(this.stats == null) return;
+		if(!stats.isInt(uuid.toString() + "." + "lost")){
+			stats.set(uuid.toString() + "." + "lost", 1);
+			return;
+		}
+		this.stats.set(uuid.toString() + "." + "lost", (this.stats.getInt(uuid.toString() + "." + "lost")+1));
 	}
 	
 	public FileConfiguration getStatistics(){
