@@ -57,7 +57,8 @@ public class Main extends JavaPlugin{
 		if(disabled) return;
 	}
 	
-	private boolean setupUpdater() {  String version;
+	private boolean setupUpdater() {
+		String version;
 
 	    try {
 	        version = Bukkit.getServer().getClass().getPackage().getName().replace(".",  ",").split(",")[3];
