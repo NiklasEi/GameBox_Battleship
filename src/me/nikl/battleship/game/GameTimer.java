@@ -32,7 +32,6 @@ public class GameTimer extends BukkitRunnable{
 		this.state = "changing";
 		this.time = game.getChangeTime();
 		game.setState(GameState.CHANGING);
-		//Bukkit.getConsoleSender().sendMessage("created timer     time: "+time); // XXX
 		
 		this.runTaskTimer(Main.getPlugin(Main.class), 20, 20);	
 	}
@@ -74,10 +73,6 @@ public class GameTimer extends BukkitRunnable{
 		} else {
 			return false;
 		}
-	}
-	
-	void resetTime(){
-		this.time = game.getShipSetTime();
 	}
 
 }
