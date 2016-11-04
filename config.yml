@@ -27,6 +27,9 @@ gameRules:
   # if this is true players can shoot again after a hit and the grids will change after every miss
   #   if it is false the grid will change after every shot regardless of hit/miss
   fireAgainAfterHit: true
+  # false: the player whos fire timer ran out will loose the game
+  # true: If a fire timer runs out it's the other players turn
+  switchAttackerAfterFireTimerRanOut: false
 
 # some stuff you can do when a game ends.
 onGameEnd:
