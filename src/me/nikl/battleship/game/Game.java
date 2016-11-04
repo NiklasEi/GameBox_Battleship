@@ -22,27 +22,39 @@ import me.nikl.battleship.update.InvTitle;
 public class Game{
 	// items that make up the game
 	private ItemStack ownShip, ownWater, ownMiss, ownHit, othersCover, othersMiss, othersHit, lockedShip;
+	
 	// the four grids the players play on
 	private Inventory firstOwn, firstOthers, secondOwn, secondOthers;
+	
 	// count of the specific ships
 	private int numCarrier, numBattleship, numCruiser, numDestroyer;
+	
 	// state of tha game
 	private GameState state;
+	
 	private GameManager manager;
+	
 	// UUIDs of the first and second player
 	private UUID firstUUID, secondUUID;
+	
 	// first is the player that invited, second is the one that excepted
 	private Player first, second;
+	
 	// which inventory is open atm
 	private boolean firstSeesOwn, secondSeesOwn;
+	
 	// is the game closing an inv. atm?
 	private boolean closingInv;
+	
 	// has one of the player set the ships?
 	private boolean firstShipsSet, secondShipsSet;
+	
 	// save the config
 	private FileConfiguration config;
+	
 	// language class
 	private Language lang;
+	
 	// updater for the invetory titles
 	private InvTitle updater;
 	
@@ -51,6 +63,11 @@ public class Game{
 	private int shipSetTime, fireTime, changeTime;
 	private int currentTime;
 	private String firstCurrentState, secondCurrentState;
+	
+	// rules
+	// chage attacker and defender if a fire timer ran out
+	//   if this is false the player whos timer ran out will loose!
+	private boolean switchGridsAfterFireTimerRanOut;
 	
 	private Main plugin;
 	public boolean ruleFireAgainAfterHit;
@@ -61,7 +78,13 @@ public class Game{
 		this.plugin = plugin;
 		this.lang = plugin.lang;
 		this.config = plugin.getConfig();
+		
+		if(config == null){
+			Bukkit.getConsoleSender().sendMessage(Main.prefix + " Failed to load config!");
+			Bukkit.getPluginManager().disablePlugin(plugin);
+		}
 		getValuesFromConfig();
+		
 		this.manager = plugin.getManager();
 		this.firstUUID = firstUUID;
 		this.secondUUID = secondUUID;
@@ -77,10 +100,6 @@ public class Game{
 		} else if(first == null){
 			second.sendMessage(plugin.chatColor(Main.prefix+" &4The other player is offline"));
 			manager.removeGame(this);	
-		}
-		if(config == null){
-			Bukkit.getConsoleSender().sendMessage(Main.prefix + " Failed to load config!");
-			Bukkit.getPluginManager().disablePlugin(plugin);
 		}
 		getShipNumbers();
 		if(!getMaterials()){
@@ -133,8 +152,8 @@ public class Game{
 				this.changeTime = timer.getInt("changingGrids.countdown");
 			}
 		}
-		this.ruleFireAgainAfterHit = (config.isSet("gameRules.fireAgainAfterHit") &&
-				config.isBoolean("gameRules.fireAgainAfterHit")) ? config.getBoolean("gameRules.fireAgainAfterHit") : true;
+		this.ruleFireAgainAfterHit = config.getBoolean("gameRules.fireAgainAfterHit", true);
+		this.switchGridsAfterFireTimerRanOut = config.getBoolean("gameRules.switchAttackerAfterFireTimerRanOut", false);
 	}
 
 	
@@ -967,7 +986,12 @@ public class Game{
 
 	public void fireTimeRanOut() {
 		boolean isFirst;
-		isFirst = this.state.equals(GameState.FIRST_TURN)? true : false;
+		isFirst = this.state.equals(GameState.FIRST_TURN);
+		
+		if(switchGridsAfterFireTimerRanOut){
+			this.changeAttacker(!isFirst);
+			return;
+		}
 		Player looser = isFirst? Bukkit.getPlayer(this.getFirstUUID()) : Bukkit.getPlayer(this.getSecondUUID()); 
 		Player winner = !isFirst? Bukkit.getPlayer(this.getFirstUUID()) : Bukkit.getPlayer(this.getSecondUUID()); 
 		
@@ -1003,18 +1027,10 @@ public class Game{
 
 	public void setFireState(int time) {
 		if(state.equals(GameState.FIRST_TURN)){
-			/*firstOthers = setState(firstCurrentState.replaceAll("%timer%", time+""), firstOthers);
-			secondOwn = setState(secondCurrentState.replaceAll("%timer%", time+""), secondOwn);
-			showInventory(true, false);
-			showInventory(false, true);		*/
 			currentTime = time;
 			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", time+"")));
 			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", time+"")));
 		} else if (state.equals(GameState.SECOND_TURN)){
-			/*firstOwn = setState(firstCurrentState.replaceAll("%timer%", time+""), firstOwn);
-			secondOthers = setState(secondCurrentState.replaceAll("%timer%", time+""), secondOthers);
-			showInventory(true, true);
-			showInventory(false, false);*/	
 			currentTime = time;
 			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", time+"")));
 			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", time+"")));			
