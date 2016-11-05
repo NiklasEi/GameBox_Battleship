@@ -1121,7 +1121,7 @@ public class Game{
 				meta.setDisplayName("Ship");
 				// if a name was specified use it instead of default
 				if(config.isSet("materials." + key + ".name") || config.isString("materials." + key + ".name"))
-					meta.setDisplayName(config.getString("materials." + key +".name"));
+					meta.setDisplayName(chatColor(config.getString("materials." + key +".name")));
 				ownShip.setItemMeta(meta);
 
 		    } else if(key.equals("yourGrid.lockedShip")){
@@ -1131,7 +1131,7 @@ public class Game{
 		    	meta.setDisplayName("Locked ship");
 				// if a name was specified use it instead of default
 				if(config.isSet("materials." + key + ".name") || config.isString("materials." + key + ".name"))
-					meta.setDisplayName(config.getString("materials." + key +".name"));
+					meta.setDisplayName(chatColor(config.getString("materials." + key +".name")));
 		    	lockedShip.setItemMeta(meta);
 		    	
 		    } else if(key.equals("yourGrid.miss")){
@@ -1141,7 +1141,7 @@ public class Game{
 				meta.setDisplayName("Yeah! A miss!");
 				// if a name was specified use it instead of default
 				if(config.isSet("materials." + key + ".name") || config.isString("materials." + key + ".name"))
-					meta.setDisplayName(config.getString("materials." + key +".name"));
+					meta.setDisplayName(chatColor(config.getString("materials." + key +".name")));
 				ownMiss.setItemMeta(meta);
 		    	
 		    } else if(key.equals("yourGrid.hit")){
@@ -1151,7 +1151,7 @@ public class Game{
 				meta.setDisplayName("Damn! A hit...");
 				// if a name was specified use it instead of default
 				if(config.isSet("materials." + key + ".name") || config.isString("materials." + key + ".name"))
-					meta.setDisplayName(config.getString("materials." + key +".name"));
+					meta.setDisplayName(chatColor(config.getString("materials." + key +".name")));
 				ownHit.setItemMeta(meta);
 		    	
 		    } else if(key.equals("yourGrid.water")){
@@ -1161,7 +1161,7 @@ public class Game{
 				meta.setDisplayName("Water");
 				// if a name was specified use it instead of default
 				if(config.isSet("materials." + key + ".name") || config.isString("materials." + key + ".name"))
-					meta.setDisplayName(config.getString("materials." + key +".name"));
+					meta.setDisplayName(chatColor(config.getString("materials." + key +".name")));
 				ownWater.setItemMeta(meta); 	
 				
 		    } else if(key.equals("othersGrid.cover")){
@@ -1171,7 +1171,7 @@ public class Game{
 				meta.setDisplayName("Cover");
 				// if a name was specified use it instead of default
 				if(config.isSet("materials." + key + ".name") || config.isString("materials." + key + ".name"))
-					meta.setDisplayName(config.getString("materials." + key +".name"));
+					meta.setDisplayName(chatColor(config.getString("materials." + key +".name")));
 				othersCover.setItemMeta(meta); 	
 				
 		    } else if(key.equals("othersGrid.miss")){
@@ -1181,7 +1181,7 @@ public class Game{
 				meta.setDisplayName("That did not hit...");
 				// if a name was specified use it instead of default
 				if(config.isSet("materials." + key + ".name") || config.isString("materials." + key + ".name"))
-					meta.setDisplayName(config.getString("materials." + key +".name"));
+					meta.setDisplayName(chatColor(config.getString("materials." + key +".name")));
 				othersMiss.setItemMeta(meta); 	
 				
 		    } else if(key.equals("othersGrid.hit")){
@@ -1191,7 +1191,7 @@ public class Game{
 				meta.setDisplayName("Booom! Gotcha");
 				// if a name was specified use it instead of default
 				if(config.isSet("materials." + key + ".name") || config.isString("materials." + key + ".name"))
-					meta.setDisplayName(config.getString("materials." + key +".name"));
+					meta.setDisplayName(chatColor(config.getString("materials." + key +".name")));
 				othersHit.setItemMeta(meta); 	
 		    }
 	    }
