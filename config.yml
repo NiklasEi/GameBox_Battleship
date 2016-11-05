@@ -27,7 +27,7 @@ gameRules:
   # if this is true players can shoot again after a hit and the grids will change after every miss
   #   if it is false the grid will change after every shot regardless of hit/miss
   fireAgainAfterHit: true
-  # false: the player whos fire timer ran out will loose the game
+  # false: the player whose fire timer ran out will loose the game
   # true: If a fire timer runs out it's the other players turn
   switchAttackerAfterFireTimerRanOut: false
 
@@ -64,29 +64,29 @@ materials:
   yourGrid:
     ship:
       material: "Iron_block"
-      name: "ship"
+      name: "&7Ship"
     lockedShip:
       material: "7"
-      name: "Locked ship"
+      name: "&8Locked ship"
     miss:
       material: "160:3"
-      name: "Yeah! A miss!"
+      name: "&2Yeah! A miss!"
     hit:
       material: "35:14"
-      name: "Damn! A hit..."
+      name: "&4Damn! A hit..."
     water:
       material: "160:11"
-      name: "Water"
+      name: "&1Water"
   othersGrid:
     cover:
       material: "WOOL:7"
-      name: "Cover"
+      name: "&6Cover"
     miss:
       material: "160:11"
-      name: "That did not hit..."
+      name: "&4That did not hit..."
     hit:
       material: "Iron_block"
-      name: "Booom! Gotcha"
+      name: "&2Booom! Gotcha"
 
     
 # Customise the timers used in the game (all times in seconds)
