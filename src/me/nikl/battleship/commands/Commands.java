@@ -69,11 +69,10 @@ public class Commands implements CommandExecutor {
 		} else if(args.length == 1 && args[0].equalsIgnoreCase("reload")){
 			if(sender.hasPermission("battleship.reload")){
 				plugin.reload();
-				sender.sendMessage(plugin.chatColor(Main.prefix + lang.CMD_RELOADED));
+				sender.sendMessage(plugin.chatColor(plugin.chatColor(Main.prefix + lang.CMD_RELOADED)));
 				return true;
 			} else {
-				for(String message : this.lang.CMD_HELP)
-					sender.sendMessage(plugin.chatColor(Main.prefix + message));
+				sender.sendMessage(Main.prefix + lang.CMD_NO_PERM);
 				return true;
 			}
 		
