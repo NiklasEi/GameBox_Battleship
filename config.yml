@@ -33,18 +33,18 @@ gameRules:
 
 # some stuff you can do when a game ends.
 onGameEnd:
-  # You can dispatch commands. Use %winner% for the playername of the winner and %looser% for the looser 
+  # You can dispatch commands. Use %winner% for the playername of the winner and %loser% for the loser
   dispatchCommands:
     enabled: false
     commands:
     - "give %winner% diamond 1"
     - "tell %winner% congrats!"
-    - "tell %looser% next time you'll beat him!"
-  # You can broadcast. Use %winner% for the playername of the winner and %looser% for the looser 
+    - "tell %loser% next time you'll beat him!"
+  # You can broadcast. Use %winner% for the playername of the winner and %loser% for the loser
   broadcast:
     enabled: false
     messages:
-    - "%winner% won against %looser% in a game of Battleship!"
+    - "%winner% won against %loser% in a game of Battleship!"
     - "Do &2/bs %winner% &rto try against %winner% yourself ;)"     
 
 
