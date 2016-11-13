@@ -47,10 +47,6 @@ public class GUIListener implements Listener{
 				e.getWhoClicked().sendMessage(plugin.chatColor(Main.prefix + lang.CMD_PLAYER_INGAME));
 				return;				
 			}
-			if(manager.getTimer().isSecond(target.getUniqueId())){
-				e.getWhoClicked().sendMessage(plugin.chatColor(Main.prefix + lang.CMD_PLAYER_HAS_INVITE));
-				return;									
-			}
 			manager.getTimer().invite(e.getWhoClicked().getUniqueId(), target.getUniqueId());
 			e.getWhoClicked().closeInventory();
 			return;
