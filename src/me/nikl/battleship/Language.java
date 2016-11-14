@@ -20,8 +20,8 @@ public class Language {
 	private Main plugin;
 	private FileConfiguration langFile;
 	
-	public String CMD_NO_PERM, CMD_ONLY_PLAYER, CMD_PLAYER_OFFLINE, CMD_PLAYER_INGAME, CMD_PLAYER_HAS_INVITE, CMD_NOT_YOURSELF, CMD_FIRST_OFFLINE, CMD_RELOADED, CMD_ONLY_ONE_ONLINE;
-	public String GAME_PAYED, GAME_NOT_ENOUGH_MONEY, GAME_WON_MONEY, GAME_WON_MONEY_GAVE_UP, GAME_WON, GAME_INVITE_ACCEPT, GAME_LOOSE, GAME_GAVE_UP, GAME_OTHER_GAVE_UP,
+	public String CMD_NO_PERM, CMD_ONLY_PLAYER, CMD_PLAYER_OFFLINE, CMD_PLAYER_INGAME, CMD_NOT_YOURSELF, CMD_FIRST_OFFLINE, CMD_RELOADED, CMD_ONLY_ONE_ONLINE, CMD_SPECIFY;
+	public String GAME_PAYED, GAME_NOT_ENOUGH_MONEY, GAME_WON_MONEY, GAME_WON_MONEY_GAVE_UP, GAME_WON, GAME_INVITE_ACCEPT, GAME_LOSE, GAME_GAVE_UP, GAME_OTHER_GAVE_UP,
 		GAME_TOO_SLOW, GAME_WON_MONEY_TOO_SLOW, GAME_WON_TOO_SLOW, GAME_INVITE_EXPIRED, GAME_INVITE_RETURNED_MONEY;
 	public String TITLE_GUI, TITLE_SET_SHIP_1, TITLE_SET_SHIP_2, TITLE_SET_SHIP_3, TITLE_SET_SHIP_4, TITLE_ATTACKER, TITLE_DEFENDER, TITLE_WON, TITLE_LOST;
 	public String CMD_NO_TOP_LIST, CMD_TOP_HEAD, CMD_TOP_TAIL, CMD_TOP_STRUCTURE;
@@ -68,7 +68,7 @@ public class Language {
 		this.GAME_WON_MONEY_TOO_SLOW = getString("game.econ.wonMoneyTooSlow");		
 		this.GAME_WON = getString("game.won");		
 		this.GAME_INVITE_ACCEPT = getString("game.invite.inviteAccept");	
-		this.GAME_LOOSE = getString("game.lost");	
+		this.GAME_LOSE = getString("game.lost");
 		this.GAME_GAVE_UP = getString("game.gaveUp");	
 		this.GAME_OTHER_GAVE_UP = getString("game.otherGaveUp");	
 		this.GAME_TOO_SLOW = getString("game.tooSlow");	
@@ -84,9 +84,9 @@ public class Language {
 		this.CMD_ONLY_PLAYER = getString("commandMessages.onlyAsPlayer");
 		this.CMD_PLAYER_OFFLINE = getString("commandMessages.playerIsOffline");
 		this.CMD_PLAYER_INGAME = getString("commandMessages.playerAlreadyIngame");
-		this.CMD_PLAYER_HAS_INVITE = getString("commandMessages.playerHasInviteAlready");
 		this.CMD_NOT_YOURSELF = getString("commandMessages.cannotInviteYourself");
 		this.CMD_FIRST_OFFLINE = getString("commandMessages.firstPlayerIsOffline");
+		this.CMD_SPECIFY = getString("commandMessages.specifyWhatInvitationToAccept");
 		this.CMD_RELOADED = getString("commandMessages.pluginReloaded");
 		
 		
