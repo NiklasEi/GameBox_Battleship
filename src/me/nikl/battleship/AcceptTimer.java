@@ -23,7 +23,7 @@ public class AcceptTimer extends BukkitRunnable{
 		this.manager = manager;
 		this.plugin = manager.getPlugin();
 		this.lang = plugin.lang;
-		this.waiting = new HashSet<Waiting>();
+		this.waiting = new HashSet<>();
 		
 		this.runTaskTimer(Main.getPlugin(Main.class), 0, 20);
 	}
@@ -52,7 +52,7 @@ public class AcceptTimer extends BukkitRunnable{
 		}
 	}
 	
-	public void addWaiting(Waiting wait){
+	private void addWaiting(Waiting wait){
 		this.waiting.add(wait);
 	}
 	
@@ -60,22 +60,23 @@ public class AcceptTimer extends BukkitRunnable{
 		return ChatColor.translateAlternateColorCodes('&', message);
 	}
 
-	public Boolean isFirst(UUID player){
+	/*public Boolean isFirst(UUID player){
 		for(Waiting wait : waiting){
 			if(wait.getFirst().equals(player)){
 				return true;
 			}
 		}
 		return false;
-	}
+	}*/
 
-	public Boolean isSecond(UUID player){
+	public int isSecond(UUID player){
+		int count = 0;
 		for(Waiting wait : waiting){
 			if(wait.getSecond().equals(player)){
-				return true;
+				count ++;
 			}
 		}
-		return false;
+		return count;
 	}
 	
 	public Waiting getWaiting(UUID second){
@@ -85,6 +86,15 @@ public class AcceptTimer extends BukkitRunnable{
 			}
 		}
 		return null;		
+	}
+	
+	public Waiting getWaiting(UUID first, UUID second){
+		for(Waiting wait : waiting){
+			if(wait.getFirst().equals(first) && wait.getSecond().equals(second)){
+				return wait;
+			}
+		}
+		return null;
 	}
 	
 	public void removeWait(Waiting wait){
