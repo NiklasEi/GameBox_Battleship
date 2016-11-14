@@ -55,7 +55,7 @@ public class Game{
 	// language class
 	private Language lang;
 	
-	// updater for the invetory titles
+	// updater for the inventory titles
 	private InvTitle updater;
 	
 	// timer stuff during ship-set phase
@@ -65,8 +65,8 @@ public class Game{
 	private String firstCurrentState, secondCurrentState;
 	
 	// rules
-	// chage attacker and defender if a fire timer ran out
-	//   if this is false the player whos timer ran out will loose!
+	// change attacker and defender if a fire timer ran out
+	//   if this is false the player whose timer ran out will lose!
 	private boolean switchGridsAfterFireTimerRanOut;
 	
 	private Main plugin;
@@ -162,8 +162,8 @@ public class Game{
 	}
 	
 	
-	void setFirstCurrentState(String firstCurrentstate){
-		this.firstCurrentState = firstCurrentstate;
+	void setFirstCurrentState(String firstCurrentState){
+		this.firstCurrentState = firstCurrentState;
 	}
 	
 
@@ -714,26 +714,26 @@ public class Game{
 
 
 	public void won(boolean isFirst) {
-		Player looser;
+		Player loser;
 		Player winner;
 		if(isFirst){
 			winner = Bukkit.getPlayer(this.getFirstUUID());
-			looser = Bukkit.getPlayer(this.getSecondUUID());
+			loser = Bukkit.getPlayer(this.getSecondUUID());
 			//firstOwn = setState(lang.TITLE_WON, firstOwn);
 			//secondOwn = setState(lang.TITLE_LOST, secondOwn);
 			updater.updateTitle(first, chatColor(lang.TITLE_WON));
 			updater.updateTitle(second, chatColor(lang.TITLE_LOST));
 			plugin.addWinToStatistics(this.getFirstUUID());
-			plugin.addLooseToStatistics(this.getSecondUUID());
+			plugin.addLoseToStatistics(this.getSecondUUID());
 		} else {
-			looser = Bukkit.getPlayer(this.getFirstUUID());
+			loser = Bukkit.getPlayer(this.getFirstUUID());
 			winner = Bukkit.getPlayer(this.getSecondUUID());
 			//firstOwn = setState(lang.TITLE_LOST, firstOwn);
 			//secondOwn = setState(lang.TITLE_WON, secondOwn);
 			updater.updateTitle(first, chatColor(lang.TITLE_LOST));
 			updater.updateTitle(second, chatColor(lang.TITLE_WON));
 			plugin.addWinToStatistics(this.getSecondUUID());
-			plugin.addLooseToStatistics(this.getFirstUUID());
+			plugin.addLoseToStatistics(this.getFirstUUID());
 		}
 		if(plugin.getEconEnabled()){
 			Main.econ.depositPlayer(winner, plugin.getReward());
@@ -741,21 +741,21 @@ public class Game{
 		} else {
 			winner.sendMessage(manager.chatColor(Main.prefix + lang.GAME_WON));
 		}
-		looser.sendMessage(manager.chatColor(Main.prefix + lang.GAME_LOOSE));
+		loser.sendMessage(manager.chatColor(Main.prefix + lang.GAME_LOSE));
 
-		onGameEnd(winner.getName(), looser.getName());
+		onGameEnd(winner.getName(), loser.getName());
 		
 		//showInventory(true, true);
 		//showInventory(false, true);
 	}
 	
-	public void onGameEnd(String winner, String looser){
+	public void onGameEnd(String winner, String loser){
 		String path = "onGameEnd.dispatchCommands";
 		if(config.getBoolean(path + ".enabled")){
 			List<String> cmdList = config.getStringList(path + ".commands");
 			if(cmdList != null && !cmdList.isEmpty()){
 				for(String cmd : cmdList){
-					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceAll("%winner%", winner).replaceAll("%looser%", looser));
+					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceAll("%winner%", winner).replaceAll("%loser%", loser));
 				}
 			}
 		}
@@ -764,7 +764,7 @@ public class Game{
 			List<String> broadcastList = config.getStringList(path + ".messages");
 			if(broadcastList != null && !broadcastList.isEmpty()){
 				for(String message : broadcastList){
-					Bukkit.broadcastMessage(chatColor(Main.prefix + " " + message.replaceAll("%winner%", winner).replaceAll("%looser%", looser)));
+					Bukkit.broadcastMessage(chatColor(Main.prefix + " " + message.replaceAll("%winner%", winner).replaceAll("%loser%", loser)));
 				}
 			}
 		}
@@ -788,33 +788,8 @@ public class Game{
 	}
 
 
-	public int getNumCarrier() {
-		return this.numCarrier;
-	}
-
-
-	public int getNumBattleship() {
-		return this.numBattleship;
-	}
-
-
-	public int getNumCruiser() {
-		return this.numCruiser;
-	}
-
-
-	public int getNumDestroyer() {
-		return this.numDestroyer;
-	}
-
-
 	public int getShipSetTime() {
 		return shipSetTime;
-	}
-
-
-	public void setShipSetTime(int shipSetTime) {
-		this.shipSetTime = shipSetTime;
 	}
 
 
@@ -992,32 +967,32 @@ public class Game{
 			this.changeAttacker(!isFirst);
 			return;
 		}
-		Player looser = isFirst? Bukkit.getPlayer(this.getFirstUUID()) : Bukkit.getPlayer(this.getSecondUUID()); 
+		Player loser = isFirst? Bukkit.getPlayer(this.getFirstUUID()) : Bukkit.getPlayer(this.getSecondUUID());
 		Player winner = !isFirst? Bukkit.getPlayer(this.getFirstUUID()) : Bukkit.getPlayer(this.getSecondUUID()); 
 		
 		if(!getState().equals(GameState.FINISHED)){
 			if(plugin.getEconEnabled()){
 				Main.econ.depositPlayer(winner, plugin.getReward());
-				winner.sendMessage(chatColor(Main.prefix + lang.GAME_WON_MONEY_TOO_SLOW.replaceAll("%reward%", plugin.getReward()+"").replaceAll("%looser%", first.getName())));
+				winner.sendMessage(chatColor(Main.prefix + lang.GAME_WON_MONEY_TOO_SLOW.replaceAll("%reward%", plugin.getReward()+"").replaceAll("%loser%", first.getName())));
 			} else {
-				winner.sendMessage(chatColor(Main.prefix + lang.GAME_WON_TOO_SLOW.replaceAll("%looser%", first.getName())));
+				winner.sendMessage(chatColor(Main.prefix + lang.GAME_WON_TOO_SLOW.replaceAll("%loser%", first.getName())));
 			}
-			looser.sendMessage(chatColor(Main.prefix + lang.GAME_TOO_SLOW));
+			loser.sendMessage(chatColor(Main.prefix + lang.GAME_TOO_SLOW));
 			this.setClosingInv(true);
 			winner.closeInventory();
-			looser.closeInventory();
+			loser.closeInventory();
 			this.setClosingInv(false);
 			
 			plugin.addWinToStatistics(winner.getUniqueId());
-			plugin.addLooseToStatistics(looser.getUniqueId());
+			plugin.addLoseToStatistics(loser.getUniqueId());
 		} else {
 			this.setClosingInv(true);
 			winner.closeInventory();
-			looser.closeInventory();	
+			loser.closeInventory();
 			this.setClosingInv(false);		
 		}
 		manager.removeGame(this);
-		onGameEnd(winner.getName(), looser.getName());
+		onGameEnd(winner.getName(), loser.getName());
 		
 	}
 

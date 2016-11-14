@@ -266,25 +266,25 @@ public class GameManager implements Listener{
 			if(!winner){
 				if(plugin.getEconEnabled()){
 					Main.econ.depositPlayer(second, plugin.getReward());
-					second.sendMessage(chatColor(Main.prefix + lang.GAME_WON_MONEY_GAVE_UP.replaceAll("%reward%", plugin.getReward()+"").replaceAll("%looser%", first.getName())));
+					second.sendMessage(chatColor(Main.prefix + lang.GAME_WON_MONEY_GAVE_UP.replaceAll("%reward%", plugin.getReward()+"").replaceAll("%loser%", first.getName()).replaceAll("%looser%", first.getName())));
 				} else {
-					second.sendMessage(chatColor(Main.prefix + lang.GAME_OTHER_GAVE_UP.replaceAll("%looser%", first.getName())));
+					second.sendMessage(chatColor(Main.prefix + lang.GAME_OTHER_GAVE_UP.replaceAll("%loser%", first.getName()).replaceAll("%looser%", first.getName())));
 				}
 				first.sendMessage(chatColor(Main.prefix + lang.GAME_GAVE_UP));
 				second.closeInventory();
 				plugin.addWinToStatistics(second.getUniqueId());
-				plugin.addLooseToStatistics(first.getUniqueId());
+				plugin.addLoseToStatistics(first.getUniqueId());
 			} else {
 				if(plugin.getEconEnabled()){
 					Main.econ.depositPlayer(first, plugin.getReward());
-					first.sendMessage(chatColor(Main.prefix + lang.GAME_WON_MONEY_GAVE_UP.replaceAll("%reward%", plugin.getReward()+"").replaceAll("%looser%", second.getName())));
+					first.sendMessage(chatColor(Main.prefix + lang.GAME_WON_MONEY_GAVE_UP.replaceAll("%reward%", plugin.getReward()+"").replaceAll("%loser%", second.getName()).replaceAll("%looser%", second.getName())));
 				} else {
-					first.sendMessage(chatColor(Main.prefix + lang.GAME_OTHER_GAVE_UP.replaceAll("%looser%", second.getName())));
+					first.sendMessage(chatColor(Main.prefix + lang.GAME_OTHER_GAVE_UP.replaceAll("%loser%", second.getName()).replaceAll("%looser%", second.getName())));
 				}
 				second.sendMessage(chatColor(Main.prefix + lang.GAME_GAVE_UP));
 				first.closeInventory();
 				plugin.addWinToStatistics(first.getUniqueId());
-				plugin.addLooseToStatistics(second.getUniqueId());
+				plugin.addLoseToStatistics(second.getUniqueId());
 			}
 			
 		} else {
@@ -313,7 +313,7 @@ public class GameManager implements Listener{
 		}
 		
 		plugin.addWinToStatistics(winner);
-		plugin.addLooseToStatistics(e.getPlayer().getUniqueId());
+		plugin.addLoseToStatistics(e.getPlayer().getUniqueId());
 		
 		Player winnerP = Bukkit.getPlayer(winner);
 		if(winnerP == null) return;
@@ -322,9 +322,9 @@ public class GameManager implements Listener{
 		if(!game.getState().equals(GameState.FINISHED)){
 			if(plugin.getEconEnabled()){
 				Main.econ.depositPlayer(winnerP, plugin.getReward());
-				winnerP.sendMessage(chatColor(Main.prefix + lang.GAME_WON_MONEY_GAVE_UP.replaceAll("%reward%", plugin.getReward()+"").replaceAll("%looser%", e.getPlayer().getName())));
+				winnerP.sendMessage(chatColor(Main.prefix + lang.GAME_WON_MONEY_GAVE_UP.replaceAll("%reward%", plugin.getReward()+"").replaceAll("%loser%", e.getPlayer().getName()).replaceAll("%looser%", e.getPlayer().getName())));
 			} else {
-				winnerP.sendMessage(chatColor(Main.prefix + lang.GAME_OTHER_GAVE_UP.replaceAll("%looser%", e.getPlayer().getName())));
+				winnerP.sendMessage(chatColor(Main.prefix + lang.GAME_OTHER_GAVE_UP.replaceAll("%loser%", e.getPlayer().getName()).replaceAll("%looser%", e.getPlayer().getName())));
 			}
 			winnerP.closeInventory();
 		} else {

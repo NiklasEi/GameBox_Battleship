@@ -74,5 +74,4 @@ public class GameTimer extends BukkitRunnable{
 			return false;
 		}
 	}
-
 }
