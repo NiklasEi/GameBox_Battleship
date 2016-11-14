@@ -214,7 +214,7 @@ public class Main extends JavaPlugin{
 		this.stats.set(uuid.toString() + "." + "won", (this.stats.getInt(uuid.toString() + "." + "won")+1));
 	}
 	
-	public void addLooseToStatistics(UUID uuid) {
+	public void addLoseToStatistics(UUID uuid) {
 		if(this.stats == null) return;
 		if(!stats.isInt(uuid.toString() + "." + "lost")){
 			stats.set(uuid.toString() + "." + "lost", 1);
