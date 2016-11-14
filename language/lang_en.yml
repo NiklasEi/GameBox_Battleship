@@ -26,10 +26,10 @@ game:
     notEnoughMoney: " &4You do not have not enough money!"
     # use %reward% for the amount the player won
     wonMoney: " &2You won &1%reward%&2!"
-    # use %reward% for the amount the player won and %looser% for the player that gave up
-    wonMoneyGaveUp: " &2You won &1%reward%&2! %looser% gave up."
-    # use %reward% for the amount the player won and %looser% for the player that was too slow
-    wonMoneyTooSlow: " &2You won &1%reward%&2! %looser% was too slow."
+    # use %reward% for the amount the player won and %loser% for the player that gave up
+    wonMoneyGaveUp: " &2You won &1%reward%&2! %loser% gave up."
+    # use %reward% for the amount the player won and %loser% for the player that was too slow
+    wonMoneyTooSlow: " &2You won &1%reward%&2! %loser% was too slow."
   # this message is displayed if the player won and economy is disabled
   won: " &2You won the game!"
   lost: " &4You lost the game"
@@ -38,11 +38,11 @@ game:
   # too slow message
   tooSlow: " &4You were too slow"
   # won message send when the other player gave up
-  #   use %looser% for the name of the player that gave up
-  otherGaveUp: " &2You won! %looser% gave up."
+  #   use %loser% for the name of the player that gave up
+  otherGaveUp: " &2You won! %loser% gave up."
   # won message send when the other player does not fire in time
-  #   use %looser% for the name of the player that gave up
-  otherTooSlow: " &2You won! %looser% was too slow."
+  #   use %loser% for the name of the player that gave up
+  otherTooSlow: " &2You won! %loser% was too slow."
   
 inventoryTitles:
   # There will always be the page number behind that title!
@@ -71,8 +71,8 @@ commandMessages:
   playerIsOffline: " &4This player is not online!"
   firstPlayerIsOffline: " &4Whoever invited you is offline now..."
   playerAlreadyIngame: " &4This player is already ingame!"
-  playerHasInviteAlready: " &4This player was already invited by someone!"
   cannotInviteYourself: " &4You cannot invite yourself to a game ^^"
+  specifyWhatInvitationToAccept: " &4More then one open invitation. Please accept with &a/bs playerName"
   pluginReloaded: " &aPlugin was reloaded"
   # send if someone is alone on the server and tries to open the GUI
   aloneOnServer: " &4No one else is online at the moment"

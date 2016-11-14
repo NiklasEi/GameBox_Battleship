@@ -6,7 +6,7 @@ game:
   # here you can use:
   # name of the first player: %first%
   # name of the second player: %second%
-  # time in seconds untli the invitation will run out: %time%
+  # time in seconds until the invitation will run out: %time%
   invite:
     # these messages go to the player, that invite another player
     messageToFirstPlayer:
@@ -14,11 +14,11 @@ game:
     # these messages go to the player, that was invited by another player
     messageToSecondPlayer:
     - " &2%first% hat dich zu einer Partie eingeladen!"
-    - " &2Nutze /bs zum annehmen. Einladung läuft in &4%time% ab&2!"
+    - " &2Nutze /bs zum annehmen. Einladung l\u00e4uft in &4%time% ab&2!"
     # you can only use %first% here (name of the player that invited you)
     inviteAccept: " &2Du hast die Einladung von %first% angenommen."
     expired: " &4Die Einladung ist abgelaufen!"
-    returnedMoney: " &2Dein Geld wurde dir zurück gegeben."
+    returnedMoney: " &2Dein Geld wurde dir zur\u00fcck gegeben."
 
   econ:
     # use %cost% for the amount payed
@@ -26,10 +26,10 @@ game:
     notEnoughMoney: " &4Du hast nicht genug Guthaben!"
     # use %reward% for the amount the player won
     wonMoney: " &2Du hast &1%reward%&2 gewonnen!"
-    # use %reward% for the amount the player won and %looser% for the player that gave up
-    wonMoneyGaveUp: " &2Du hast &1%reward%&2 gewonnen! %looser% hat kapituliert."
-    # use %reward% for the amount the player won and %looser% for the player that was too slow
-    wonMoneyTooSlow: " &2Du hast &1%reward%&2 gewonnen! %looser% war zu langsam."
+    # use %reward% for the amount the player won and %loser% for the player that gave up
+    wonMoneyGaveUp: " &2Du hast &1%reward%&2 gewonnen! %loser% hat kapituliert."
+    # use %reward% for the amount the player won and %loser% for the player that was too slow
+    wonMoneyTooSlow: " &2Du hast &1%reward%&2 gewonnen! %loser% war zu langsam."
   # this message is displayed if the player won and economy is disabled
   won: " &2Du hast gewonnen!"
   lost: " &4Du hast verloren."
@@ -38,11 +38,11 @@ game:
   # too slow message
   tooSlow: " &4Du warst zu langsam!"
   # won message send when the other player gave up
-  # use %looser% for the name of the player that gave up
-  otherGaveUp: " &2Du hast gewonnen! %looser% hat kapituliert."
+  # use %loser% for the name of the player that gave up
+  otherGaveUp: " &2Du hast gewonnen! %loser% hat kapituliert."
   # won message send when the other player does not fire in time
-  # use %looser% for the name of the player that gave up
-  otherTooSlow: " &2Du hast gewonnen! %looser% war zu langsam."
+  # use %loser% for the name of the player that gave up
+  otherTooSlow: " &2Du hast gewonnen! %loser% war zu langsam."
   
 
 inventoryTitles:
@@ -56,7 +56,9 @@ inventoryTitles:
   setShip4: "Destroyer: %count% x 2 Felder  &4%timer%"
   # %timer%
   attacker: "&2Battleship   &rFeuer frei!      &4%timer%"
-  defender: "&4Battleship   &rAchtung!         &2%timer%"  
+  defender: "&4Battleship   &rAchtung!         &2%timer%"
+
+  changingGrids: "&2Battleship   &rAngreifer wechselt  &2%timer%"
   
   won: "&2Battleship    &2Gewonnen!"
   lost: "&2Battleship    &4Verloren..."
@@ -71,8 +73,8 @@ commandMessages:
   playerIsOffline: " &4Dieser Spieler ist nicht online!"
   firstPlayerIsOffline: " &4Wer auch immer dich eingeladen hat, ist nun offline..."
   playerAlreadyIngame: " &4Dieser Spieler ist gerade in einer Partie!"
-  playerHasInviteAlready: " &4Dieser Spieler wurde bereits von jemandem eingeladen!"
   cannotInviteYourself: " &4Du kannst dich nicht selbst einladen ^^"
+  specifyWhatInvitationToAccept: " &4Du hast mehr als eine Einladung. Benutze &a/bs playerName&4 zum annehmen"
   pluginReloaded: " &aDas Plugin wurde neu geladen."
   # send if someone is alone on the server and tries to open the GUI
   aloneOnServer: " &4Im Moment ist niemand ausser dir online."
@@ -80,3 +82,10 @@ commandMessages:
   help:
   - " &2Um jemanden zu einem Spiel einzuladen nutze: /bs [player]"
   - " &2Oder nutze das GUI mit /bsgui"
+  # message send if there are no saved stats
+  noTopList: " &4Keine Statistik vorhanden!"
+  # here you can specify how the top 10 will be displayed
+  topListHead: "&a+ - + -  &3Battleship  Top 10  &a- + - +"
+  # %rank% -> Rank of the player      %name% name of the player       %won% number of won games
+  topListStructure: "%rank%. &6 %name%    &1Siege: %won%"
+  topListTail: "&a+ - + - + - + - + - + - + - + - + - +"
