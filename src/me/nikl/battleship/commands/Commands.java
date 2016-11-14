@@ -39,9 +39,9 @@ public class Commands implements CommandExecutor {
 				player.sendMessage(plugin.chatColor(Main.prefix + lang.CMD_PLAYER_INGAME));
 				return true;				
 			}
-			if(manager.getTimer().isSecond(player.getUniqueId())){
-				Player firstplayer = Bukkit.getPlayer(manager.getTimer().getWaiting(player.getUniqueId()).getFirst());
-				if(firstplayer == null){
+			if(manager.getTimer().isSecond(player.getUniqueId()) == 1){
+				Player firstPlayer = Bukkit.getPlayer(manager.getTimer().getWaiting(player.getUniqueId()).getFirst());
+				if(firstPlayer == null){
 					player.sendMessage(plugin.chatColor(Main.prefix + lang.CMD_FIRST_OFFLINE));
 					manager.getTimer().removeWait(manager.getTimer().getWaiting(player.getUniqueId()));
 					return true;
@@ -51,16 +51,19 @@ public class Commands implements CommandExecutor {
 					if(Main.econ.getBalance(player) >= plugin.getPrice()){
 						Main.econ.withdrawPlayer(player, plugin.getPrice());
 						sender.sendMessage(plugin.chatColor(Main.prefix + lang.GAME_PAYED.replaceAll("%cost%", plugin.getPrice()+"")));
-						manager.startGame(firstplayer.getUniqueId(), player.getUniqueId());
+						manager.startGame(firstPlayer.getUniqueId(), player.getUniqueId());
 					} else {
 						player.sendMessage(plugin.chatColor(Main.prefix + lang.GAME_NOT_ENOUGH_MONEY));
 						return true;
 					}
 				} else {
-					manager.startGame(firstplayer.getUniqueId(), player.getUniqueId());
+					manager.startGame(firstPlayer.getUniqueId(), player.getUniqueId());
 				}
 				manager.getTimer().removeWait(manager.getTimer().getWaiting(player.getUniqueId()));
-				player.sendMessage(plugin.chatColor(Main.prefix + lang.GAME_INVITE_ACCEPT.replaceAll("%first%", firstplayer.getName())));
+				player.sendMessage(plugin.chatColor(Main.prefix + lang.GAME_INVITE_ACCEPT.replaceAll("%first%", firstPlayer.getName())));
+				return true;
+			} else if(manager.getTimer().isSecond(player.getUniqueId()) > 1){
+				player.sendMessage(plugin.chatColor(Main.prefix + lang.CMD_SPECIFY));
 				return true;
 			}
 			for(String message : this.lang.CMD_HELP)
@@ -97,11 +100,30 @@ public class Commands implements CommandExecutor {
 			}
 			if(manager.isIngame(second.getUniqueId())){
 				sender.sendMessage(plugin.chatColor(Main.prefix + lang.CMD_PLAYER_INGAME));
-				return true;				
+				return true;
 			}
-			if(manager.getTimer().isSecond(second.getUniqueId())){
-				sender.sendMessage(plugin.chatColor(Main.prefix + lang.CMD_PLAYER_HAS_INVITE));
-				return true;									
+			if(manager.getTimer().getWaiting(second.getUniqueId(), player.getUniqueId()) != null){
+				if(second == null){
+					player.sendMessage(plugin.chatColor(Main.prefix + lang.CMD_FIRST_OFFLINE));
+					manager.getTimer().removeWait(manager.getTimer().getWaiting(second.getUniqueId(), player.getUniqueId()));
+					return true;
+				}
+				
+				if(plugin.getEconEnabled()){
+					if(Main.econ.getBalance(player) >= plugin.getPrice()){
+						Main.econ.withdrawPlayer(player, plugin.getPrice());
+						sender.sendMessage(plugin.chatColor(Main.prefix + lang.GAME_PAYED.replaceAll("%cost%", plugin.getPrice()+"")));
+						manager.startGame(second.getUniqueId(), player.getUniqueId());
+					} else {
+						player.sendMessage(plugin.chatColor(Main.prefix + lang.GAME_NOT_ENOUGH_MONEY));
+						return true;
+					}
+				} else {
+					manager.startGame(second.getUniqueId(), player.getUniqueId());
+				}
+				manager.getTimer().removeWait(manager.getTimer().getWaiting(player.getUniqueId()));
+				player.sendMessage(plugin.chatColor(Main.prefix + lang.GAME_INVITE_ACCEPT.replaceAll("%first%", second.getName())));
+				return true;
 			}
 			manager.getTimer().invite(player.getUniqueId(), second.getUniqueId());
 			return true;

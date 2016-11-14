@@ -15,6 +15,8 @@ import java.util.UUID;
 
 /**
  * Created by niklas on 9/27/16.
+ *
+ *
  */
 public class TopCommand implements CommandExecutor{
 	
@@ -36,7 +38,7 @@ public class TopCommand implements CommandExecutor{
 			sender.sendMessage(plugin.chatColor(Main.prefix + lang.CMD_NO_PERM));
 			return true;
 		}
-		Map<UUID, Integer> times = new HashMap<UUID, Integer>();
+		Map<UUID, Integer> times = new HashMap<>();
 		for(String uuid : stats.getKeys(false)) {
 			if(stats.isInt(uuid + ".won"))
 				times.put(UUID.fromString(uuid), stats.getInt(uuid + ".won"));
@@ -60,7 +62,6 @@ public class TopCommand implements CommandExecutor{
 				if(times.get(current) > record){
 					record = times.get(current);
 					bestRecord = current;
-					continue;
 				}
 			}
 			// remove the entry that will be put into messages[] now
