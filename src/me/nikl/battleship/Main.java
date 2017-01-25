@@ -40,6 +40,8 @@ public class Main extends JavaPlugin{
 	public boolean disabled;
 	private InvTitle updater;
 	
+	public static boolean playMusic = true;
+	
 	@Override
 	public void onEnable(){
         if (!setupUpdater()) {
@@ -85,13 +87,17 @@ public class Main extends JavaPlugin{
 	        
 	    } else if (version.equals("v1_8_R1")) {
 	        updater = new Update_1_8_R1();
-	    }
+			
+	    } else if (version.equals("v1_11_R1")) {
+			updater = new Update_1_11_R1();
+		}
 	    return updater != null;
 	}
 
 	public InvTitle getUpdater(){
 		return this.updater;
 	}
+	
 	private void getValuesFromConfig() {
 		FileConfiguration config = getConfig();
 		if(!config.isConfigurationSection("timers") || !config.isInt("timers.invitationTimer.validFor")){
@@ -170,7 +176,7 @@ public class Main extends JavaPlugin{
 			}
 		}
 		
-		// load statsfile
+		// load stats file
 		try {
 			this.stats = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(this.sta), "UTF-8"));
 		} catch (UnsupportedEncodingException | FileNotFoundException e) {
@@ -179,6 +185,8 @@ public class Main extends JavaPlugin{
 		
 		
 		this.lang = new Language(this);
+		
+		Main.playMusic = getConfig().getBoolean("gameRules.playMusic", true);
 		
 		this.econEnabled = false;
 		if(getConfig().getBoolean("economy.enabled")){
@@ -233,10 +241,6 @@ public class Main extends JavaPlugin{
 
 	public FileConfiguration getConfig() {
 		return config;
-	}
-
-	public void setConfig(FileConfiguration config) {
-		this.config = config;
 	}
 	
     public String chatColor(String message){

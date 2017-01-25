@@ -5,8 +5,10 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
 
+import me.nikl.battleship.Sounds;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -26,22 +28,36 @@ public class GameManager implements Listener{
 	private AcceptTimer timer;
 	private Language lang;
 	
+	// sounds
+	private Sound ownMissSound, othersMissSound, ownHitSound, othersHitSound, setShipSound;
+	
 	public GameManager(Main plugin){
 		this.plugin = plugin;
 		this.timer = new AcceptTimer(this);
-		this.games = new HashSet<Game>();
+		this.games = new HashSet<>();
 		this.lang = plugin.lang;
+		
+		
+		this.ownMissSound = Sounds.SPLASH.bukkitSound();
+		this.othersMissSound = Sounds.SPLASH2.bukkitSound();
+		
+		this.ownHitSound = Sounds.ANVIL_LAND.bukkitSound();
+		this.othersHitSound = Sounds.ANVIL_LAND.bukkitSound();
+		
+		this.setShipSound = Sounds.ANVIL_LAND.bukkitSound();
+		
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 	
 	@EventHandler
 	public void onInvClick(InventoryClickEvent e){
 		//e.getWhoClicked().sendMessage("number of games: " + games.size()); // XXX
-		if(!isIngame(e.getWhoClicked().getUniqueId()) || e.getClickedInventory() == null || e.getCurrentItem() == null){
+		if(!isIngame(e.getWhoClicked().getUniqueId()) || e.getInventory() == null || e.getCurrentItem() == null){
 			//e.getWhoClicked().sendMessage("ingame: "+isIngame(e.getWhoClicked().getUniqueId())+" || inv == null || currentItem == null"); // XXX
 			return;
 		}
 		e.setCancelled(true);
+		if(e.getSlot() >= e.getInventory().getSize() || e.getSlot() < 0) return;
 		if(!e.getAction().equals(InventoryAction.PICKUP_ALL) && !e.getAction().equals(InventoryAction.PICKUP_HALF)){
 			return;
 		}
@@ -63,6 +79,7 @@ public class GameManager implements Listener{
 			if(game.isWater(e.getCurrentItem())){
 				//player.sendMessage("clicked water"); // XXX
 				game.setShip(slot, isFirst);
+				player.playSound(player.getLocation(), setShipSound, 10f, 1f);
 			} else if(game.isShip(e.getCurrentItem())){
 				//player.sendMessage("clicked something else"); // XXX
 				game.setWater(slot, isFirst);

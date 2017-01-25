@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
+import me.nikl.battleship.Sounds;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -68,6 +70,7 @@ public class Game{
 	// change attacker and defender if a fire timer ran out
 	//   if this is false the player whose timer ran out will lose!
 	private boolean switchGridsAfterFireTimerRanOut;
+	
 	
 	private Main plugin;
 	public boolean ruleFireAgainAfterHit;
@@ -464,19 +467,12 @@ public class Game{
 		}
 		return true;
 	}
-
-
-	public boolean getFirstSeesOwn() {
-		return firstSeesOwn;
-	}
+	
 
 	public void setFirstSeesOwn(boolean firstSeesOwn) {
 		this.firstSeesOwn = firstSeesOwn;
 	}
 
-	public boolean getSecondSeesOwn() {
-		return secondSeesOwn;
-	}
 
 	public void setSecondSeesOwn(boolean secondSeesOwn) {
 		this.secondSeesOwn = secondSeesOwn;

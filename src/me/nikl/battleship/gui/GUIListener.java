@@ -30,13 +30,14 @@ public class GUIListener implements Listener{
 
 	@EventHandler
 	public void onInvClick(InventoryClickEvent e){
-		if(e.getClickedInventory() == null || e.getCurrentItem() == null){
-			return;
-		}
 		if(!plugin.headGUI.guiIsOpen(e.getWhoClicked().getUniqueId())){
 			return;
 		}
 		e.setCancelled(true);
+		if(e.getInventory() == null || e.getCurrentItem() == null){
+			return;
+		}
+		if(e.getSlot() < 0 || e.getSlot() >= e.getInventory().getSize()) return;
 		if(e.getCurrentItem().getItemMeta() instanceof SkullMeta){
 			Player target = Bukkit.getPlayer(((SkullMeta) e.getCurrentItem().getItemMeta()).getOwner());
 			if(target == null){
