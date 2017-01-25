@@ -29,7 +29,7 @@ public class GameManager implements Listener{
 	private Language lang;
 	
 	// sounds
-	private Sound ownMissSound, othersMissSound, ownHitSound, othersHitSound, setShipSound;
+	private Sound ownMissSound, othersMissSound, ownHitSound, othersHitSound, setShipSound, unSetShipSound, won, lost;
 	
 	public GameManager(Main plugin){
 		this.plugin = plugin;
@@ -42,9 +42,15 @@ public class GameManager implements Listener{
 		this.othersMissSound = Sounds.SPLASH2.bukkitSound();
 		
 		this.ownHitSound = Sounds.ANVIL_LAND.bukkitSound();
-		this.othersHitSound = Sounds.ANVIL_LAND.bukkitSound();
+		this.othersHitSound = Sounds.HURT_FLESH.bukkitSound();
 		
 		this.setShipSound = Sounds.ANVIL_LAND.bukkitSound();
+		this.unSetShipSound = Sounds.WATER.bukkitSound();
+		
+		this.won = Sounds.LEVEL_UP.bukkitSound();
+		this.lost = Sounds.VILLAGER_NO.bukkitSound();
+		
+		
 		
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
@@ -79,10 +85,11 @@ public class GameManager implements Listener{
 			if(game.isWater(e.getCurrentItem())){
 				//player.sendMessage("clicked water"); // XXX
 				game.setShip(slot, isFirst);
-				player.playSound(player.getLocation(), setShipSound, 10f, 1f);
+				if(Main.playMusic)player.playSound(player.getLocation(), setShipSound, 10f, 1f);
 			} else if(game.isShip(e.getCurrentItem())){
 				//player.sendMessage("clicked something else"); // XXX
 				game.setWater(slot, isFirst);
+				if(Main.playMusic)player.playSound(player.getLocation(), unSetShipSound, 10f, 1f);
 			}
 			if(game.shipsSet(1, isFirst)){
 				game.lockShips(isFirst);
@@ -108,8 +115,10 @@ public class GameManager implements Listener{
 			}
 			if(game.isWater(e.getCurrentItem())){
 				game.setShip(slot, isFirst);
+				if(Main.playMusic)player.playSound(player.getLocation(), setShipSound, 10f, 1f);
 			} else if(game.isShip(e.getCurrentItem())){
 				game.setWater(slot, isFirst);
+				if(Main.playMusic)player.playSound(player.getLocation(), unSetShipSound, 10f, 1f);
 			}
 			if(game.shipsSet(2, isFirst)){
 				game.lockShips(isFirst);
@@ -134,8 +143,10 @@ public class GameManager implements Listener{
 			}
 			if(game.isWater(e.getCurrentItem())){
 				game.setShip(slot, isFirst);
+				if(Main.playMusic)	player.playSound(player.getLocation(), setShipSound, 10f, 1f);
 			} else if(game.isShip(e.getCurrentItem())){
 				game.setWater(slot, isFirst);
+				if(Main.playMusic)	player.playSound(player.getLocation(), unSetShipSound, 10f, 1f);
 			}
 			if(game.shipsSet(3, isFirst)){
 				game.lockShips(isFirst);
@@ -160,8 +171,10 @@ public class GameManager implements Listener{
 			}
 			if(game.isWater(e.getCurrentItem())){
 				game.setShip(slot, isFirst);
+				if(Main.playMusic)player.playSound(player.getLocation(), setShipSound, 10f, 1f);
 			} else if(game.isShip(e.getCurrentItem())){
 				game.setWater(slot, isFirst);
+				if(Main.playMusic)player.playSound(player.getLocation(), unSetShipSound, 10f, 1f);
 			}
 			if(game.shipsSet(4, isFirst)){
 				game.lockShips(isFirst);
@@ -193,13 +206,28 @@ public class GameManager implements Listener{
 			if(!isFirst) return;
 			if(game.isCover(e.getCurrentItem())){
 				if(!game.fire(isFirst, slot)){
+					if(Main.playMusic) {
+						player.playSound(player.getLocation(), ownMissSound, 10f, 1f);
+						Player secondPlayer = Bukkit.getPlayer(game.getSecondUUID());
+						secondPlayer.playSound(secondPlayer.getLocation(), othersMissSound, 10f, 1f);
+					}
 					game.changeAttacker(false);
 					//game.setState(GameState.SECOND_TURN);
 				} else {
 					if(game.isWon(isFirst)){
 						game.setState(GameState.FINISHED);
 						game.won(isFirst);
+						if(Main.playMusic) {
+							player.playSound(player.getLocation(), won, 10f, 1f);
+							Player secondPlayer = Bukkit.getPlayer(game.getSecondUUID());
+							secondPlayer.playSound(secondPlayer.getLocation(), lost, 10f, 1f);
+						}
 					} else {
+						if(Main.playMusic) {
+							player.playSound(player.getLocation(), ownHitSound, 10f, 1f);
+							Player secondPlayer = Bukkit.getPlayer(game.getSecondUUID());
+							secondPlayer.playSound(secondPlayer.getLocation(), othersHitSound, 10f, 1f);
+						}
 						if(!game.ruleFireAgainAfterHit){
 							game.changeAttacker(false);
 						}
@@ -213,12 +241,27 @@ public class GameManager implements Listener{
 			if(game.isCover(e.getCurrentItem())){
 				if(!game.fire(isFirst, slot)){
 					game.changeAttacker(true);
+					if(Main.playMusic) {
+						player.playSound(player.getLocation(), ownMissSound, 10f, 1f);
+						Player firstPlayer = Bukkit.getPlayer(game.getFirstUUID());
+						firstPlayer.playSound(firstPlayer.getLocation(), othersMissSound, 10f, 1f);
+					}
 					//game.setState(GameState.FIRST_TURN);
 				} else {
 					if(game.isWon(isFirst)){
 						game.setState(GameState.FINISHED);
 						game.won(isFirst);
+						if(Main.playMusic) {
+							player.playSound(player.getLocation(), won, 10f, 1f);
+							Player firstPlayer = Bukkit.getPlayer(game.getFirstUUID());
+							firstPlayer.playSound(firstPlayer.getLocation(), lost, 10f, 1f);
+						}
 					} else {
+						if(Main.playMusic) {
+							player.playSound(player.getLocation(), ownHitSound, 10f, 1f);
+							Player firstPlayer = Bukkit.getPlayer(game.getFirstUUID());
+							firstPlayer.playSound(firstPlayer.getLocation(), othersHitSound, 10f, 1f);
+						}
 						if(!game.ruleFireAgainAfterHit){
 							game.changeAttacker(true);
 						}

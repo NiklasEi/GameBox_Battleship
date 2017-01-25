@@ -71,11 +71,14 @@ public class Game{
 	//   if this is false the player whose timer ran out will lose!
 	private boolean switchGridsAfterFireTimerRanOut;
 	
+	private Sound yourTurnNotice;
+	
 	
 	private Main plugin;
 	public boolean ruleFireAgainAfterHit;
 	
 	public Game(Main plugin, UUID firstUUID, UUID secondUUID){
+		this.yourTurnNotice = Sounds.NOTE_PIANO.bukkitSound();
 		this.updater = plugin.getUpdater();
 		this.setState(GameState.BUILDING);
 		this.plugin = plugin;
@@ -96,13 +99,16 @@ public class Game{
 		this.closingInv = false;
 		if(first == null && second == null){
 			manager.removeGame(this);
+			return;
 		}
 		if(second == null){
 			first.sendMessage(plugin.chatColor(Main.prefix+" &4The other player is offline"));
 			manager.removeGame(this);
+			return;
 		} else if(first == null){
 			second.sendMessage(plugin.chatColor(Main.prefix+" &4The other player is offline"));
-			manager.removeGame(this);	
+			manager.removeGame(this);
+			return;
 		}
 		getShipNumbers();
 		if(!getMaterials()){
@@ -120,6 +126,11 @@ public class Game{
 		
 		setState(GameState.SETTING_SHIP1);
 		this.timer = new GameTimer(this);
+		
+		if(Main.playMusic){
+			first.playSound(first.getLocation(), yourTurnNotice, 10f, 1f );
+			second.playSound(second.getLocation(), yourTurnNotice, 10f, 1f );
+		}
 		
 		showInventory(true, true);
 		showInventory(false, true);
@@ -279,6 +290,10 @@ public class Game{
 			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
 			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
+			if(Main.playMusic){
+				first.playSound(first.getLocation(), yourTurnNotice, 10f, 1f );
+				second.playSound(second.getLocation(), yourTurnNotice, 10f, 1f );
+			}
 			break;
 			
 		case SETTING_SHIP3:
@@ -295,6 +310,10 @@ public class Game{
 			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
 			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
+			if(Main.playMusic){
+				first.playSound(first.getLocation(), yourTurnNotice, 10f, 1f );
+				second.playSound(second.getLocation(), yourTurnNotice, 10f, 1f );
+			}
 			break;
 			
 		case SETTING_SHIP4:
@@ -311,6 +330,10 @@ public class Game{
 			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
 			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
+			if(Main.playMusic){
+				first.playSound(first.getLocation(), yourTurnNotice, 10f, 1f );
+				second.playSound(second.getLocation(), yourTurnNotice, 10f, 1f );
+			}
 			break;
 			
 		case FIRST_TURN:
@@ -325,6 +348,9 @@ public class Game{
 			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
 			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
+			if(Main.playMusic){
+				first.playSound(first.getLocation(), yourTurnNotice, 10f, 1f );
+			}
 			break;
 			
 		case SECOND_TURN:
@@ -339,6 +365,9 @@ public class Game{
 			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
 			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
+			if(Main.playMusic){
+				second.playSound(second.getLocation(), yourTurnNotice, 10f, 1f );
+			}
 			break;
 			
 		case FINISHED:
@@ -376,16 +405,8 @@ public class Game{
 		return firstUUID;
 	}
 
-	public void setFirstUUID(UUID firstUUID) {
-		this.firstUUID = firstUUID;
-	}
-
 	public UUID getSecondUUID() {
 		return secondUUID;
-	}
-
-	public void setSecondUUID(UUID secondUUID) {
-		this.secondUUID = secondUUID;
 	}
 
 	public void setState(String state, boolean isFirst, boolean own){
