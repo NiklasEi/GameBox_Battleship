@@ -186,7 +186,7 @@ public class Main extends JavaPlugin{
 		
 		this.lang = new Language(this);
 		
-		Main.playMusic = getConfig().getBoolean("gameRules.playMusic", true);
+		Main.playMusic = getConfig().getBoolean("gameRules.playSounds", true);
 		
 		this.econEnabled = false;
 		if(getConfig().getBoolean("economy.enabled")){
