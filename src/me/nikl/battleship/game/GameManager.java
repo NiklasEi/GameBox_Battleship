@@ -38,7 +38,7 @@ public class GameManager implements Listener{
 		this.lang = plugin.lang;
 		
 		
-		this.ownMissSound = Sounds.SPLASH.bukkitSound();
+		this.ownMissSound = Sounds.SPLASH2.bukkitSound();
 		this.othersMissSound = Sounds.SPLASH2.bukkitSound();
 		
 		this.ownHitSound = Sounds.ANVIL_LAND.bukkitSound();
