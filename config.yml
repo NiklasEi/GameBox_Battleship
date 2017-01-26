@@ -31,7 +31,7 @@ gameRules:
   # true: If a fire timer runs out it's the other players turn
   switchAttackerAfterFireTimerRanOut: false
   # play sounds in the game
-  playMusic: true
+  playSounds: true
 
 # some stuff you can do when a game ends.
 onGameEnd:
