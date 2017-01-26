@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import me.nikl.battleship.game.GameManager;
@@ -13,6 +14,8 @@ public class Waiting {
 	private UUID first;
 	private UUID second;
 	private Language lang;
+	
+	private Sound invite = Sounds.NOTE_PIANO.bukkitSound();
 
 	public Waiting(GameManager manager, UUID first, UUID second){
 		this.setFirst(first);
@@ -33,7 +36,9 @@ public class Waiting {
 		for(String message: lang.GAME_INVITE_SECOND){
 			secondPlayer.sendMessage(colored(Main.prefix + message.replaceAll("%first%", firstPlayer.getName()).replaceAll("%second%", secondPlayer.getName()).replaceAll("%time%", manager.getPlugin().getInvitationValidFor() + "")));
 		}
-
+		if(Main.playMusic)secondPlayer.playSound(secondPlayer.getLocation(), invite, 10f, 1f );
+		
+		
 		this.setAge(0);
 		//manager.getTimer().addWaiting(this);
 	}
