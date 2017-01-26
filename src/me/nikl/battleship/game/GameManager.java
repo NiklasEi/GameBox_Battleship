@@ -45,7 +45,7 @@ public class GameManager implements Listener{
 		this.othersHitSound = Sounds.HURT_FLESH.bukkitSound();
 		
 		this.setShipSound = Sounds.ANVIL_LAND.bukkitSound();
-		this.unSetShipSound = Sounds.WATER.bukkitSound();
+		this.unSetShipSound = Sounds.SPLASH2.bukkitSound();
 		
 		this.won = Sounds.LEVEL_UP.bukkitSound();
 		this.lost = Sounds.VILLAGER_NO.bukkitSound();
