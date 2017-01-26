@@ -985,7 +985,16 @@ public class Game{
 			return;
 		}
 		Player loser = isFirst? Bukkit.getPlayer(this.getFirstUUID()) : Bukkit.getPlayer(this.getSecondUUID());
-		Player winner = !isFirst? Bukkit.getPlayer(this.getFirstUUID()) : Bukkit.getPlayer(this.getSecondUUID()); 
+		Player winner = !isFirst? Bukkit.getPlayer(this.getFirstUUID()) : Bukkit.getPlayer(this.getSecondUUID());
+		
+		
+		if(loser == null || winner == null) return;
+		
+		if(Main.playMusic) {
+			loser.playSound(loser.getLocation(), Sounds.VILLAGER_NO.bukkitSound(), 10f, 1f);
+			winner.playSound(winner.getLocation(), Sounds.LEVEL_UP.bukkitSound(), 10f, 1f);
+		}
+		
 		
 		if(!getState().equals(GameState.FINISHED)){
 			if(plugin.getEconEnabled()){
