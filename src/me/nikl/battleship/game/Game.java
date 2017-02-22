@@ -72,19 +72,22 @@ public class Game{
 	private boolean switchGridsAfterFireTimerRanOut;
 	
 	private Sound yourTurnNotice;
+
+	private GameRules rule;
 	
 	
 	private Main plugin;
 	public boolean ruleFireAgainAfterHit;
 	
-	public Game(Main plugin, UUID firstUUID, UUID secondUUID){
+	public Game(Main plugin, UUID firstUUID, UUID secondUUID, GameRules rule){
 		this.yourTurnNotice = Sounds.NOTE_PIANO.bukkitSound();
 		this.updater = plugin.getUpdater();
 		this.setState(GameState.BUILDING);
 		this.plugin = plugin;
 		this.lang = plugin.lang;
 		this.config = plugin.getConfig();
-		
+
+		this.rule = rule;
 		if(config == null){
 			Bukkit.getConsoleSender().sendMessage(Main.prefix + " Failed to load config!");
 			Bukkit.getPluginManager().disablePlugin(plugin);
@@ -127,7 +130,7 @@ public class Game{
 		setState(GameState.SETTING_SHIP1);
 		this.timer = new GameTimer(this);
 		
-		if(Main.playMusic){
+		if(Main.playSounds){
 			first.playSound(first.getLocation(), yourTurnNotice, 10f, 1f );
 			second.playSound(second.getLocation(), yourTurnNotice, 10f, 1f );
 		}
@@ -290,7 +293,7 @@ public class Game{
 			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
 			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
-			if(Main.playMusic){
+			if(Main.playSounds){
 				first.playSound(first.getLocation(), yourTurnNotice, 10f, 1f );
 				second.playSound(second.getLocation(), yourTurnNotice, 10f, 1f );
 			}
@@ -310,7 +313,7 @@ public class Game{
 			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
 			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
-			if(Main.playMusic){
+			if(Main.playSounds){
 				first.playSound(first.getLocation(), yourTurnNotice, 10f, 1f );
 				second.playSound(second.getLocation(), yourTurnNotice, 10f, 1f );
 			}
@@ -330,7 +333,7 @@ public class Game{
 			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
 			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
-			if(Main.playMusic){
+			if(Main.playSounds){
 				first.playSound(first.getLocation(), yourTurnNotice, 10f, 1f );
 				second.playSound(second.getLocation(), yourTurnNotice, 10f, 1f );
 			}
@@ -348,7 +351,7 @@ public class Game{
 			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
 			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
-			if(Main.playMusic){
+			if(Main.playSounds){
 				first.playSound(first.getLocation(), yourTurnNotice, 10f, 1f );
 			}
 			break;
@@ -365,7 +368,7 @@ public class Game{
 			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
 			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
-			if(Main.playMusic){
+			if(Main.playSounds){
 				second.playSound(second.getLocation(), yourTurnNotice, 10f, 1f );
 			}
 			break;
@@ -740,8 +743,6 @@ public class Game{
 			//secondOwn = setState(lang.TITLE_LOST, secondOwn);
 			updater.updateTitle(first, chatColor(lang.TITLE_WON));
 			updater.updateTitle(second, chatColor(lang.TITLE_LOST));
-			plugin.addWinToStatistics(this.getFirstUUID());
-			plugin.addLoseToStatistics(this.getSecondUUID());
 		} else {
 			loser = Bukkit.getPlayer(this.getFirstUUID());
 			winner = Bukkit.getPlayer(this.getSecondUUID());
@@ -749,12 +750,10 @@ public class Game{
 			//secondOwn = setState(lang.TITLE_WON, secondOwn);
 			updater.updateTitle(first, chatColor(lang.TITLE_LOST));
 			updater.updateTitle(second, chatColor(lang.TITLE_WON));
-			plugin.addWinToStatistics(this.getSecondUUID());
-			plugin.addLoseToStatistics(this.getFirstUUID());
 		}
 		if(plugin.getEconEnabled()){
-			Main.econ.depositPlayer(winner, plugin.getReward());
-			winner.sendMessage(manager.chatColor(Main.prefix + lang.GAME_WON_MONEY.replaceAll("%reward%", plugin.getReward()+"")));
+			Main.econ.depositPlayer(winner, 0);
+			winner.sendMessage(manager.chatColor(Main.prefix + lang.GAME_WON_MONEY.replaceAll("%reward%", 0+"")));
 		} else {
 			winner.sendMessage(manager.chatColor(Main.prefix + lang.GAME_WON));
 		}
@@ -990,7 +989,7 @@ public class Game{
 		
 		if(loser == null || winner == null) return;
 		
-		if(Main.playMusic) {
+		if(Main.playSounds) {
 			loser.playSound(loser.getLocation(), Sounds.VILLAGER_NO.bukkitSound(), 10f, 1f);
 			winner.playSound(winner.getLocation(), Sounds.LEVEL_UP.bukkitSound(), 10f, 1f);
 		}
@@ -998,8 +997,8 @@ public class Game{
 		
 		if(!getState().equals(GameState.FINISHED)){
 			if(plugin.getEconEnabled()){
-				Main.econ.depositPlayer(winner, plugin.getReward());
-				winner.sendMessage(chatColor(Main.prefix + lang.GAME_WON_MONEY_TOO_SLOW.replaceAll("%reward%", plugin.getReward()+"").replaceAll("%loser%", first.getName())));
+				Main.econ.depositPlayer(winner, 0);
+				winner.sendMessage(chatColor(Main.prefix + lang.GAME_WON_MONEY_TOO_SLOW.replaceAll("%reward%", 0+"").replaceAll("%loser%", first.getName())));
 			} else {
 				winner.sendMessage(chatColor(Main.prefix + lang.GAME_WON_TOO_SLOW.replaceAll("%loser%", first.getName())));
 			}
@@ -1008,9 +1007,7 @@ public class Game{
 			winner.closeInventory();
 			loser.closeInventory();
 			this.setClosingInv(false);
-			
-			plugin.addWinToStatistics(winner.getUniqueId());
-			plugin.addLoseToStatistics(loser.getUniqueId());
+
 		} else {
 			this.setClosingInv(true);
 			winner.closeInventory();
@@ -1254,5 +1251,8 @@ public class Game{
 		othersHit.setItemMeta(metaothersHit);
 		othersHit.setAmount(1);		
 	}
-	
+
+	public GameRules getRule() {
+		return rule;
+	}
 }

@@ -1,46 +1,49 @@
 package me.nikl.battleship;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.util.UUID;
-import java.util.logging.Level;
-
-import me.nikl.battleship.commands.Commands;
-import me.nikl.battleship.commands.TopCommand;
+import me.nikl.battleship.game.GameManager;
+import me.nikl.battleship.game.GameRules;
+import me.nikl.battleship.update.*;
+import me.nikl.gamebox.ClickAction;
+import me.nikl.gamebox.GameBox;
+import me.nikl.gamebox.guis.GUIManager;
+import me.nikl.gamebox.guis.button.AButton;
+import me.nikl.gamebox.guis.gui.game.GameGui;
+import me.nikl.gamebox.guis.gui.game.StartMultiplayerGamePage;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import me.nikl.battleship.game.GameManager;
-import me.nikl.battleship.gui.HeadGUI;
-import me.nikl.battleship.update.*;
-import net.milkbowl.vault.economy.Economy;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
 
 public class Main extends JavaPlugin{
 
 	private GameManager manager;
-	private FileConfiguration config, stats;
-	private File con, sta;
+	private FileConfiguration config;
+	private File con;
 	public static Economy econ = null;
+	public static final String gameID = "battleship";
 	public static String prefix = "[&3Battleship&r]";
 	public Boolean econEnabled;
-	public Double reward, price;
 	private int invitationValidFor;
-	public HeadGUI headGUI;
 	public Language lang;
 	public boolean disabled;
 	private InvTitle updater;
+
+	private GameBox gameBox;
 	
-	public static boolean playMusic = true;
+	public static boolean playSounds = true;
 	
 	@Override
 	public void onEnable(){
@@ -53,12 +56,186 @@ public class Main extends JavaPlugin{
         
 		this.disabled = false;
 		this.con = new File(this.getDataFolder().toString() + File.separatorChar + "config.yml");
-		this.sta = new File(this.getDataFolder().toString() + File.separatorChar + "stats.yml");
 
 		reload();
 		if(disabled) return;
+
+		hook();
+		if(disabled) return;
 	}
-	
+
+
+	private void hook() {
+		if(Bukkit.getPluginManager().getPlugin("GameBox") == null || !Bukkit.getPluginManager().getPlugin("GameBox").isEnabled()){
+			Bukkit.getLogger().log(Level.WARNING, " GameBox not found");
+			Bukkit.getLogger().log(Level.WARNING, " Continuing as standalone");
+			Bukkit.getPluginManager().disablePlugin(this);
+			disabled = true;
+			return;
+		}
+
+
+
+
+
+		gameBox = (me.nikl.gamebox.GameBox)Bukkit.getPluginManager().getPlugin("GameBox");
+
+
+		// disable economy if it is disabled for either one of the plugins
+		this.econEnabled = this.econEnabled && gameBox.getEconEnabled();
+		playSounds = playSounds && GameBox.playSounds;
+
+		GUIManager guiManager = gameBox.getPluginManager().getGuiManager();
+
+		this.manager = new GameManager(this);
+
+		//TodO: move game and prefix to Language
+		gameBox.getPluginManager().registerGame(manager, gameID, "Battleship", 2);
+
+		GameGui gameGui = new GameGui(gameBox, guiManager, 54, gameID, "main");
+
+
+
+		Map<String, GameRules> gameTypes = new HashMap<>();
+
+		if(config.isConfigurationSection("gameBox.gameButtons")){
+			ConfigurationSection gameButtons = config.getConfigurationSection("gameBox.gameButtons");
+			ConfigurationSection buttonSec;
+			int moves, numberOfGems;
+			double cost;
+			boolean bombs;
+
+			String displayName;
+			ArrayList<String> lore;
+
+			GameRules rules;
+
+			for(String buttonID : gameButtons.getKeys(false)){
+				buttonSec = gameButtons.getConfigurationSection(buttonID);
+
+
+				if(!buttonSec.isString("materialData")){
+					Bukkit.getLogger().log(Level.WARNING, " missing material data under: gameBox.gameButtons." + buttonID + "        can not load the button");
+					continue;
+				}
+
+				ItemStack mat = getItemStack(buttonSec.getString("materialData"));
+				if(mat == null){
+					Bukkit.getLogger().log(Level.WARNING, " error loading: gameBox.gameButtons." + buttonID);
+					Bukkit.getLogger().log(Level.WARNING, "     invalid material data");
+					continue;
+				}
+
+
+				AButton button =  new AButton(mat.getData(), 1);
+				ItemMeta meta = button.getItemMeta();
+
+				if(buttonSec.isString("displayName")){
+					displayName = chatColor(buttonSec.getString("displayName"));
+					meta.setDisplayName(displayName);
+				}
+
+				if(buttonSec.isList("lore")){
+					lore = new ArrayList<>(buttonSec.getStringList("lore"));
+					for(int i = 0; i < lore.size();i++){
+						lore.set(i, chatColor(lore.get(i)));
+					}
+					meta.setLore(lore);
+				}
+
+				guiManager.registerGameGUI(gameID, buttonID, new StartMultiplayerGamePage(gameBox, guiManager, 54, gameID, buttonID, "Testing start gui"));
+
+
+				button.setItemMeta(meta);
+				button.setAction(ClickAction.CHANGE_GAME_GUI);
+				button.setArgs(gameID, buttonID);
+
+				bombs = buttonSec.getBoolean("bombs", true);
+				moves = buttonSec.getInt("moves", 20);
+				numberOfGems = buttonSec.getInt("differentGems", 8);
+				cost = buttonSec.getDouble("cost", 0.);
+
+
+				rules = new GameRules(moves, numberOfGems, bombs, cost);
+
+				if(buttonSec.isInt("slot")){
+					gameGui.setButton(button, buttonSec.getInt("slot"));
+				} else {
+					gameGui.setButton(button);
+				}
+
+				gameTypes.put(buttonID, rules);
+			}
+		}
+
+
+		this.manager.setGameTypes(gameTypes);
+
+
+
+		getMainButton:
+		if(config.isConfigurationSection("gameBox.mainButton")){
+			ConfigurationSection mainButtonSec = config.getConfigurationSection("gameBox.mainButton");
+			if(!mainButtonSec.isString("materialData")) break getMainButton;
+
+			ItemStack gameButton = getItemStack(mainButtonSec.getString("materialData"));
+			if(gameButton == null){
+				gameButton = (new ItemStack(Material.EMERALD));
+			}
+			ItemMeta meta = gameButton.getItemMeta();
+			meta.setDisplayName(chatColor(mainButtonSec.getString("displayName","&3GemCrush")));
+			if(mainButtonSec.isList("lore")){
+				ArrayList<String> lore = new ArrayList<>(mainButtonSec.getStringList("lore"));
+				for(int i = 0; i < lore.size();i++){
+					lore.set(i, chatColor(lore.get(i)));
+				}
+				meta.setLore(lore);
+			}
+			gameButton.setItemMeta(meta);
+			guiManager.registerGameGUI(gameID, "main", gameGui, gameButton, "gemcrush", "gc");
+		} else {
+			Bukkit.getLogger().log(Level.WARNING, " Missing or wrong configured main button in the configuration file!");
+		}
+	}
+
+
+
+
+	private ItemStack getItemStack(String itemPath){
+		Material mat; short data;
+		String[] obj = itemPath.split(":");
+
+		if (obj.length == 2) {
+			try {
+				mat = Material.matchMaterial(obj[0]);
+			} catch (Exception e) {
+				return null; // material name doesn't exist
+			}
+
+			try {
+				data = Short.valueOf(obj[1]);
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+				return null; // data not a number
+			}
+
+			//noinspection deprecation
+			if(mat == null) return null;
+			ItemStack stack = new ItemStack(mat);
+			stack.setDurability(data);
+			return stack;
+		} else {
+			try {
+				mat = Material.matchMaterial(obj[0]);
+			} catch (Exception e) {
+				return null; // material name doesn't exist
+			}
+			//noinspection deprecation
+			return (mat == null ? null : new ItemStack(mat));
+		}
+	}
+
+
 	private boolean setupUpdater() {
 		String version;
 
@@ -112,13 +289,7 @@ public class Main extends JavaPlugin{
 
 	@Override
 	public void onDisable(){
-		if(stats!=null){
-			try {
-				this.stats.save(sta);
-			} catch (IOException e) {
-				getLogger().log(Level.SEVERE, "Could not save statistics", e);
-			}		
-		}
+
 	}
 	
     private boolean setupEconomy(){
@@ -140,14 +311,7 @@ public class Main extends JavaPlugin{
 			e.printStackTrace(); 
 		} catch (FileNotFoundException e) { 
 			e.printStackTrace(); 
-		} 
- 
-		InputStream defConfigStream = this.getResource("config.yml"); 
-		if (defConfigStream != null){		
-			@SuppressWarnings("deprecation") 
-			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream); 
-			this.config.setDefaults(defConfig); 
-		} 
+		}
 	} 
 	
 	public GameManager getManager() {
@@ -158,35 +322,11 @@ public class Main extends JavaPlugin{
 		if(!con.exists()){
 			this.saveResource("config.yml", false);
 		}
-		if(!sta.exists()){
-			try {
-				sta.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
 		reloadConfig();
-		
-		// if this method was not called from onEnable stats is not null and has to be saved to the file first!
-		if(stats!=null){
-			try {
-				this.stats.save(sta);
-			} catch (IOException e) {
-				getLogger().log(Level.SEVERE, "Could not save statistics", e);
-			}
-		}
-		
-		// load stats file
-		try {
-			this.stats = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(this.sta), "UTF-8"));
-		} catch (UnsupportedEncodingException | FileNotFoundException e) {
-			e.printStackTrace();
-		} 
-		
 		
 		this.lang = new Language(this);
 		
-		Main.playMusic = getConfig().getBoolean("gameRules.playSounds", true);
+		Main.playSounds = getConfig().getBoolean("gameRules.playSounds", true);
 		
 		this.econEnabled = false;
 		if(getConfig().getBoolean("economy.enabled")){
@@ -196,45 +336,13 @@ public class Main extends JavaPlugin{
 				getServer().getPluginManager().disablePlugin(this);
 				return;
 			}
-			this.price = getConfig().getDouble("economy.cost");
-			this.reward = getConfig().getDouble("economy.reward");
-			if(price == null || reward == null || price < 0. || reward < 0.){
-				Bukkit.getConsoleSender().sendMessage(chatColor(prefix + " &4Wrong configuration in section economy!"));
-				getServer().getPluginManager().disablePlugin(this);
-			}
 		}
 		
 		getValuesFromConfig();
 		
 		this.setManager(new GameManager(this));
-		this.getCommand("battleship").setExecutor(new Commands(this));
-		this.headGUI = new HeadGUI(this);
-		this.getCommand("battleshipGUI").setExecutor(headGUI);
-		this.getCommand("battleshipTop").setExecutor(new TopCommand(this));
 	}
 
-	public void addWinToStatistics(UUID uuid) {
-		if(this.stats == null) return;
-		if(!stats.isInt(uuid.toString() + "." + "won")){
-			stats.set(uuid.toString() + "." + "won", 1);
-			return;
-		}
-		this.stats.set(uuid.toString() + "." + "won", (this.stats.getInt(uuid.toString() + "." + "won")+1));
-	}
-	
-	public void addLoseToStatistics(UUID uuid) {
-		if(this.stats == null) return;
-		if(!stats.isInt(uuid.toString() + "." + "lost")){
-			stats.set(uuid.toString() + "." + "lost", 1);
-			return;
-		}
-		this.stats.set(uuid.toString() + "." + "lost", (this.stats.getInt(uuid.toString() + "." + "lost")+1));
-	}
-	
-	public FileConfiguration getStatistics(){
-		return this.stats;
-	}
-	
 	public void setManager(GameManager manager) {
 		this.manager = manager;
 	}
@@ -249,14 +357,6 @@ public class Main extends JavaPlugin{
     
     public Boolean getEconEnabled(){
     	return this.econEnabled;
-    }
-    
-    public Double getReward(){
-    	return this.reward;
-    }
-    
-    public Double getPrice(){
-    	return this.price;
     }
 
 	public int getInvitationValidFor() {

@@ -23,6 +23,73 @@ cruiser: 2
 # size: 2 blocks
 destroyer: 1
 
+
+gameBox:
+  mainButton:
+    # define the Material and data for the button (format: 'material:data')
+    materialData: "EMERALD"
+    # display name of the button
+    displayName: "&3GemCrush"
+    # lore of the button
+    lore:
+    - ""
+    - "&1It's raining gems..."
+  gameButtons:
+    normalGame:
+      materialData: "EMERALD"
+      displayName: "&1It's raining gems"
+      lore:
+      - ""
+      - "&4Moves: &220"
+      - '&4Gems: &28'
+      - '&4Bombs: &2true'
+      - '&4Cost: &45'
+      moves: 20
+      # number of different gems in a normal game
+      #   This number HAS TO BE equal or smaller then the number of gems defined in the section normalGems below
+      #   8 or 7 are good numbers. 7 is easier and the game has to shuffle less but 8 is a bit more challenging
+      differentGems: 8
+      # enable/disable bombs for this game
+      bombs: true
+      # slot of the button in the gui
+      #   be careful to not use the same twice ;)
+      slot: 0
+      cost: 5
+    lessMovesAndLessGemTypes:
+      materialData: "nether_star"
+      displayName: "&1So much &l&epling"
+      lore:
+      - ""
+      - "&4Moves: &210"
+      - '&4Gems: &24'
+      - '&4Bombs: &2true'
+      - '&4Cost: &410'
+      moves: 10
+      differentGems: 4
+      bombs: true
+      slot: 5
+      cost: 10
+    materialdatatest:
+      materialData: "nether_star"
+      displayName: "&1The cheaper &l&epling"
+      lore:
+      - ""
+      - "&4Moves: &210"
+      - '&4Gems: &24'
+      - '&4Bombs: &4false'
+      - '&4Cost: &45'
+      moves: 10
+      differentGems: 4
+      bombs: false
+      slot: 6
+      cost: 5
+
+
+
+
+
+
+
 gameRules:
   # if this is true players can shoot again after a hit and the grids will change after every miss
   #   if it is false the grid will change after every shot regardless of hit/miss

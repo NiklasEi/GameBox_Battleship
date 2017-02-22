@@ -36,7 +36,7 @@ public class Waiting {
 		for(String message: lang.GAME_INVITE_SECOND){
 			secondPlayer.sendMessage(colored(Main.prefix + message.replaceAll("%first%", firstPlayer.getName()).replaceAll("%second%", secondPlayer.getName()).replaceAll("%time%", manager.getPlugin().getInvitationValidFor() + "")));
 		}
-		if(Main.playMusic)secondPlayer.playSound(secondPlayer.getLocation(), invite, 10f, 1f );
+		if(Main.playSounds)secondPlayer.playSound(secondPlayer.getLocation(), invite, 10f, 1f );
 		
 		
 		this.setAge(0);

@@ -40,7 +40,7 @@ public class AcceptTimer extends BukkitRunnable{
 				if(first != null){
 					first.sendMessage(colored(Main.prefix + lang.GAME_INVITE_EXPIRED));
 					if(manager.getPlugin().getEconEnabled()){
-						Main.econ.depositPlayer(first, manager.getPlugin().getPrice());
+						Main.econ.depositPlayer(first, 0);
 						first.sendMessage(colored(Main.prefix + lang.GAME_INVITE_RETURNED_MONEY));
 					}
 				}
@@ -107,9 +107,9 @@ public class AcceptTimer extends BukkitRunnable{
 		if(firstPlayer == null || secondPlayer == null) return false;		
 		
 		if(plugin.getEconEnabled()){
-			if(Main.econ.getBalance(firstPlayer) >= plugin.getPrice()){
-				Main.econ.withdrawPlayer(firstPlayer, plugin.getPrice());
-				firstPlayer.sendMessage(plugin.chatColor(Main.prefix + lang.GAME_PAYED.replaceAll("%cost%", plugin.getPrice()+"")));
+			if(Main.econ.getBalance(firstPlayer) >= 0){
+				Main.econ.withdrawPlayer(firstPlayer, 0);
+				firstPlayer.sendMessage(plugin.chatColor(Main.prefix + lang.GAME_PAYED.replaceAll("%cost%", 0+"")));
 				addWaiting(new Waiting(manager, first, second));
 				return true;					
 			} else {
