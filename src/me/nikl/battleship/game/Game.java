@@ -134,10 +134,10 @@ public class Game{
 			first.playSound(first.getLocation(), yourTurnNotice, 10f, 1f );
 			second.playSound(second.getLocation(), yourTurnNotice, 10f, 1f );
 		}
-		
+		this.closingInv = true;
 		showInventory(true, true);
 		showInventory(false, true);
-		//Bukkit.getConsoleSender().sendMessage("first sees own: " + firstSeesOwn + "second sees own: " + secondSeesOwn); // XXX
+		this.closingInv = false;
 	}
 
 
@@ -286,10 +286,12 @@ public class Game{
 			setShipsSet(false, false);
 			setFirstCurrentState(lang.TITLE_SET_SHIP_2.replaceAll("%count%", numBattleship+""));
 			setSecondCurrentState(lang.TITLE_SET_SHIP_2.replaceAll("%count%", numBattleship+""));
-			//firstOwn = setState(firstCurrentState.replaceAll("%timer%", shipSetTime+""), firstOwn);
-			//secondOwn = setState(secondCurrentState.replaceAll("%timer%", shipSetTime+""), secondOwn);
+
+			closingInv = true;
 			showInventory(true, true);
 			showInventory(false, true);
+			closingInv = false;
+
 			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
 			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
@@ -306,10 +308,12 @@ public class Game{
 			setShipsSet(false, false);
 			setFirstCurrentState(lang.TITLE_SET_SHIP_3.replaceAll("%count%", numCruiser+""));
 			setSecondCurrentState(lang.TITLE_SET_SHIP_3.replaceAll("%count%", numCruiser+""));
-			//firstOwn = setState(firstCurrentState.replaceAll("%timer%", shipSetTime+""), firstOwn);
-			//secondOwn = setState(secondCurrentState.replaceAll("%timer%", shipSetTime+""), secondOwn);
+
+			closingInv = true;
 			showInventory(true, true);
 			showInventory(false, true);
+			closingInv = false;
+
 			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
 			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
@@ -326,10 +330,12 @@ public class Game{
 			setShipsSet(false, false);
 			setFirstCurrentState(lang.TITLE_SET_SHIP_4.replaceAll("%count%", numDestroyer+""));
 			setSecondCurrentState(lang.TITLE_SET_SHIP_4.replaceAll("%count%", numDestroyer+""));
-			//firstOwn = setState(firstCurrentState.replaceAll("%timer%", shipSetTime+""), firstOwn);
-			//secondOwn = setState(secondCurrentState.replaceAll("%timer%", shipSetTime+""), secondOwn);
+
+			closingInv = true;
 			showInventory(true, true);
 			showInventory(false, true);
+			closingInv = false;
+
 			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
 			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
@@ -344,10 +350,12 @@ public class Game{
 			currentTime = fireTime;
 			setFirstCurrentState(lang.TITLE_ATTACKER);
 			setSecondCurrentState(lang.TITLE_DEFENDER);
-			//firstOthers = setState(firstCurrentState.replaceAll("%timer%", fireTime+""), firstOthers);
-			//secondOwn = setState(secondCurrentState.replaceAll("%timer%", fireTime+""), secondOwn);
+
+			closingInv = true;
 			showInventory(true, false);
 			showInventory(false, true);
+			closingInv = false;
+
 			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
 			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
@@ -361,10 +369,12 @@ public class Game{
 			currentTime = fireTime;
 			setFirstCurrentState(lang.TITLE_DEFENDER);
 			setSecondCurrentState(lang.TITLE_ATTACKER);
-			//firstOwn = setState(firstCurrentState.replaceAll("%timer%", fireTime+""), firstOwn);
-			//secondOthers = setState(secondCurrentState.replaceAll("%timer%", fireTime+""), secondOthers);
+
+			closingInv = true;
 			showInventory(true, true);
 			showInventory(false, false);
+			closingInv = false;
+
 			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
 			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
@@ -385,16 +395,6 @@ public class Game{
 			setSecondCurrentState(lang.TITLE_CHANGING);
 			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
 			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
-			/*if(firstSeesOwn){
-				firstOwn = setState(firstCurrentState.replaceAll("%timer%", changeTime+""), firstOwn);
-			} else {
-				firstOthers = setState(firstCurrentState.replaceAll("%timer%", changeTime+""), firstOthers);				
-			}
-			if(secondSeesOwn){
-				secondOwn = setState(secondCurrentState.replaceAll("%timer%", changeTime+""), secondOwn);				
-			} else {
-				secondOthers = setState(secondCurrentState.replaceAll("%timer%", changeTime+""), secondOthers);				
-			}*/
 			break;
 			
 			
@@ -1254,5 +1254,29 @@ public class Game{
 
 	public GameRules getRule() {
 		return rule;
+	}
+
+	public Player getFirst(){
+		return this.first;
+	}
+
+	public Player getSecond(){
+		return this.second;
+	}
+
+	public void setFirst(Player first){
+		this.first = first;
+	}
+
+	public void setSecond(Player second){
+		this.second = second;
+	}
+
+	public void setFirstUUID(UUID uuid){
+		this.firstUUID = uuid;
+	}
+
+	public void setSecondUUID(UUID uuid){
+		this.secondUUID = uuid;
 	}
 }
