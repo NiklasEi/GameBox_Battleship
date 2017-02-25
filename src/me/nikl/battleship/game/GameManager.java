@@ -77,14 +77,14 @@ public class GameManager implements IGameManager{
 	}
 	
 	public boolean isFirst(UUID uuid, Game game){
-		if(game.getFirstUUID().equals(uuid)){
+		if(game.getFirstUUID() != null && game.getFirstUUID().equals(uuid)){
 			return true;
 		}
 		return false;
 	}
 	
 	public boolean isSecond(UUID uuid, Game game){
-		if(game.getSecondUUID().equals(uuid)){
+		if(game.getSecondUUID() != null && game.getSecondUUID().equals(uuid)){
 			return true;
 		}
 		return false;
@@ -318,54 +318,35 @@ public class GameManager implements IGameManager{
 
 	@Override
 	public boolean onInventoryClose(InventoryCloseEvent event) {
-		//Bukkit.getConsoleSender().sendMessage("called inventoryClose"); // XXX
 		if(!isInGame(event.getPlayer().getUniqueId())){
-			//Bukkit.getConsoleSender().sendMessage("not ingame"); // XXX
 			return false;
 		}
 		if(getGame(event.getPlayer().getUniqueId()).getClosingInv()){
-			//Bukkit.getConsoleSender().sendMessage("the game closed this!"); // XXX
-			return false;
-		}
-		if(!getGame(event.getPlayer().getUniqueId()).isCurrentInventory(event.getInventory())){
 			return false;
 		}
 		Game game = getGame(event.getPlayer().getUniqueId());
 		game.cancelTimer();
-		Player first = Bukkit.getPlayer(game.getFirstUUID());
-		Player second = Bukkit.getPlayer(game.getSecondUUID());
-		boolean winner;
-		if(first == null || second == null){
-			Bukkit.getConsoleSender().sendMessage(chatColor(Main.prefix + " &4Error on inv. close"));
-			Bukkit.getConsoleSender().sendMessage(chatColor(Main.prefix + " &4Deleting game..."));
+		Player first = game.getFirst();
+		Player second = game.getSecond();
+		boolean firstClosed = event.getPlayer().getUniqueId().equals(game.getFirstUUID());
+		if((!firstClosed && first == null) || (firstClosed && second == null)){
 			removeGame(game);
-			if(first != null){
-				first.closeInventory();
-			}
-			if(second != null){
-				second.closeInventory();
-			}
+			return true;
 		}
 
-		// if first player closed second player won and the other way around
-		winner = !event.getPlayer().getUniqueId().equals(game.getFirstUUID());
-
-		removeGame(getGame(event.getPlayer().getUniqueId()));
-		if(!game.getState().equals(GameState.FINISHED)){
-			if(!winner){
-				// second won the game because first closed
-			} else {
-				// first won the game because second closed
-			}
-
+		// make sure the player is not counted as in game anymore
+		if(firstClosed){
+			game.setFirst(null);
+			game.setFirstUUID(null);
 		} else {
-			if(!winner){
-				second.closeInventory();
-			} else {
-				first.closeInventory();
-			}
-
+			game.setSecond(null);
+			game.setSecondUUID(null);
 		}
+
+		game.setState(GameState.FINISHED);
+		plugin.getUpdater().updateTitle(firstClosed?second:first, lang.TITLE_WON);
+
+		//ToDo: set statistics?
 		return true;
 	}
 
@@ -397,7 +378,30 @@ public class GameManager implements IGameManager{
 
 	@Override
 	public void removeFromGame(UUID uuid) {
+		Game game = getGame(uuid);
+		game.cancelTimer();
+		Player first = game.getFirst();
+		Player second = game.getSecond();
+		boolean firstClosed = uuid.equals(game.getFirstUUID());
+		if((!firstClosed && first == null) || (firstClosed && second == null)){
+			removeGame(game);
+			return;
+		}
 
+		// make sure the player is not counted as in game anymore
+		if(firstClosed){
+			game.setFirst(null);
+			game.setFirstUUID(null);
+		} else {
+			game.setSecond(null);
+			game.setSecondUUID(null);
+		}
+
+		game.setState(GameState.FINISHED);
+		plugin.getUpdater().updateTitle(firstClosed?second:first, lang.TITLE_WON);
+
+		//ToDo: set statistics?
+		return;
 	}
 
 	public void setGameTypes(Map<String,GameRules> gameTypes) {
