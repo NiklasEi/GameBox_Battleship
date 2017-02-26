@@ -103,17 +103,26 @@ public class Language {
 	}
 
 	private List<String> getStringList(String path) {
+		List<String> toReturn;
 		if(!langFile.isList(path)){
-			return defaultLang.getStringList(path);
+			toReturn = defaultLang.getStringList(path);
+			for(int i = 0; i<toReturn.size(); i++){
+				toReturn.set(i, ChatColor.translateAlternateColorCodes('&',toReturn.get(i)));
+			}
+			return toReturn;
 		}
-		return langFile.getStringList(path);
+		toReturn = langFile.getStringList(path);
+		for(int i = 0; i<toReturn.size(); i++){
+			toReturn.set(i, ChatColor.translateAlternateColorCodes('&',toReturn.get(i)));
+		}
+		return toReturn;
 	}
 
 	private String getString(String path) {
 		if(!langFile.isString(path)){
-			return defaultLang.getString(path);
+			return ChatColor.translateAlternateColorCodes('&',defaultLang.getString(path));
 		}
-		return langFile.getString(path);
+		return ChatColor.translateAlternateColorCodes('&',langFile.getString(path));
 	}
 
 	private boolean getLangFile() {
