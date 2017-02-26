@@ -1,37 +1,6 @@
 name: Battleship
 author: Nikl
 main: me.nikl.battleship.Main
-version: 1.7.0
-commands:
-  battleship:
-    description: play the game
-    usage: /battleship
-    aliases: [bs]
-  battleshipgui:
-    description: open gui
-    usage: /battleshipgui
-    aliases: [bsgui, bsinvite]
-  battleshiptop:
-    description: show top 10 players in wins
-    usage: /battleshiptop
-    aliases: [bstop]
-permissions:
-  battleship.*:
-    description: Gives all permissions
-    children:
-      battleship.admin: true
-  battleship.admin:
-    description: Gives all permissions
-    default: op
-    children:
-      battleship.play: true
-      battleship.reload: true
-  battleship.play:
-    description: You are allowed to play
-    default: true
-  battleship.reload:
-    description: You can reload the plugin
-  battleship.top:
-    default: true
-    description: You can use /bstop
+version: 2.0.0
+depends: [GameBox]
     
