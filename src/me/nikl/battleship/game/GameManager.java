@@ -5,6 +5,7 @@ import java.util.logging.Level;
 
 import me.nikl.battleship.Sounds;
 import me.nikl.gamebox.GameBox;
+import me.nikl.gamebox.data.SaveType;
 import me.nikl.gamebox.game.IGameManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -14,7 +15,6 @@ import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 
-import me.nikl.battleship.AcceptTimer;
 import me.nikl.battleship.Language;
 import me.nikl.battleship.Main;
 
@@ -22,7 +22,6 @@ public class GameManager implements IGameManager{
 
 	private Main plugin;
 	private Set<Game> games;
-	private AcceptTimer timer;
 	private Language lang;
 
 	private Map<String, GameRules> gameTypes = new HashMap<>();
@@ -32,7 +31,6 @@ public class GameManager implements IGameManager{
 
 	public GameManager(Main plugin){
 		this.plugin = plugin;
-		this.timer = new AcceptTimer(this);
 		this.games = new HashSet<>();
 		this.lang = plugin.lang;
 		
@@ -63,10 +61,6 @@ public class GameManager implements IGameManager{
 	
 	public Main getPlugin(){
 		return this.plugin;
-	}
-
-	public AcceptTimer getTimer() {
-		return timer;
 	}
 
 	private boolean isIngame(UUID uuid, Game game) {
@@ -343,10 +337,14 @@ public class GameManager implements IGameManager{
 			game.setSecondUUID(null);
 		}
 
-		game.setState(GameState.FINISHED);
-		plugin.getUpdater().updateTitle(firstClosed?second:first, lang.TITLE_WON);
+		if(game.getState() != GameState.FINISHED) {
+			plugin.getUpdater().updateTitle(firstClosed ? second : first, lang.TITLE_WON);
+			game.setState(GameState.FINISHED);
+		}
 
-		//ToDo: set statistics?
+		if(game.getRule().isSaveStats()){
+			plugin.getGameBox().getStatistics().addStatistics(event.getPlayer().getUniqueId(), Main.gameID, game.getRule().getKey(), 1., SaveType.WINS);
+		}
 		return true;
 	}
 
