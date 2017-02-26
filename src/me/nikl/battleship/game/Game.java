@@ -169,8 +169,8 @@ public class Game{
 				this.changeTime = timer.getInt("changingGrids.countdown");
 			}
 		}
-		this.ruleFireAgainAfterHit = config.getBoolean("gameRules.fireAgainAfterHit", true);
-		this.switchGridsAfterFireTimerRanOut = config.getBoolean("gameRules.switchAttackerAfterFireTimerRanOut", false);
+		this.ruleFireAgainAfterHit = !rule.isChangeGridAfterHit();
+		this.switchGridsAfterFireTimerRanOut = rule.isSwitchGridsAfterFireTimerRanOut();
 	}
 
 	
@@ -227,7 +227,7 @@ public class Game{
 
 	private void getShipNumbers() {
 		if(config.isInt("aircraftCarrier")){
-			this.numCarrier = config.getInt("aircraftCarrier");
+			this.numCarrier = rule.getAircraftCarrier();
 			if(numCarrier<1 || numCarrier>2){
 				Bukkit.getConsoleSender().sendMessage(Main.prefix+" Not valid number of carriers in config!");
 				this.numCarrier = 1;				
@@ -237,7 +237,7 @@ public class Game{
 			this.numCarrier = 1;
 		}
 		if(config.isInt("battleship")){
-			this.numBattleship = config.getInt("battleship");
+			this.numBattleship = rule.getBattleship();
 			if(numBattleship<1 || numBattleship>2){
 				Bukkit.getConsoleSender().sendMessage(Main.prefix+" Not valid number of battleships in config!");
 				this.numBattleship = 1;				
@@ -247,7 +247,7 @@ public class Game{
 			this.numBattleship = 1;
 		}
 		if(config.isInt("cruiser")){
-			this.numCruiser = config.getInt("cruiser");
+			this.numCruiser = rule.getCruiser();
 			if(numCruiser<1 || numCruiser>2){
 				Bukkit.getConsoleSender().sendMessage(Main.prefix+" Not valid number of cruisers in config!");
 				this.numCruiser = 1;				
@@ -257,7 +257,7 @@ public class Game{
 			this.numCruiser = 1;
 		}
 		if(config.isInt("destroyer")){
-			this.numDestroyer = config.getInt("destroyer");
+			this.numDestroyer = rule.getDestroyer();
 			if(numDestroyer<1 || numDestroyer>2){
 				Bukkit.getConsoleSender().sendMessage(Main.prefix+" Not valid number of destroyers in config!");
 				this.numDestroyer = 1;				
@@ -266,7 +266,6 @@ public class Game{
 			Bukkit.getConsoleSender().sendMessage(Main.prefix+" Not valid number of destroyers in config!");
 			this.numDestroyer = 1;
 		}
-		
 	}
 
 
@@ -836,7 +835,7 @@ public class Game{
 		} else if(this.getState().equals(GameState.SETTING_SHIP4)){
 			unLockShips();
 			readyToStart();
-			this.setState(GameState.FIRST_TURN);			
+			this.setState(GameState.FIRST_TURN);
 		}
 	}
 
