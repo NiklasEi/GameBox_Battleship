@@ -37,9 +37,8 @@ public class Main extends JavaPlugin{
 	private File con;
 	public static Economy econ = null;
 	public static final String gameID = "battleship";
-	public static String prefix = "[&3Battleship&r]";
+	public static String prefix = ChatColor.translateAlternateColorCodes('&', "[&3Battleship&r]");
 	public Boolean econEnabled;
-	private int invitationValidFor;
 	public Language lang;
 	public boolean disabled;
 	private InvTitle updater;
@@ -368,18 +367,6 @@ public class Main extends JavaPlugin{
 	public InvTitle getUpdater(){
 		return this.updater;
 	}
-	
-	private void getValuesFromConfig() {
-		FileConfiguration config = getConfig();
-		if(!config.isConfigurationSection("timers") || !config.isInt("timers.invitationTimer.validFor")){
-			Bukkit.getConsoleSender().sendMessage(chatColor(Main.prefix + " &4No 'timers' section or invalid values in 'timers' section"));
-			Bukkit.getConsoleSender().sendMessage(chatColor(Main.prefix + " &4Using default values!"));
-			this.invitationValidFor = 15;
-		} else {
-			ConfigurationSection timer = config.getConfigurationSection("timers");
-			this.invitationValidFor = timer.getInt("invitationTimer.validFor");
-		}		
-	}
 
 	@Override
 	public void onDisable(){
@@ -431,8 +418,7 @@ public class Main extends JavaPlugin{
 				return;
 			}
 		}
-		
-		getValuesFromConfig();
+
 		
 		this.setManager(new GameManager(this));
 	}
@@ -452,10 +438,6 @@ public class Main extends JavaPlugin{
     public Boolean getEconEnabled(){
     	return this.econEnabled;
     }
-
-	public int getInvitationValidFor() {
-		return invitationValidFor;
-	}
 
 	public GameBox getGameBox(){
     	return gameBox;
