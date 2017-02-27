@@ -5,6 +5,7 @@ import java.util.logging.Level;
 
 import me.nikl.battleship.Sounds;
 import me.nikl.gamebox.GameBox;
+import me.nikl.gamebox.Permissions;
 import me.nikl.gamebox.data.SaveType;
 import me.nikl.gamebox.game.IGameManager;
 import org.bukkit.Bukkit;
@@ -42,7 +43,7 @@ public class GameManager implements IGameManager{
 		this.othersHitSound = Sounds.HURT_FLESH.bukkitSound();
 		
 		this.setShipSound = Sounds.ANVIL_LAND.bukkitSound();
-		this.unSetShipSound = Sounds.SPLASH2.bukkitSound();
+		this.unSetShipSound = Sounds.CLICK.bukkitSound();
 		
 		this.won = Sounds.LEVEL_UP.bukkitSound();
 		this.lost = Sounds.VILLAGER_NO.bukkitSound();
@@ -249,6 +250,7 @@ public class GameManager implements IGameManager{
 						if(game.isWon(isFirst)){
 							game.setState(GameState.FINISHED);
 							game.won(isFirst);
+							// ToDo save stats!
 							if(Main.playSounds) {
 								player.playSound(player.getLocation(), won, 10f, 1f);
 								Player secondPlayer = Bukkit.getPlayer(game.getSecondUUID());
@@ -343,9 +345,13 @@ public class GameManager implements IGameManager{
 		}
 
 		if(game.getRule().isSaveStats()){
-			plugin.getGameBox().getStatistics().addStatistics(event.getPlayer().getUniqueId(), Main.gameID, game.getRule().getKey(), 1., SaveType.WINS);
+			addWin(firstClosed?game.getSecondUUID():game.getFirstUUID(), game.getRule().getKey());
 		}
 		return true;
+	}
+
+	public void addWin(UUID uuid, String key){
+		plugin.getGameBox().getStatistics().addStatistics(uuid, Main.gameID, key, 1., SaveType.WINS);
 	}
 
 	@Override
@@ -359,19 +365,60 @@ public class GameManager implements IGameManager{
 	}
 
 	@Override
-	public boolean startGame(Player[] players, boolean b, String... strings) {
+	public int startGame(Player[] player, boolean b, String... strings) {
 
 		// TodO
 		GameRules rule = gameTypes.get(strings[0]);
 		if(rule == null){
-			Bukkit.getLogger().log(Level.WARNING, "could not start a game");
-			return false;
+			return GameBox.GAME_NOT_STARTED_ERROR;
+		}
+
+		double cost = rule.getCost();
+
+		boolean firstCanPay = true;
+
+		if (plugin.getEconEnabled() && !player[0].hasPermission(Permissions.BYPASS_ALL.getPermission()) && !player[0].hasPermission(Permissions.BYPASS_GAME.getPermission(Main.gameID)) && cost > 0.0) {
+			if (Main.econ.getBalance(player[0]) >= cost) {
+
+			} else {
+				player[0].sendMessage(plugin.chatColor(Main.prefix + plugin.lang.GAME_NOT_ENOUGH_MONEY));
+				firstCanPay = false;
+			}
 		}
 
 
-		GameBox.debug("trying to start a game with: " + players.length + " players and the args " + Arrays.asList(strings));
-		games.add(new Game(plugin, players[0].getUniqueId(), players[1].getUniqueId(), rule));
-		return true;
+		if (plugin.getEconEnabled() && !player[1].hasPermission(Permissions.BYPASS_ALL.getPermission()) && !player[1].hasPermission(Permissions.BYPASS_GAME.getPermission(Main.gameID)) && cost > 0.0) {
+			if (Main.econ.getBalance(player[1]) >= cost) {
+
+			} else {
+				player[1].sendMessage(plugin.chatColor(Main.prefix + plugin.lang.GAME_NOT_ENOUGH_MONEY));
+				if(firstCanPay){
+					// only second player cannot pay
+					return GameBox.GAME_NOT_ENOUGH_MONEY_2;
+				} else {
+					// both players cannot pay
+					return GameBox.GAME_NOT_ENOUGH_MONEY;
+				}
+			}
+		}
+
+		if(!firstCanPay){
+			// only first player cannot pay
+			return GameBox.GAME_NOT_ENOUGH_MONEY_1;
+		}
+
+		// both players can pay!
+
+		Main.econ.withdrawPlayer(player[0], cost);
+		player[0].sendMessage(plugin.chatColor(Main.prefix + plugin.lang.GAME_PAYED.replaceAll("%cost%", String.valueOf(cost))));
+
+
+		Main.econ.withdrawPlayer(player[1], cost);
+		player[1].sendMessage(plugin.chatColor(Main.prefix+ plugin.lang.GAME_PAYED.replaceAll("%cost%", String.valueOf(cost))));
+
+
+		games.add(new Game(plugin, player[0].getUniqueId(), player[1].getUniqueId(), rule));
+		return GameBox.GAME_STARTED;
 	}
 
 	@Override
@@ -398,7 +445,8 @@ public class GameManager implements IGameManager{
 		game.setState(GameState.FINISHED);
 		plugin.getUpdater().updateTitle(firstClosed?second:first, lang.TITLE_WON);
 
-		//ToDo: set statistics?
+		if(game.getRule().isSaveStats()){
+			addWin(firstClosed?game.getSecondUUID():game.getFirstUUID(), game.getRule().getKey());		}
 		return;
 	}
 
