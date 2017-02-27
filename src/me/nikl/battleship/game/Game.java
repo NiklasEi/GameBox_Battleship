@@ -226,46 +226,26 @@ public class Game{
 	}
 
 	private void getShipNumbers() {
-		if(config.isInt("aircraftCarrier")){
 			this.numCarrier = rule.getAircraftCarrier();
 			if(numCarrier<1 || numCarrier>2){
 				Bukkit.getConsoleSender().sendMessage(Main.prefix+" Not valid number of carriers in config!");
 				this.numCarrier = 1;				
 			}
-		} else {
-			Bukkit.getConsoleSender().sendMessage(Main.prefix+" Not valid number of carriers in config!");
-			this.numCarrier = 1;
-		}
-		if(config.isInt("battleship")){
 			this.numBattleship = rule.getBattleship();
 			if(numBattleship<1 || numBattleship>2){
 				Bukkit.getConsoleSender().sendMessage(Main.prefix+" Not valid number of battleships in config!");
 				this.numBattleship = 1;				
 			}
-		} else {
-			Bukkit.getConsoleSender().sendMessage(Main.prefix+" Not valid number of battleships in config!");
-			this.numBattleship = 1;
-		}
-		if(config.isInt("cruiser")){
 			this.numCruiser = rule.getCruiser();
 			if(numCruiser<1 || numCruiser>2){
 				Bukkit.getConsoleSender().sendMessage(Main.prefix+" Not valid number of cruisers in config!");
 				this.numCruiser = 1;				
 			}
-		} else {
-			Bukkit.getConsoleSender().sendMessage(Main.prefix+" Not valid number of cruisers in config!");
-			this.numCruiser = 1;
-		}
-		if(config.isInt("destroyer")){
 			this.numDestroyer = rule.getDestroyer();
 			if(numDestroyer<1 || numDestroyer>2){
 				Bukkit.getConsoleSender().sendMessage(Main.prefix+" Not valid number of destroyers in config!");
 				this.numDestroyer = 1;				
 			}
-		} else {
-			Bukkit.getConsoleSender().sendMessage(Main.prefix+" Not valid number of destroyers in config!");
-			this.numDestroyer = 1;
-		}
 	}
 
 
@@ -751,14 +731,19 @@ public class Game{
 			updater.updateTitle(second, chatColor(lang.TITLE_WON));
 		}
 		if(plugin.getEconEnabled()){
-			Main.econ.depositPlayer(winner, 0);
-			winner.sendMessage(manager.chatColor(Main.prefix + lang.GAME_WON_MONEY.replaceAll("%reward%", 0+"")));
+			Main.econ.depositPlayer(winner, rule.getReward());
+			winner.sendMessage(manager.chatColor(Main.prefix + lang.GAME_WON_MONEY.replaceAll("%reward%", rule.getReward()+"")));
 		} else {
 			winner.sendMessage(manager.chatColor(Main.prefix + lang.GAME_WON));
 		}
 		loser.sendMessage(manager.chatColor(Main.prefix + lang.GAME_LOSE));
 
-		onGameEnd(winner.getName(), loser.getName());
+		if(rule.isSaveStats()){
+			manager.addWin(isFirst?getFirstUUID():getSecondUUID(), rule.getKey());
+		}
+
+		//ToDo: restructure cmd and other rewards
+		//onGameEnd(winner.getName(), loser.getName());
 		
 		//showInventory(true, true);
 		//showInventory(false, true);
