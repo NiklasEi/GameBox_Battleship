@@ -1,29 +1,12 @@
 # use & for colors
 #   placeholders will be listed in front of the keys
 
-# messages and inventorytitles directly related to the game 
+# messages and inventorytitles directly related to the game
 game:
-  # here you can use:
-  #   name of the first player: %first%
-  #   name of the second player: %second%
-  #   time in seconds untli the invitation will run out: %time%
-  invite:
-    # these messages go to the player, that invite another player
-    messageToFirstPlayer:
-    - " &2You invited %second% to a game"
-    # these messages go to the player, that was invited by another player
-    messageToSecondPlayer:
-    - " &2%first% invited you to a game!"
-    - " &2Do /bs to accept.    Expires in &4%time% seconds&2!"
-    # you can only use %first% here (name of the player that invited you)
-    inviteAccept: " &2You accepted %first%'s invitation"
-    expired: " &4The invite has expired"
-    returnedMoney: " &2Your money has been returned"
-    
   econ:
     # use %cost% for the amount payed
     payed: " &2You paid &4%cost%"
-    notEnoughMoney: " &4You do not have not enough money!"
+    notEnoughMoney: " &4You do not have enough money!"
     # use %reward% for the amount the player won
     wonMoney: " &2You won &1%reward%&2!"
     # use %reward% for the amount the player won and %loser% for the player that gave up
@@ -43,10 +26,20 @@ game:
   # won message send when the other player does not fire in time
   #   use %loser% for the name of the player that gave up
   otherTooSlow: " &2You won! %loser% was too slow."
-  
+
+
+gameHelp:
+  - '&1&lThis game is played with &atwo&1 players'
+  - '&1&lClick on one of the game types above to invite someone'
+  - '  &1&lor accept an invitation from another player'
+  - ''
+  - "&1&lIn &3Battleship&1 you have to sink your opponent's ships"
+  - '  &1&lbefore he sinks yours.'
+  - ''
+  - '&l&6Good Luck!'
+
+
 inventoryTitles:
-  # There will always be the page number behind that title!
-  guiTitle: "Invite someone to a game    "
   # use %count% for the number of ships to set
   # use %timer% to display the timer
   setShip1: "Set Carrier: %count% x 5 Blocks   &4%timer%"
