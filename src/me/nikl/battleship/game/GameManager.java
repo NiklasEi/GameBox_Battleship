@@ -1,7 +1,6 @@
 package me.nikl.battleship.game;
 
 import java.util.*;
-import java.util.logging.Level;
 
 import me.nikl.battleship.Sounds;
 import me.nikl.gamebox.GameBox;
@@ -29,6 +28,8 @@ public class GameManager implements IGameManager{
 	
 	// sounds
 	private Sound ownMissSound, othersMissSound, ownHitSound, othersHitSound, setShipSound, unSetShipSound, won, lost;
+
+	private float volume = 0.5f, pitch = 1f;
 
 	public GameManager(Main plugin){
 		this.plugin = plugin;
@@ -118,11 +119,11 @@ public class GameManager implements IGameManager{
 				if(game.isWater(event.getCurrentItem())){
 					//player.sendMessage("clicked water"); // XXX
 					game.setShip(slot, isFirst);
-					if(Main.playSounds)player.playSound(player.getLocation(), setShipSound, 10f, 1f);
+					if(Main.playSounds)player.playSound(player.getLocation(), setShipSound, this.volume, pitch);
 				} else if(game.isShip(event.getCurrentItem())){
 					//player.sendMessage("clicked something else"); // XXX
 					game.setWater(slot, isFirst);
-					if(Main.playSounds)player.playSound(player.getLocation(), unSetShipSound, 10f, 1f);
+					if(Main.playSounds)player.playSound(player.getLocation(), unSetShipSound, volume, pitch);
 				}
 				if(game.shipsSet(1, isFirst)){
 					game.lockShips(isFirst);
@@ -133,6 +134,7 @@ public class GameManager implements IGameManager{
 						game.setSecondCurrentState("&2Battleship   " + "&rWaiting...           &2");
 					}
 					game.setState("&2Battleship   " + "&rWaiting...", isFirst, true);
+					game.updateTitle(isFirst);
 					if(game.getShipsSet(!isFirst, true)){
 						game.setState(GameState.SETTING_SHIP2);
 						//game.showInventory(!isFirst, true);
@@ -148,10 +150,10 @@ public class GameManager implements IGameManager{
 				}
 				if(game.isWater(event.getCurrentItem())){
 					game.setShip(slot, isFirst);
-					if(Main.playSounds)player.playSound(player.getLocation(), setShipSound, 10f, 1f);
+					if(Main.playSounds)player.playSound(player.getLocation(), setShipSound, volume, pitch);
 				} else if(game.isShip(event.getCurrentItem())){
 					game.setWater(slot, isFirst);
-					if(Main.playSounds)player.playSound(player.getLocation(), unSetShipSound, 10f, 1f);
+					if(Main.playSounds)player.playSound(player.getLocation(), unSetShipSound, volume, pitch);
 				}
 				if(game.shipsSet(2, isFirst)){
 					game.lockShips(isFirst);
@@ -162,6 +164,7 @@ public class GameManager implements IGameManager{
 						game.setSecondCurrentState("&2Battleship   " + "&rWaiting...           &2");
 					}
 					game.setState("&2Battleship   &rWaiting...", isFirst, true);
+					game.updateTitle(isFirst);
 					if(game.getShipsSet(!isFirst, true)){
 						game.setState(GameState.SETTING_SHIP3);
 						//game.showInventory(!isFirst, true);
@@ -176,10 +179,10 @@ public class GameManager implements IGameManager{
 				}
 				if(game.isWater(event.getCurrentItem())){
 					game.setShip(slot, isFirst);
-					if(Main.playSounds)	player.playSound(player.getLocation(), setShipSound, 10f, 1f);
+					if(Main.playSounds)	player.playSound(player.getLocation(), setShipSound, volume, pitch);
 				} else if(game.isShip(event.getCurrentItem())){
 					game.setWater(slot, isFirst);
-					if(Main.playSounds)	player.playSound(player.getLocation(), unSetShipSound, 10f, 1f);
+					if(Main.playSounds)	player.playSound(player.getLocation(), unSetShipSound, volume, pitch);
 				}
 				if(game.shipsSet(3, isFirst)){
 					game.lockShips(isFirst);
@@ -190,6 +193,7 @@ public class GameManager implements IGameManager{
 						game.setSecondCurrentState("&2Battleship   " + "&rWaiting...           &2");
 					}
 					game.setState("&2Battleship   " + "&rWaiting...", isFirst, true);
+					game.updateTitle(isFirst);
 					if(game.getShipsSet(!isFirst, true)){
 						game.setState(GameState.SETTING_SHIP4);
 						//game.showInventory(!isFirst, true);
@@ -204,10 +208,10 @@ public class GameManager implements IGameManager{
 				}
 				if(game.isWater(event.getCurrentItem())){
 					game.setShip(slot, isFirst);
-					if(Main.playSounds)player.playSound(player.getLocation(), setShipSound, 10f, 1f);
+					if(Main.playSounds)player.playSound(player.getLocation(), setShipSound, volume, pitch);
 				} else if(game.isShip(event.getCurrentItem())){
 					game.setWater(slot, isFirst);
-					if(Main.playSounds)player.playSound(player.getLocation(), unSetShipSound, 10f, 1f);
+					if(Main.playSounds)player.playSound(player.getLocation(), unSetShipSound, volume, pitch);
 				}
 				if(game.shipsSet(4, isFirst)){
 					game.lockShips(isFirst);
@@ -218,6 +222,7 @@ public class GameManager implements IGameManager{
 						game.setSecondCurrentState("&2Battleship   " + "&rWaiting...           &2");
 					}
 					game.setState("&2Battleship   " + "&rWaiting...", isFirst, true);
+					game.updateTitle(isFirst);
 					if(game.getShipsSet(!isFirst, true)){
 						// if this is true, all ships are set and the game can start
 						game.unLockShips();
@@ -240,9 +245,9 @@ public class GameManager implements IGameManager{
 				if(game.isCover(event.getCurrentItem())){
 					if(!game.fire(isFirst, slot)){
 						if(Main.playSounds) {
-							player.playSound(player.getLocation(), ownMissSound, 10f, 1f);
+							player.playSound(player.getLocation(), ownMissSound, volume, pitch);
 							Player secondPlayer = Bukkit.getPlayer(game.getSecondUUID());
-							secondPlayer.playSound(secondPlayer.getLocation(), othersMissSound, 10f, 1f);
+							secondPlayer.playSound(secondPlayer.getLocation(), othersMissSound, volume, pitch);
 						}
 						game.changeAttacker(false);
 						//game.setState(GameState.SECOND_TURN);
@@ -252,15 +257,15 @@ public class GameManager implements IGameManager{
 							game.won(isFirst);
 							// ToDo save stats!
 							if(Main.playSounds) {
-								player.playSound(player.getLocation(), won, 10f, 1f);
+								player.playSound(player.getLocation(), won, volume, pitch);
 								Player secondPlayer = Bukkit.getPlayer(game.getSecondUUID());
-								secondPlayer.playSound(secondPlayer.getLocation(), lost, 10f, 1f);
+								secondPlayer.playSound(secondPlayer.getLocation(), lost, volume, pitch);
 							}
 						} else {
 							if(Main.playSounds) {
-								player.playSound(player.getLocation(), ownHitSound, 10f, 1f);
+								player.playSound(player.getLocation(), ownHitSound, volume, pitch);
 								Player secondPlayer = Bukkit.getPlayer(game.getSecondUUID());
-								secondPlayer.playSound(secondPlayer.getLocation(), othersHitSound, 10f, 1f);
+								secondPlayer.playSound(secondPlayer.getLocation(), othersHitSound, volume, pitch);
 							}
 							if(!game.ruleFireAgainAfterHit){
 								game.changeAttacker(false);
@@ -277,9 +282,9 @@ public class GameManager implements IGameManager{
 					if(!game.fire(isFirst, slot)){
 						game.changeAttacker(true);
 						if(Main.playSounds) {
-							player.playSound(player.getLocation(), ownMissSound, 10f, 1f);
+							player.playSound(player.getLocation(), ownMissSound, volume, pitch);
 							Player firstPlayer = Bukkit.getPlayer(game.getFirstUUID());
-							firstPlayer.playSound(firstPlayer.getLocation(), othersMissSound, 10f, 1f);
+							firstPlayer.playSound(firstPlayer.getLocation(), othersMissSound, volume, pitch);
 						}
 						//game.setState(GameState.FIRST_TURN);
 					} else {
@@ -287,15 +292,15 @@ public class GameManager implements IGameManager{
 							game.setState(GameState.FINISHED);
 							game.won(isFirst);
 							if(Main.playSounds) {
-								player.playSound(player.getLocation(), won, 10f, 1f);
+								player.playSound(player.getLocation(), won, volume, pitch);
 								Player firstPlayer = Bukkit.getPlayer(game.getFirstUUID());
-								firstPlayer.playSound(firstPlayer.getLocation(), lost, 10f, 1f);
+								firstPlayer.playSound(firstPlayer.getLocation(), lost, volume, pitch);
 							}
 						} else {
 							if(Main.playSounds) {
-								player.playSound(player.getLocation(), ownHitSound, 10f, 1f);
+								player.playSound(player.getLocation(), ownHitSound, volume, pitch);
 								Player firstPlayer = Bukkit.getPlayer(game.getFirstUUID());
-								firstPlayer.playSound(firstPlayer.getLocation(), othersHitSound, 10f, 1f);
+								firstPlayer.playSound(firstPlayer.getLocation(), othersHitSound, volume, pitch);
 							}
 							if(!game.ruleFireAgainAfterHit){
 								game.changeAttacker(true);
@@ -322,10 +327,10 @@ public class GameManager implements IGameManager{
 		}
 		Game game = getGame(event.getPlayer().getUniqueId());
 		game.cancelTimer();
-		Player first = game.getFirst();
-		Player second = game.getSecond();
 		boolean firstClosed = event.getPlayer().getUniqueId().equals(game.getFirstUUID());
-		if((!firstClosed && first == null) || (firstClosed && second == null)){
+		Player winner = firstClosed?game.getSecond():game.getFirst();
+		Player loser = firstClosed?game.getFirst():game.getSecond();
+		if((!firstClosed && game.getFirst() == null) || (firstClosed && game.getSecond() == null)){
 			removeGame(game);
 			return true;
 		}
@@ -340,13 +345,35 @@ public class GameManager implements IGameManager{
 		}
 
 		if(game.getState() != GameState.FINISHED) {
-			plugin.getUpdater().updateTitle(firstClosed ? second : first, lang.TITLE_WON);
+			if(game.getState() == GameState.CHANGING || game.getState() == GameState.FIRST_TURN || game.getState() == GameState.SECOND_TURN ){
+				// game started...
+				// pay out the winner
+				// otherwise pay the player that did not close the game, the money back they payed to play
+
+
+
+				if(plugin.getEconEnabled()){
+					if(!winner.hasPermission(Permissions.BYPASS_ALL.getPermission()) && !winner.hasPermission(Permissions.BYPASS_GAME.getPermission(Main.gameID))){
+						Main.econ.depositPlayer(winner, game.getRule().getReward());
+						winner.sendMessage(chatColor(Main.prefix + lang.GAME_WON_MONEY_GAVE_UP.replaceAll("%reward%", game.getRule().getReward()+"").replaceAll("%loser%", loser.getName())));
+					} else {
+						winner.sendMessage(chatColor(Main.prefix + lang.GAME_OTHER_GAVE_UP.replaceAll("%loser%", loser.getName())));
+					}
+				} else {
+					winner.sendMessage(chatColor(Main.prefix + lang.GAME_WON.replaceAll("%loser%", loser.getName())));
+				}
+				loser.sendMessage(chatColor(Main.prefix + lang.GAME_GAVE_UP));
+
+
+			}
+			plugin.getUpdater().updateTitle(winner, lang.TITLE_WON);
 			game.setState(GameState.FINISHED);
+			if(game.getRule().isSaveStats()){
+				addWin(firstClosed?game.getSecondUUID():game.getFirstUUID(), game.getRule().getKey());
+			}
 		}
 
-		if(game.getRule().isSaveStats()){
-			addWin(firstClosed?game.getSecondUUID():game.getFirstUUID(), game.getRule().getKey());
-		}
+
 		return true;
 	}
 
@@ -409,13 +436,15 @@ public class GameManager implements IGameManager{
 
 		// both players can pay!
 
-		Main.econ.withdrawPlayer(player[0], cost);
-		player[0].sendMessage(plugin.chatColor(Main.prefix + plugin.lang.GAME_PAYED.replaceAll("%cost%", String.valueOf(cost))));
+
+		if (plugin.getEconEnabled()) {
+			Main.econ.withdrawPlayer(player[0], cost);
+			player[0].sendMessage(plugin.chatColor(Main.prefix + plugin.lang.GAME_PAYED.replaceAll("%cost%", String.valueOf(cost))));
 
 
-		Main.econ.withdrawPlayer(player[1], cost);
-		player[1].sendMessage(plugin.chatColor(Main.prefix+ plugin.lang.GAME_PAYED.replaceAll("%cost%", String.valueOf(cost))));
-
+			Main.econ.withdrawPlayer(player[1], cost);
+			player[1].sendMessage(plugin.chatColor(Main.prefix + plugin.lang.GAME_PAYED.replaceAll("%cost%", String.valueOf(cost))));
+		}
 
 		games.add(new Game(plugin, player[0].getUniqueId(), player[1].getUniqueId(), rule));
 		return GameBox.GAME_STARTED;
