@@ -6,6 +6,7 @@ import java.util.Random;
 import java.util.UUID;
 
 import me.nikl.battleship.Sounds;
+import me.nikl.gamebox.Permissions;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -74,6 +75,8 @@ public class Game{
 	private Sound yourTurnNotice;
 
 	private GameRules rule;
+
+	private float volume = 0.5f, pitch = 1f;
 	
 	
 	private Main plugin;
@@ -131,8 +134,8 @@ public class Game{
 		this.timer = new GameTimer(this);
 		
 		if(Main.playSounds){
-			first.playSound(first.getLocation(), yourTurnNotice, 10f, 1f );
-			second.playSound(second.getLocation(), yourTurnNotice, 10f, 1f );
+			first.playSound(first.getLocation(), yourTurnNotice, volume, pitch );
+			second.playSound(second.getLocation(), yourTurnNotice, volume, pitch);
 		}
 		this.closingInv = true;
 		showInventory(true, true);
@@ -275,8 +278,8 @@ public class Game{
 			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
 			if(Main.playSounds){
-				first.playSound(first.getLocation(), yourTurnNotice, 10f, 1f );
-				second.playSound(second.getLocation(), yourTurnNotice, 10f, 1f );
+				first.playSound(first.getLocation(), yourTurnNotice, volume, pitch );
+				second.playSound(second.getLocation(), yourTurnNotice, volume, pitch );
 			}
 			break;
 			
@@ -297,8 +300,8 @@ public class Game{
 			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
 			if(Main.playSounds){
-				first.playSound(first.getLocation(), yourTurnNotice, 10f, 1f );
-				second.playSound(second.getLocation(), yourTurnNotice, 10f, 1f );
+				first.playSound(first.getLocation(), yourTurnNotice, volume, pitch );
+				second.playSound(second.getLocation(), yourTurnNotice, volume, pitch );
 			}
 			break;
 			
@@ -319,8 +322,8 @@ public class Game{
 			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
 			if(Main.playSounds){
-				first.playSound(first.getLocation(), yourTurnNotice, 10f, 1f );
-				second.playSound(second.getLocation(), yourTurnNotice, 10f, 1f );
+				first.playSound(first.getLocation(), yourTurnNotice, volume, pitch );
+				second.playSound(second.getLocation(), yourTurnNotice, volume, pitch );
 			}
 			break;
 			
@@ -339,7 +342,7 @@ public class Game{
 			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
 			if(Main.playSounds){
-				first.playSound(first.getLocation(), yourTurnNotice, 10f, 1f );
+				first.playSound(first.getLocation(), yourTurnNotice, volume, pitch );
 			}
 			break;
 			
@@ -358,7 +361,7 @@ public class Game{
 			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
 			if(Main.playSounds){
-				second.playSound(second.getLocation(), yourTurnNotice, 10f, 1f );
+				second.playSound(second.getLocation(), yourTurnNotice, volume, pitch );
 			}
 			break;
 			
@@ -961,7 +964,7 @@ public class Game{
 
 	public void fireTimeRanOut() {
 		boolean isFirst;
-		isFirst = this.state.equals(GameState.FIRST_TURN);
+		isFirst = this.state == GameState.FIRST_TURN;
 		
 		if(switchGridsAfterFireTimerRanOut){
 			this.changeAttacker(!isFirst);
@@ -970,35 +973,36 @@ public class Game{
 		Player loser = isFirst? Bukkit.getPlayer(this.getFirstUUID()) : Bukkit.getPlayer(this.getSecondUUID());
 		Player winner = !isFirst? Bukkit.getPlayer(this.getFirstUUID()) : Bukkit.getPlayer(this.getSecondUUID());
 		
-		
+		cancelTimer();
 		if(loser == null || winner == null) return;
 		
 		if(Main.playSounds) {
-			loser.playSound(loser.getLocation(), Sounds.VILLAGER_NO.bukkitSound(), 10f, 1f);
-			winner.playSound(winner.getLocation(), Sounds.LEVEL_UP.bukkitSound(), 10f, 1f);
+			loser.playSound(loser.getLocation(), Sounds.VILLAGER_NO.bukkitSound(), volume, pitch);
+			winner.playSound(winner.getLocation(), Sounds.LEVEL_UP.bukkitSound(), volume, pitch);
 		}
 		
 		
 		if(!getState().equals(GameState.FINISHED)){
+			this.setState(GameState.FINISHED);
 			if(plugin.getEconEnabled()){
-				Main.econ.depositPlayer(winner, 0);
-				winner.sendMessage(chatColor(Main.prefix + lang.GAME_WON_MONEY_TOO_SLOW.replaceAll("%reward%", 0+"").replaceAll("%loser%", first.getName())));
+				if(!winner.hasPermission(Permissions.BYPASS_ALL.getPermission()) && !winner.hasPermission(Permissions.BYPASS_GAME.getPermission(Main.gameID))){
+					Main.econ.depositPlayer(winner, rule.getReward());
+					winner.sendMessage(chatColor(Main.prefix + lang.GAME_WON_MONEY_TOO_SLOW.replaceAll("%reward%", rule.getReward()+"").replaceAll("%loser%", loser.getName())));
+				} else {
+					winner.sendMessage(chatColor(Main.prefix + lang.GAME_WON_TOO_SLOW.replaceAll("%loser%", loser.getName())));
+				}
 			} else {
-				winner.sendMessage(chatColor(Main.prefix + lang.GAME_WON_TOO_SLOW.replaceAll("%loser%", first.getName())));
+				winner.sendMessage(chatColor(Main.prefix + lang.GAME_WON_TOO_SLOW.replaceAll("%loser%", loser.getName())));
 			}
 			loser.sendMessage(chatColor(Main.prefix + lang.GAME_TOO_SLOW));
-			this.setClosingInv(true);
-			winner.closeInventory();
-			loser.closeInventory();
-			this.setClosingInv(false);
 
-		} else {
-			this.setClosingInv(true);
-			winner.closeInventory();
-			loser.closeInventory();
-			this.setClosingInv(false);		
 		}
-		manager.removeGame(this);
+		if(getRule().isSaveStats()){
+			manager.addWin(winner.getUniqueId(), getRule().getKey());
+		}
+		plugin.getUpdater().updateTitle(winner, lang.TITLE_WON);
+		plugin.getUpdater().updateTitle(loser, lang.TITLE_LOST);
+		//manager.removeGame(this);
 		onGameEnd(winner.getName(), loser.getName());
 		
 	}
@@ -1262,5 +1266,10 @@ public class Game{
 
 	public void setSecondUUID(UUID uuid){
 		this.secondUUID = uuid;
+	}
+
+	public void updateTitle(boolean isFirst) {
+		Player player = isFirst?first:second;
+		updater.updateTitle(player, chatColor(isFirst?firstCurrentState:secondCurrentState));
 	}
 }
