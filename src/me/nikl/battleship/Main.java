@@ -92,10 +92,10 @@ public class Main extends JavaPlugin{
 		this.manager = new GameManager(this);
 
 		//TodO: move game and prefix to Language
-		gameBox.getPluginManager().registerGame(manager, gameID, "Battleship", 2);
+		gameBox.getPluginManager().registerGame(manager, gameID, lang.NAME, 2);
 
 		GameGui gameGui = new GameGui(gameBox, guiManager, 54, gameID, "main");
-
+		gameGui.setHelpButton(lang.GAME_HELP);
 
 
 		Map<String, GameRules> gameTypes = new HashMap<>();
@@ -145,7 +145,7 @@ public class Main extends JavaPlugin{
 					meta.setLore(lore);
 				}
 
-				guiManager.registerGameGUI(gameID, buttonID, new StartMultiplayerGamePage(gameBox, guiManager, 54, gameID, buttonID, "Testing start gui"));
+				guiManager.registerGameGUI(gameID, buttonID, new StartMultiplayerGamePage(gameBox, guiManager, 54, gameID, buttonID, chatColor(buttonSec.getString("inviteGuiTitle","&4title not set in config"))));
 
 
 				button.setItemMeta(meta);
@@ -186,10 +186,10 @@ public class Main extends JavaPlugin{
 
 			ItemStack gameButton = getItemStack(mainButtonSec.getString("materialData"));
 			if(gameButton == null){
-				gameButton = (new ItemStack(Material.EMERALD));
+				gameButton = (new ItemStack(Material.IRON_BLOCK));
 			}
 			ItemMeta meta = gameButton.getItemMeta();
-			meta.setDisplayName(chatColor(mainButtonSec.getString("displayName","&3GemCrush")));
+			meta.setDisplayName(chatColor(mainButtonSec.getString("displayName","&3Battleship")));
 			if(mainButtonSec.isList("lore")){
 				ArrayList<String> lore = new ArrayList<>(mainButtonSec.getStringList("lore"));
 				for(int i = 0; i < lore.size();i++){
@@ -198,7 +198,7 @@ public class Main extends JavaPlugin{
 				meta.setLore(lore);
 			}
 			gameButton.setItemMeta(meta);
-			guiManager.registerGameGUI(gameID, "main", gameGui, gameButton, "gemcrush", "gc");
+			guiManager.registerGameGUI(gameID, "main", gameGui, gameButton, "battleship", "bs");
 		} else {
 			Bukkit.getLogger().log(Level.WARNING, " Missing or wrong configured main button in the configuration file!");
 		}
@@ -389,9 +389,11 @@ public class Main extends JavaPlugin{
 		try { 
 			this.config = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(this.con), "UTF-8")); 
 		} catch (UnsupportedEncodingException e) { 
-			e.printStackTrace(); 
+			e.printStackTrace();
+			disabled = true;
 		} catch (FileNotFoundException e) { 
-			e.printStackTrace(); 
+			e.printStackTrace();
+			disabled = true;
 		}
 	} 
 	
@@ -415,6 +417,7 @@ public class Main extends JavaPlugin{
 			if (!setupEconomy()){
 				Bukkit.getConsoleSender().sendMessage(chatColor(prefix + " &4No economy found!"));
 				getServer().getPluginManager().disablePlugin(this);
+				disabled = true;
 				return;
 			}
 		}
