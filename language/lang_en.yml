@@ -1,7 +1,7 @@
 # use & for colors
 #   placeholders will be listed in front of the keys
 
-# messages and inventorytitles directly related to the game
+# messages and inventory titles directly related to the game
 game:
   econ:
     # use %cost% for the amount payed
@@ -27,16 +27,19 @@ game:
   #   use %loser% for the name of the player that gave up
   otherTooSlow: " &2You won! %loser% was too slow."
 
+name: '&3Battleship&r'
 
 gameHelp:
-  - '&1&lThis game is played with &atwo&1 players'
-  - '&1&lClick on one of the game types above to invite someone'
-  - '  &1&lor accept an invitation from another player'
+  - '&1&lThis game is for two players'
+  - '&1&lClick on a game type to invite others'
+  - '  &1&lor accept an invitation'
   - ''
-  - "&1&lIn &3Battleship&1 you have to sink your opponent's ships"
-  - '  &1&lbefore he sinks yours.'
+  - "&1&lIn &3&lBattleship&1&l you have to sink your"
+  - "  &1&lopponent's ships before he sinks yours."
   - ''
   - '&l&6Good Luck!'
+
+
 
 
 inventoryTitles:
@@ -57,15 +60,12 @@ inventoryTitles:
 
 
 
+
+
 # Messages related to commands
 commandMessages:
   noPermission: " &4 You do not have the required permission!"
   onlyAsPlayer: " &4You can only do that as a player!"
-  playerIsOffline: " &4This player is not online!"
-  firstPlayerIsOffline: " &4Whoever invited you is offline now..."
-  playerAlreadyIngame: " &4This player is already ingame!"
-  cannotInviteYourself: " &4You cannot invite yourself to a game ^^"
-  specifyWhatInvitationToAccept: " &4More then one open invitation. Please accept with &a/bs playerName"
   pluginReloaded: " &aPlugin was reloaded"
   # send if someone is alone on the server and tries to open the GUI
   aloneOnServer: " &4No one else is online at the moment"
