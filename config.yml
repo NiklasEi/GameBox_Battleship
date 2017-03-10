@@ -46,7 +46,7 @@ gameBox:
       battleship: 1
       cruiser: 2
       destroyer: 1
-      guiTitle: "   Start a game of &3Battleship"
+      inviteGuiTitle: "   Start a game of &3Battleship"
     specialRules:
       materialData: "COAL_BLOCK"
       displayName: "&l&1Special rule"
@@ -66,7 +66,7 @@ gameBox:
       #   this changes attacker when the fire timer ran out instead of ending the game
       switchGridsAfterFireTimerRanOut: true
       reward: 10
-      guiTitle: "   &3Battleship&r with special rules"
+      inviteGuiTitle: "   &3Battleship&r with special rules"
     withTopList:
       materialData: "nether_star"
       displayName: "&l&1Combat"
@@ -86,7 +86,7 @@ gameBox:
       # if true the best score of this button is saved
       saveStats: true
       cruiser: 2
-      guiTitle: "   &3Battleship "
+      inviteGuiTitle: "   &3Battleship   &5Combat"
   topListButtons:
     # use the same key as the game you want to display the top list for
     #   for that button 'saveStats' must be true (see above)
