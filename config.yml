@@ -115,22 +115,6 @@ gameRules:
   # play sounds in the game
   playSounds: true
 
-# some stuff you can do when a game ends.
-onGameEnd:
-  # You can dispatch commands. Use %winner% for the playername of the winner and %loser% for the loser
-  dispatchCommands:
-    enabled: false
-    commands:
-    - "give %winner% diamond 1"
-    - "tell %winner% congrats!"
-    - "tell %loser% next time you'll beat him!"
-  # You can broadcast. Use %winner% for the playername of the winner and %loser% for the loser
-  broadcast:
-    enabled: false
-    messages:
-    - "%winner% won against %loser% in a game of Battleship!"
-    - "Do &2/bs %winner% &rto try against %winner% yourself ;)"     
-
 
 # requires vault and an economy plugin
 economy:
