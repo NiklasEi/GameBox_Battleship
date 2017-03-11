@@ -1,25 +1,9 @@
 # use & for colors
 # placeholders will be listed in front of the keys
 
-# messages and inventorytitles directly related to the game
-game:
-  # here you can use:
-  # name of the first player: %first%
-  # name of the second player: %second%
-  # time in seconds until the invitation will run out: %time%
-  invite:
-    # these messages go to the player, that invite another player
-    messageToFirstPlayer:
-    - " &2Du hast %second% zu einer Partie eingeladen."
-    # these messages go to the player, that was invited by another player
-    messageToSecondPlayer:
-    - " &2%first% hat dich zu einer Partie eingeladen!"
-    - " &2Nutze /bs zum annehmen. Einladung l\u00e4uft in &4%time% ab&2!"
-    # you can only use %first% here (name of the player that invited you)
-    inviteAccept: " &2Du hast die Einladung von %first% angenommen."
-    expired: " &4Die Einladung ist abgelaufen!"
-    returnedMoney: " &2Dein Geld wurde dir zur\u00fcck gegeben."
+# messages and inventory titles directly related to the game
 
+game:
   econ:
     # use %cost% for the amount payed
     payed: " &2Du hast &4%cost% &2bezahlt."
@@ -43,11 +27,27 @@ game:
   # won message send when the other player does not fire in time
   # use %loser% for the name of the player that gave up
   otherTooSlow: " &2Du hast gewonnen! %loser% war zu langsam."
+
+
+name: '&3Battleship&r'
+
+
+gameHelp:
+  - '&1&lDieses Spiel braucht zwei Spieler'
+  - '&1&lKlicke auf einen Spieltyp um jemanden'
+  - '  &1&leinzuladen oder eine Einladung von'
+  - '  &1&leinem anderen Spieler zu akzeptieren'
+  - ''
+  - "&1&lIn &3&lBattleship&1&l musst du alle Schiffe"
+  - "  &1&ldeines Gegners versenken, bevor er"
+  - '  &1&ldeine versenkt!'
+  - ''
+  - '&l&6Viel Erfolg!'
+
+
   
 
 inventoryTitles:
-  # There will always be the page number behind that title!
-  guiTitle: "Lade jemanden ein       "
   # use %count% for the number of ships to set
   # use %timer% to display the timer
   setShip1: "Carrier: %count% x 5 Felder   &4%timer%"
@@ -55,37 +55,14 @@ inventoryTitles:
   setShip3: "Cruiser: %count% x 3 Felder   &4%timer%"
   setShip4: "Destroyer: %count% x 2 Felder  &4%timer%"
   # %timer%
-  attacker: "&2Battleship   &rFeuer frei!      &4%timer%"
-  defender: "&4Battleship   &rAchtung!         &2%timer%"
+  attacker: "&2Battleship   &rFeuer frei!     &4%timer%"
+  defender: "&4Battleship   &rAchtung!        &2%timer%"
 
-  changingGrids: "&2Battleship   &rAngreifer wechselt  &2%timer%"
+  changingGrids: "&2Battleship  &rAngreifer wechselt &2%timer%"
   
-  won: "&2Battleship    &2Gewonnen!"
-  lost: "&2Battleship    &4Verloren..."
+  won: "&2Battleship        &2Gewonnen!"
+  lost: "&2Battleship        &4Verloren..."
 
 
 
 
-# Messages related to commands
-commandMessages:
-  noPermission: " &4Dazu hast du nicht die Rechte!"
-  onlyAsPlayer: " &4Das kannst du nur als Spieler tun!"
-  playerIsOffline: " &4Dieser Spieler ist nicht online!"
-  firstPlayerIsOffline: " &4Wer auch immer dich eingeladen hat, ist nun offline..."
-  playerAlreadyIngame: " &4Dieser Spieler ist gerade in einer Partie!"
-  cannotInviteYourself: " &4Du kannst dich nicht selbst einladen ^^"
-  specifyWhatInvitationToAccept: " &4Du hast mehr als eine Einladung. Benutze &a/bs playerName&4 zum annehmen"
-  pluginReloaded: " &aDas Plugin wurde neu geladen."
-  # send if someone is alone on the server and tries to open the GUI
-  aloneOnServer: " &4Im Moment ist niemand ausser dir online."
-  # displayed when wrong arguments are used
-  help:
-  - " &2Um jemanden zu einem Spiel einzuladen nutze: /bs [player]"
-  - " &2Oder nutze das GUI mit /bsgui"
-  # message send if there are no saved stats
-  noTopList: " &4Keine Statistik vorhanden!"
-  # here you can specify how the top 10 will be displayed
-  topListHead: "&a+ - + -  &3Battleship  Top 10  &a- + - +"
-  # %rank% -> Rank of the player      %name% name of the player       %won% number of won games
-  topListStructure: "%rank%. &6 %name%    &1Siege: %won%"
-  topListTail: "&a+ - + - + - + - + - + - + - + - + - +"
