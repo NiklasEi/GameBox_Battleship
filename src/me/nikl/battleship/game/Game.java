@@ -753,6 +753,7 @@ public class Game{
 	}
 	
 	public void onGameEnd(String winner, String loser){
+		/*
 		String path = "onGameEnd.dispatchCommands";
 		if(config.getBoolean(path + ".enabled")){
 			List<String> cmdList = config.getStringList(path + ".commands");
@@ -770,7 +771,7 @@ public class Game{
 					Bukkit.broadcastMessage(chatColor(Main.prefix + " " + message.replaceAll("%winner%", winner).replaceAll("%loser%", loser)));
 				}
 			}
-		}
+		}*/
 	}
 
 
