@@ -58,26 +58,4 @@ inventoryTitles:
   won: "&2Battleship    &2You won!"
   lost: "&2Battleship    &4You lost!"
 
-
-
-
-
-# Messages related to commands
-commandMessages:
-  noPermission: " &4 You do not have the required permission!"
-  onlyAsPlayer: " &4You can only do that as a player!"
-  pluginReloaded: " &aPlugin was reloaded"
-  # send if someone is alone on the server and tries to open the GUI
-  aloneOnServer: " &4No one else is online at the moment"
-  # displayed when wrong arguments are used
-  help:
-  - " &2To invite someone to a game do: /bs [player]"
-  - " &2Or use the GUI with /bsgui"
-  # message send if there are no saved stats
-  noTopList: " &4No stats available!"
-  # here you can specify how the top 10 will be displayed
-  topListHead: "&a+ - + -  &3Battleship  Top 10  &a- + - +"
-  # %rank% -> Rank of the player      %name% name of the player       %won% number of won games
-  topListStructure: "%rank%. &6 %name%    &1Wins: %won%"
-  topListTail: "&a+ - + - + - + - + - + - + - + - + - +"
   

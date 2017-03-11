@@ -21,13 +21,11 @@ public class Language {
 	private FileConfiguration langFile;
 
 	public String NAME;
-	public String CMD_NO_PERM, CMD_ONLY_PLAYER, CMD_RELOADED, CMD_ONLY_ONE_ONLINE;
 	public String GAME_PAYED, GAME_NOT_ENOUGH_MONEY, GAME_WON_MONEY, GAME_WON_MONEY_GAVE_UP, GAME_WON, GAME_LOSE, GAME_GAVE_UP, GAME_OTHER_GAVE_UP,
 		GAME_TOO_SLOW, GAME_WON_MONEY_TOO_SLOW, GAME_WON_TOO_SLOW;
 	public String TITLE_SET_SHIP_1, TITLE_SET_SHIP_2, TITLE_SET_SHIP_3, TITLE_SET_SHIP_4, TITLE_ATTACKER, TITLE_DEFENDER, TITLE_WON, TITLE_LOST;
-	public String CMD_NO_TOP_LIST, CMD_TOP_HEAD, CMD_TOP_TAIL, CMD_TOP_STRUCTURE;
 	
-	public List<String> CMD_HELP, GAME_HELP;
+	public List<String> GAME_HELP;
 	private YamlConfiguration defaultLang;
 	public String TITLE_CHANGING;
 	
@@ -38,7 +36,6 @@ public class Language {
 			plugin.disabled = true;
 			return;
 		}
-		getCommandMessages();
 		getGameMessages();
 		getInvTitles();
 
@@ -74,25 +71,6 @@ public class Language {
 
 		this.GAME_HELP = getStringList("gameHelp");
 
-	}
-
-	private void getCommandMessages() {
-		
-		this.CMD_NO_PERM = getString("commandMessages.noPermission");
-		this.CMD_ONLY_PLAYER = getString("commandMessages.onlyAsPlayer");
-		this.CMD_RELOADED = getString("commandMessages.pluginReloaded");
-		
-		
-		this.CMD_NO_TOP_LIST = getString("commandMessages.noTopList");
-		this.CMD_TOP_HEAD = getString("commandMessages.topListHead");
-		this.CMD_TOP_TAIL = getString("commandMessages.topListTail");
-		this.CMD_TOP_STRUCTURE = getString("commandMessages.topListStructure");
-		
-
-		this.CMD_ONLY_ONE_ONLINE = getString("commandMessages.aloneOnServer");
-		
-
-		this.CMD_HELP = getStringList("commandMessages.help");		
 	}
 
 	private List<String> getStringList(String path) {
