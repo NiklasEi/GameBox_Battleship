@@ -721,57 +721,25 @@ public class Game{
 		if(isFirst){
 			winner = Bukkit.getPlayer(this.getFirstUUID());
 			loser = Bukkit.getPlayer(this.getSecondUUID());
-			//firstOwn = setState(lang.TITLE_WON, firstOwn);
-			//secondOwn = setState(lang.TITLE_LOST, secondOwn);
 			updater.updateTitle(first, chatColor(lang.TITLE_WON));
 			updater.updateTitle(second, chatColor(lang.TITLE_LOST));
 		} else {
 			loser = Bukkit.getPlayer(this.getFirstUUID());
 			winner = Bukkit.getPlayer(this.getSecondUUID());
-			//firstOwn = setState(lang.TITLE_LOST, firstOwn);
-			//secondOwn = setState(lang.TITLE_WON, secondOwn);
 			updater.updateTitle(first, chatColor(lang.TITLE_LOST));
 			updater.updateTitle(second, chatColor(lang.TITLE_WON));
 		}
+
 		if(plugin.getEconEnabled()){
 			Main.econ.depositPlayer(winner, rule.getReward());
-			winner.sendMessage(manager.chatColor(lang.PREFIX + lang.GAME_WON_MONEY.replaceAll("%reward%", rule.getReward()+"")));
+			winner.sendMessage(chatColor(lang.PREFIX + lang.GAME_WON_MONEY.replaceAll("%reward%", rule.getReward()+"")));
 		} else {
-			winner.sendMessage(manager.chatColor(lang.PREFIX + lang.GAME_WON));
+			winner.sendMessage(chatColor(lang.PREFIX + lang.GAME_WON));
 		}
-		loser.sendMessage(manager.chatColor(lang.PREFIX + lang.GAME_LOSE));
+		loser.sendMessage(chatColor(lang.PREFIX + lang.GAME_LOSE));
 
-		if(rule.isSaveStats()){
-			manager.addWin(isFirst?getFirstUUID():getSecondUUID(), rule.getKey());
-		}
+		manager.onGameEnd(winner, loser, rule.getKey());
 
-		//ToDo: restructure cmd and other rewards
-		//onGameEnd(winner.getName(), loser.getName());
-		
-		//showInventory(true, true);
-		//showInventory(false, true);
-	}
-	
-	public void onGameEnd(String winner, String loser){
-		/*
-		String path = "onGameEnd.dispatchCommands";
-		if(config.getBoolean(path + ".enabled")){
-			List<String> cmdList = config.getStringList(path + ".commands");
-			if(cmdList != null && !cmdList.isEmpty()){
-				for(String cmd : cmdList){
-					Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmd.replaceAll("%winner%", winner).replaceAll("%loser%", loser));
-				}
-			}
-		}
-		path = "onGameEnd.broadcast";
-		if(config.getBoolean(path + ".enabled")){
-			List<String> broadcastList = config.getStringList(path + ".messages");
-			if(broadcastList != null && !broadcastList.isEmpty()){
-				for(String message : broadcastList){
-					Bukkit.broadcastMessage(chatColor(lang.PREFIX + " " + message.replaceAll("%winner%", winner).replaceAll("%loser%", loser)));
-				}
-			}
-		}*/
 	}
 
 
@@ -998,13 +966,9 @@ public class Game{
 			loser.sendMessage(chatColor(lang.PREFIX + lang.GAME_TOO_SLOW));
 
 		}
-		if(getRule().isSaveStats()){
-			manager.addWin(winner.getUniqueId(), getRule().getKey());
-		}
 		plugin.getUpdater().updateTitle(winner, lang.TITLE_WON);
 		plugin.getUpdater().updateTitle(loser, lang.TITLE_LOST);
-		//manager.removeGame(this);
-		onGameEnd(winner.getName(), loser.getName());
+		manager.onGameEnd(winner, loser, rule.getKey());
 		
 	}
 
