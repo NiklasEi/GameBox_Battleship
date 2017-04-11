@@ -30,6 +30,7 @@ game:
 
 
 name: '&3Battleship&r'
+prefix: "[&3Battleship&r]"
 
 
 gameHelp:

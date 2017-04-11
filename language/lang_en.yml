@@ -27,7 +27,8 @@ game:
   #   use %loser% for the name of the player that gave up
   otherTooSlow: " &2You won! %loser% was too slow."
 
-name: '&3Battleship&r'
+name: '&1Battleship&r'
+prefix: "[&3Battleship&r]"
 
 gameHelp:
   - '&1&lThis game is for two players'
