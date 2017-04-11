@@ -255,7 +255,6 @@ public class GameManager implements IGameManager{
 						if(game.isWon(isFirst)){
 							game.setState(GameState.FINISHED);
 							game.won(isFirst);
-							// ToDo save stats!
 							if(Main.playSounds) {
 								player.playSound(player.getLocation(), won, volume, pitch);
 								Player secondPlayer = Bukkit.getPlayer(game.getSecondUUID());
@@ -368,9 +367,9 @@ public class GameManager implements IGameManager{
 			}
 			plugin.getUpdater().updateTitle(winner, lang.TITLE_WON);
 			game.setState(GameState.FINISHED);
-			if(game.getRule().isSaveStats()){
-				addWin(firstClosed?game.getSecondUUID():game.getFirstUUID(), game.getRule().getKey());
-			}
+
+
+			onGameEnd(winner, loser, game.getRule().getKey());
 		}
 
 
@@ -475,11 +474,24 @@ public class GameManager implements IGameManager{
 		plugin.getUpdater().updateTitle(firstClosed?second:first, lang.TITLE_WON);
 
 		if(game.getRule().isSaveStats()){
-			addWin(firstClosed?game.getSecondUUID():game.getFirstUUID(), game.getRule().getKey());		}
+			addWin(firstClosed?game.getSecondUUID():game.getFirstUUID(), game.getRule().getKey());
+		}
 		return;
 	}
 
 	public void setGameTypes(Map<String,GameRules> gameTypes) {
 		this.gameTypes = gameTypes;
+	}
+
+	public void onGameEnd(Player winner, Player loser, String key) {
+
+		GameRules rule = gameTypes.get(key);
+
+		if(rule.isSaveStats()){
+			addWin(winner.getUniqueId(), rule.getKey());
+		}
+		if(rule.getTokens() > 0){
+			plugin.getGameBox().wonTokens(winner.getUniqueId(), rule.getTokens(), Main.gameID);
+		}
 	}
 }
