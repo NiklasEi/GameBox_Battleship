@@ -6,12 +6,13 @@ package me.nikl.battleship.game;
 public class GameRules {
     private double cost, reward;
     private boolean saveStats, changeGridAfterHit, switchGridsAfterFireTimerRanOut;
-    private int aircraftCarrier, battleship, cruiser, destroyer;
+    private int aircraftCarrier, battleship, cruiser, destroyer, tokens;
     private String key;
 
-    public GameRules(double cost, double reward, int aircraftCarrier, int battleship, int cruiser, int destroyer, boolean changeGridAfterHit, boolean switchGridsAfterFireTimerRanOut, String key, boolean saveStats){
+    public GameRules(double cost, double reward, int tokens, int aircraftCarrier, int battleship, int cruiser, int destroyer, boolean changeGridAfterHit, boolean switchGridsAfterFireTimerRanOut, String key, boolean saveStats){
         this.cost = cost;
         this.reward = reward;
+        this.tokens = tokens;
         this.saveStats = saveStats;
         this.changeGridAfterHit = changeGridAfterHit;
         this.switchGridsAfterFireTimerRanOut = switchGridsAfterFireTimerRanOut;
@@ -60,5 +61,9 @@ public class GameRules {
 
     public String getKey() {
         return key;
+    }
+
+    public int getTokens() {
+        return tokens;
     }
 }
