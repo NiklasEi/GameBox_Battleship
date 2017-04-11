@@ -42,6 +42,7 @@ gameBox:
       slot: 12
       cost: 5
       reward: 10
+      tokens: 1
       aircraftCarrier: 1
       battleship: 1
       cruiser: 2
@@ -76,13 +77,15 @@ gameBox:
       - '   &l&5one of each ship'
       - '&1Cost: &450'
       - '&1Reward: &2100'
+      - '&1Tokens: &25'
       - '&l&5Your number of wins'
       - '   &l&5in this game will be tracked!'
       - '&l&5Compare yourself'
       - '   &l&5with others in the top list.'
       slot: 30
       cost: 50
-      reward: 100
+      reward: 80
+      tokens: 5
       # if true the best score of this button is saved
       saveStats: true
       cruiser: 2
