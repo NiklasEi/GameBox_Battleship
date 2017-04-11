@@ -134,7 +134,7 @@ public class Main extends JavaPlugin{
 			ConfigurationSection buttonSec;
 			double cost, reward;
 			boolean saveStats, changeGridAfterHit, switchGridsAfterFireTimerRanOut;
-			int aircraftCarrier, battleship, cruiser, destroyer;
+			int aircraftCarrier, battleship, cruiser, destroyer, tokens;
 
 			String displayName;
 			ArrayList<String> lore;
@@ -183,6 +183,7 @@ public class Main extends JavaPlugin{
 
 				cost = buttonSec.getDouble("cost", 0.);
 				reward = buttonSec.getDouble("reward", 0.);
+				tokens = buttonSec.getInt("tokens", 0);
 				saveStats = buttonSec.getBoolean("saveStats", false);
 				changeGridAfterHit = buttonSec.getBoolean("changeGridAfterHit", false);
 				switchGridsAfterFireTimerRanOut = buttonSec.getBoolean("switchGridsAfterFireTimerRanOut", false);
@@ -191,7 +192,7 @@ public class Main extends JavaPlugin{
 				cruiser = buttonSec.getInt("cruiser", 1);
 				destroyer = buttonSec.getInt("destroyer", 1);
 
-				rules = new GameRules(cost, reward, aircraftCarrier, battleship, cruiser,destroyer, changeGridAfterHit, switchGridsAfterFireTimerRanOut, buttonID, saveStats);
+				rules = new GameRules(cost, reward, tokens, aircraftCarrier, battleship, cruiser,destroyer, changeGridAfterHit, switchGridsAfterFireTimerRanOut, buttonID, saveStats);
 
 				if(buttonSec.isInt("slot")){
 					gameGui.setButton(button, buttonSec.getInt("slot"));
