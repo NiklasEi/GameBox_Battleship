@@ -92,7 +92,7 @@ public class Game{
 
 		this.rule = rule;
 		if(config == null){
-			Bukkit.getConsoleSender().sendMessage(Main.prefix + " Failed to load config!");
+			Bukkit.getConsoleSender().sendMessage(lang.PREFIX + " Failed to load config!");
 			Bukkit.getPluginManager().disablePlugin(plugin);
 		}
 		getValuesFromConfig();
@@ -108,11 +108,11 @@ public class Game{
 			return;
 		}
 		if(second == null){
-			first.sendMessage(plugin.chatColor(Main.prefix+" &4The other player is offline"));
+			first.sendMessage(plugin.chatColor(lang.PREFIX+" &4The other player is offline"));
 			manager.removeGame(this);
 			return;
 		} else if(first == null){
-			second.sendMessage(plugin.chatColor(Main.prefix+" &4The other player is offline"));
+			second.sendMessage(plugin.chatColor(lang.PREFIX+" &4The other player is offline"));
 			manager.removeGame(this);
 			return;
 		}
@@ -146,27 +146,27 @@ public class Game{
 
 	private void getValuesFromConfig() {
 		if(!config.isConfigurationSection("timers")){
-			Bukkit.getConsoleSender().sendMessage(chatColor(Main.prefix + " &4No 'timers' section or invalid values in 'timers' section"));
-			Bukkit.getConsoleSender().sendMessage(chatColor(Main.prefix + " &4Using default values!"));
+			Bukkit.getConsoleSender().sendMessage(chatColor(lang.PREFIX + " &4No 'timers' section or invalid values in 'timers' section"));
+			Bukkit.getConsoleSender().sendMessage(chatColor(lang.PREFIX + " &4Using default values!"));
 			this.shipSetTime = 30;
 			this.fireTime = 10;
 			this.changeTime = 3;
 		} else {
 			ConfigurationSection timer = config.getConfigurationSection("timers");
 			if(!timer.isSet("shipSetTimer.countdown") || !timer.isInt("shipSetTimer.countdown")){
-				Bukkit.getConsoleSender().sendMessage(chatColor(Main.prefix + " &4Using default value for shipSetTimer"));
+				Bukkit.getConsoleSender().sendMessage(chatColor(lang.PREFIX + " &4Using default value for shipSetTimer"));
 				this.shipSetTime = 30;
 			} else {
 				this.shipSetTime = timer.getInt("shipSetTimer.countdown");
 			}
 			if(!timer.isSet("fireTimer.countdown") || !timer.isInt("fireTimer.countdown")){
-				Bukkit.getConsoleSender().sendMessage(chatColor(Main.prefix + " &4Using default value for fireTimer!"));
+				Bukkit.getConsoleSender().sendMessage(chatColor(lang.PREFIX + " &4Using default value for fireTimer!"));
 				this.fireTime = 10;
 			} else {
 				this.fireTime = timer.getInt("fireTimer.countdown");
 			}
 			if(!timer.isSet("changingGrids.countdown") || !timer.isInt("changingGrids.countdown")){
-				Bukkit.getConsoleSender().sendMessage(chatColor(Main.prefix + " &4Using default value for changingGrids!"));
+				Bukkit.getConsoleSender().sendMessage(chatColor(lang.PREFIX + " &4Using default value for changingGrids!"));
 				this.changeTime = 3;
 			} else {
 				this.changeTime = timer.getInt("changingGrids.countdown");
@@ -231,22 +231,22 @@ public class Game{
 	private void getShipNumbers() {
 			this.numCarrier = rule.getAircraftCarrier();
 			if(numCarrier<1 || numCarrier>2){
-				Bukkit.getConsoleSender().sendMessage(Main.prefix+" Not valid number of carriers in config!");
+				Bukkit.getConsoleSender().sendMessage(lang.PREFIX+" Not valid number of carriers in config!");
 				this.numCarrier = 1;				
 			}
 			this.numBattleship = rule.getBattleship();
 			if(numBattleship<1 || numBattleship>2){
-				Bukkit.getConsoleSender().sendMessage(Main.prefix+" Not valid number of battleships in config!");
+				Bukkit.getConsoleSender().sendMessage(lang.PREFIX+" Not valid number of battleships in config!");
 				this.numBattleship = 1;				
 			}
 			this.numCruiser = rule.getCruiser();
 			if(numCruiser<1 || numCruiser>2){
-				Bukkit.getConsoleSender().sendMessage(Main.prefix+" Not valid number of cruisers in config!");
+				Bukkit.getConsoleSender().sendMessage(lang.PREFIX+" Not valid number of cruisers in config!");
 				this.numCruiser = 1;				
 			}
 			this.numDestroyer = rule.getDestroyer();
 			if(numDestroyer<1 || numDestroyer>2){
-				Bukkit.getConsoleSender().sendMessage(Main.prefix+" Not valid number of destroyers in config!");
+				Bukkit.getConsoleSender().sendMessage(lang.PREFIX+" Not valid number of destroyers in config!");
 				this.numDestroyer = 1;				
 			}
 	}
@@ -735,11 +735,11 @@ public class Game{
 		}
 		if(plugin.getEconEnabled()){
 			Main.econ.depositPlayer(winner, rule.getReward());
-			winner.sendMessage(manager.chatColor(Main.prefix + lang.GAME_WON_MONEY.replaceAll("%reward%", rule.getReward()+"")));
+			winner.sendMessage(manager.chatColor(lang.PREFIX + lang.GAME_WON_MONEY.replaceAll("%reward%", rule.getReward()+"")));
 		} else {
-			winner.sendMessage(manager.chatColor(Main.prefix + lang.GAME_WON));
+			winner.sendMessage(manager.chatColor(lang.PREFIX + lang.GAME_WON));
 		}
-		loser.sendMessage(manager.chatColor(Main.prefix + lang.GAME_LOSE));
+		loser.sendMessage(manager.chatColor(lang.PREFIX + lang.GAME_LOSE));
 
 		if(rule.isSaveStats()){
 			manager.addWin(isFirst?getFirstUUID():getSecondUUID(), rule.getKey());
@@ -768,7 +768,7 @@ public class Game{
 			List<String> broadcastList = config.getStringList(path + ".messages");
 			if(broadcastList != null && !broadcastList.isEmpty()){
 				for(String message : broadcastList){
-					Bukkit.broadcastMessage(chatColor(Main.prefix + " " + message.replaceAll("%winner%", winner).replaceAll("%loser%", loser)));
+					Bukkit.broadcastMessage(chatColor(lang.PREFIX + " " + message.replaceAll("%winner%", winner).replaceAll("%loser%", loser)));
 				}
 			}
 		}*/
@@ -988,14 +988,14 @@ public class Game{
 			if(plugin.getEconEnabled()){
 				if(!winner.hasPermission(Permissions.BYPASS_ALL.getPermission()) && !winner.hasPermission(Permissions.BYPASS_GAME.getPermission(Main.gameID))){
 					Main.econ.depositPlayer(winner, rule.getReward());
-					winner.sendMessage(chatColor(Main.prefix + lang.GAME_WON_MONEY_TOO_SLOW.replaceAll("%reward%", rule.getReward()+"").replaceAll("%loser%", loser.getName())));
+					winner.sendMessage(chatColor(lang.PREFIX + lang.GAME_WON_MONEY_TOO_SLOW.replaceAll("%reward%", rule.getReward()+"").replaceAll("%loser%", loser.getName())));
 				} else {
-					winner.sendMessage(chatColor(Main.prefix + lang.GAME_WON_TOO_SLOW.replaceAll("%loser%", loser.getName())));
+					winner.sendMessage(chatColor(lang.PREFIX + lang.GAME_WON_TOO_SLOW.replaceAll("%loser%", loser.getName())));
 				}
 			} else {
-				winner.sendMessage(chatColor(Main.prefix + lang.GAME_WON_TOO_SLOW.replaceAll("%loser%", loser.getName())));
+				winner.sendMessage(chatColor(lang.PREFIX + lang.GAME_WON_TOO_SLOW.replaceAll("%loser%", loser.getName())));
 			}
-			loser.sendMessage(chatColor(Main.prefix + lang.GAME_TOO_SLOW));
+			loser.sendMessage(chatColor(lang.PREFIX + lang.GAME_TOO_SLOW));
 
 		}
 		if(getRule().isSaveStats()){
@@ -1072,7 +1072,7 @@ public class Game{
 				} else {
 					// TODO: 9/26/16 get rid of this in later versions or find a better solution
 					// version 1.6 or older
-					Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', Main.prefix + " &4You are using an outdated config file!"));
+					Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', lang.PREFIX + " &4You are using an outdated config file!"));
 					value = config.getString("materials." + key);
 				}
 			} else {
@@ -1186,8 +1186,8 @@ public class Game{
 	}
 	
 	private void setDefaultMaterials() {
-		Bukkit.getConsoleSender().sendMessage(plugin.chatColor(Main.prefix+" &4Failed to load materials from config"));
-		Bukkit.getConsoleSender().sendMessage(plugin.chatColor(Main.prefix+" &4Using default materials"));
+		Bukkit.getConsoleSender().sendMessage(plugin.chatColor(lang.PREFIX+" &4Failed to load materials from config"));
+		Bukkit.getConsoleSender().sendMessage(plugin.chatColor(lang.PREFIX+" &4Using default materials"));
 		
 		this.ownShip = new ItemStack(Material.IRON_BLOCK);
 		ItemMeta metaownShip = ownShip.getItemMeta();

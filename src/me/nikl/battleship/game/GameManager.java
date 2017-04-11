@@ -355,14 +355,14 @@ public class GameManager implements IGameManager{
 				if(plugin.getEconEnabled()){
 					if(!winner.hasPermission(Permissions.BYPASS_ALL.getPermission()) && !winner.hasPermission(Permissions.BYPASS_GAME.getPermission(Main.gameID))){
 						Main.econ.depositPlayer(winner, game.getRule().getReward());
-						winner.sendMessage(chatColor(Main.prefix + lang.GAME_WON_MONEY_GAVE_UP.replaceAll("%reward%", game.getRule().getReward()+"").replaceAll("%loser%", loser.getName())));
+						winner.sendMessage(chatColor(lang.PREFIX + lang.GAME_WON_MONEY_GAVE_UP.replaceAll("%reward%", game.getRule().getReward()+"").replaceAll("%loser%", loser.getName())));
 					} else {
-						winner.sendMessage(chatColor(Main.prefix + lang.GAME_OTHER_GAVE_UP.replaceAll("%loser%", loser.getName())));
+						winner.sendMessage(chatColor(lang.PREFIX + lang.GAME_OTHER_GAVE_UP.replaceAll("%loser%", loser.getName())));
 					}
 				} else {
-					winner.sendMessage(chatColor(Main.prefix + lang.GAME_WON.replaceAll("%loser%", loser.getName())));
+					winner.sendMessage(chatColor(lang.PREFIX + lang.GAME_WON.replaceAll("%loser%", loser.getName())));
 				}
-				loser.sendMessage(chatColor(Main.prefix + lang.GAME_GAVE_UP));
+				loser.sendMessage(chatColor(lang.PREFIX + lang.GAME_GAVE_UP));
 
 
 			}
@@ -408,7 +408,7 @@ public class GameManager implements IGameManager{
 			if (Main.econ.getBalance(player[0]) >= cost) {
 
 			} else {
-				player[0].sendMessage(plugin.chatColor(Main.prefix + plugin.lang.GAME_NOT_ENOUGH_MONEY));
+				player[0].sendMessage(plugin.chatColor(lang.PREFIX + plugin.lang.GAME_NOT_ENOUGH_MONEY));
 				firstCanPay = false;
 			}
 		}
@@ -418,7 +418,7 @@ public class GameManager implements IGameManager{
 			if (Main.econ.getBalance(player[1]) >= cost) {
 
 			} else {
-				player[1].sendMessage(plugin.chatColor(Main.prefix + plugin.lang.GAME_NOT_ENOUGH_MONEY));
+				player[1].sendMessage(plugin.chatColor(lang.PREFIX + plugin.lang.GAME_NOT_ENOUGH_MONEY));
 				if(firstCanPay){
 					// only second player cannot pay
 					return GameBox.GAME_NOT_ENOUGH_MONEY_2;
@@ -439,11 +439,11 @@ public class GameManager implements IGameManager{
 
 		if (plugin.getEconEnabled()) {
 			Main.econ.withdrawPlayer(player[0], cost);
-			player[0].sendMessage(plugin.chatColor(Main.prefix + plugin.lang.GAME_PAYED.replaceAll("%cost%", String.valueOf(cost))));
+			player[0].sendMessage(plugin.chatColor(lang.PREFIX + plugin.lang.GAME_PAYED.replaceAll("%cost%", String.valueOf(cost))));
 
 
 			Main.econ.withdrawPlayer(player[1], cost);
-			player[1].sendMessage(plugin.chatColor(Main.prefix + plugin.lang.GAME_PAYED.replaceAll("%cost%", String.valueOf(cost))));
+			player[1].sendMessage(plugin.chatColor(lang.PREFIX + plugin.lang.GAME_PAYED.replaceAll("%cost%", String.valueOf(cost))));
 		}
 
 		games.add(new Game(plugin, player[0].getUniqueId(), player[1].getUniqueId(), rule));
