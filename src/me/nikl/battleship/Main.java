@@ -2,7 +2,6 @@ package me.nikl.battleship;
 
 import me.nikl.battleship.game.GameManager;
 import me.nikl.battleship.game.GameRules;
-import me.nikl.battleship.update.*;
 import me.nikl.gamebox.ClickAction;
 import me.nikl.gamebox.GameBox;
 import me.nikl.gamebox.data.SaveType;
@@ -11,6 +10,7 @@ import me.nikl.gamebox.guis.button.AButton;
 import me.nikl.gamebox.guis.gui.game.GameGui;
 import me.nikl.gamebox.guis.gui.game.StartMultiplayerGamePage;
 import me.nikl.gamebox.guis.gui.game.TopListPage;
+import me.nikl.gamebox.nms.NMSUtil;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -40,7 +40,7 @@ public class Main extends JavaPlugin{
 	public Boolean econEnabled;
 	public Language lang;
 	public boolean disabled;
-	private InvTitle updater;
+	private NMSUtil updater;
 
 	private GameBox gameBox;
 	
@@ -53,12 +53,6 @@ public class Main extends JavaPlugin{
 	
 	@Override
 	public void onEnable(){
-        if (!setupUpdater()) {
-            getLogger().severe("Your server version is not compatible with this plugin!");
-
-            Bukkit.getPluginManager().disablePlugin(this);
-            return;
-        }
         
 		this.disabled = false;
 		this.con = new File(this.getDataFolder().toString() + File.separatorChar + "config.yml");
@@ -68,6 +62,8 @@ public class Main extends JavaPlugin{
 
 		hook();
 		if(disabled) return;
+
+		this.updater = gameBox.getNMS();
 	}
 
 
@@ -360,42 +356,7 @@ public class Main extends JavaPlugin{
 	}
 
 
-	private boolean setupUpdater() {
-		String version;
-
-	    try {
-	        version = Bukkit.getServer().getClass().getPackage().getName().replace(".",  ",").split(",")[3];
-	    } catch (ArrayIndexOutOfBoundsException whatVersionAreYouUsingException) {
-	        return false;
-	    }
-	
-	    //getLogger().info("Your server is running version " + version);
-	
-	    if (version.equals("v1_10_R1")) {
-	        updater = new Update_1_10_R1();
-	        
-	    } else if (version.equals("v1_9_R2")) {
-	        updater = new Update_1_9_R2();
-	        
-	    } else if (version.equals("v1_9_R1")) {
-	        updater = new Update_1_9_R1();
-	        
-	    } else if (version.equals("v1_8_R3")) {
-	        updater = new Update_1_8_R3();
-	        
-	    } else if (version.equals("v1_8_R2")) {
-	        updater = new Update_1_8_R2();
-	        
-	    } else if (version.equals("v1_8_R1")) {
-	        updater = new Update_1_8_R1();
-			
-	    } else if (version.equals("v1_11_R1")) {
-			updater = new Update_1_11_R1();
-		}
-	    return updater != null;
-	}
-
-	public InvTitle getUpdater(){
+	public NMSUtil getUpdater(){
 		return this.updater;
 	}
 
