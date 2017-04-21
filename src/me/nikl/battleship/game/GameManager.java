@@ -365,7 +365,7 @@ public class GameManager implements IGameManager{
 
 
 			}
-			plugin.getUpdater().updateTitle(winner, lang.TITLE_WON);
+			plugin.getUpdater().updateInventoryTitle(winner, lang.TITLE_WON);
 			game.setState(GameState.FINISHED);
 
 
@@ -471,7 +471,7 @@ public class GameManager implements IGameManager{
 		}
 
 		game.setState(GameState.FINISHED);
-		plugin.getUpdater().updateTitle(firstClosed?second:first, lang.TITLE_WON);
+		plugin.getUpdater().updateInventoryTitle(firstClosed?second:first, lang.TITLE_WON);
 
 		if(game.getRule().isSaveStats()){
 			addWin(firstClosed?game.getSecondUUID():game.getFirstUUID(), game.getRule().getKey());

@@ -1,12 +1,12 @@
 package me.nikl.battleship.game;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
 import me.nikl.battleship.Sounds;
 import me.nikl.gamebox.Permissions;
+import me.nikl.gamebox.nms.NMSUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -20,7 +20,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import me.nikl.battleship.Language;
 import me.nikl.battleship.Main;
-import me.nikl.battleship.update.InvTitle;
 
 public class Game{
 	// items that make up the game
@@ -59,7 +58,7 @@ public class Game{
 	private Language lang;
 	
 	// updater for the inventory titles
-	private InvTitle updater;
+	private NMSUtil updater;
 	
 	// timer stuff during ship-set phase
 	private GameTimer timer;
@@ -206,7 +205,7 @@ public class Game{
 			} else {
 				first.openInventory(firstOthers);				
 			}
-			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
+			updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
 		} else {
 			setSecondSeesOwn(ownInv);
 			if(ownInv){
@@ -214,7 +213,7 @@ public class Game{
 			} else {
 				second.openInventory(secondOthers);				
 			}	
-			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));		
+			updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 		}
 		setClosingInv(false);
 	}
@@ -274,8 +273,8 @@ public class Game{
 			showInventory(false, true);
 			closingInv = false;
 
-			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
-			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
+			updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
+			updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
 			if(Main.playSounds){
 				first.playSound(first.getLocation(), yourTurnNotice, volume, pitch );
@@ -296,8 +295,8 @@ public class Game{
 			showInventory(false, true);
 			closingInv = false;
 
-			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
-			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
+			updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
+			updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
 			if(Main.playSounds){
 				first.playSound(first.getLocation(), yourTurnNotice, volume, pitch );
@@ -318,8 +317,8 @@ public class Game{
 			showInventory(false, true);
 			closingInv = false;
 
-			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
-			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
+			updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
+			updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
 			if(Main.playSounds){
 				first.playSound(first.getLocation(), yourTurnNotice, volume, pitch );
@@ -338,8 +337,8 @@ public class Game{
 			showInventory(false, true);
 			closingInv = false;
 
-			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
-			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
+			updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
+			updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
 			if(Main.playSounds){
 				first.playSound(first.getLocation(), yourTurnNotice, volume, pitch );
@@ -357,8 +356,8 @@ public class Game{
 			showInventory(false, false);
 			closingInv = false;
 
-			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
-			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
+			updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
+			updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
 			if(Main.playSounds){
 				second.playSound(second.getLocation(), yourTurnNotice, volume, pitch );
@@ -375,8 +374,8 @@ public class Game{
 			currentTime = changeTime;
 			setFirstCurrentState(lang.TITLE_CHANGING);
 			setSecondCurrentState(lang.TITLE_CHANGING);
-			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
-			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
+			updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
+			updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			break;
 			
 			
@@ -677,8 +676,8 @@ public class Game{
 				this.timer.cancel();
 				this.timer = new GameTimer(this);
 				currentTime = fireTime;
-				updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
-				updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
+				updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
+				updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 				return true;
 			} else {
 				firstOthers.setItem(slot, othersMiss);
@@ -692,8 +691,8 @@ public class Game{
 				this.timer.cancel();
 				this.timer = new GameTimer(this);
 				currentTime = fireTime;
-				updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
-				updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
+				updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
+				updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 				return true;
 			} else {
 				secondOthers.setItem(slot, othersMiss);
@@ -721,13 +720,13 @@ public class Game{
 		if(isFirst){
 			winner = Bukkit.getPlayer(this.getFirstUUID());
 			loser = Bukkit.getPlayer(this.getSecondUUID());
-			updater.updateTitle(first, chatColor(lang.TITLE_WON));
-			updater.updateTitle(second, chatColor(lang.TITLE_LOST));
+			updater.updateInventoryTitle(first, chatColor(lang.TITLE_WON));
+			updater.updateInventoryTitle(second, chatColor(lang.TITLE_LOST));
 		} else {
 			loser = Bukkit.getPlayer(this.getFirstUUID());
 			winner = Bukkit.getPlayer(this.getSecondUUID());
-			updater.updateTitle(first, chatColor(lang.TITLE_LOST));
-			updater.updateTitle(second, chatColor(lang.TITLE_WON));
+			updater.updateInventoryTitle(first, chatColor(lang.TITLE_LOST));
+			updater.updateInventoryTitle(second, chatColor(lang.TITLE_WON));
 		}
 
 		if(plugin.getEconEnabled()){
@@ -771,8 +770,8 @@ public class Game{
 		//showInventory(true, true);
 		//showInventory(false, true);
 		currentTime = time;
-		updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", time+"")));
-		updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", time+"")));
+		updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", time+"")));
+		updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", time+"")));
 	}
 
 	public void forceNextState() {
@@ -966,8 +965,8 @@ public class Game{
 			loser.sendMessage(chatColor(lang.PREFIX + lang.GAME_TOO_SLOW));
 
 		}
-		plugin.getUpdater().updateTitle(winner, lang.TITLE_WON);
-		plugin.getUpdater().updateTitle(loser, lang.TITLE_LOST);
+		plugin.getUpdater().updateInventoryTitle(winner, lang.TITLE_WON);
+		plugin.getUpdater().updateInventoryTitle(loser, lang.TITLE_LOST);
 		manager.onGameEnd(winner, loser, rule.getKey());
 		
 	}
@@ -979,12 +978,12 @@ public class Game{
 	public void setFireState(int time) {
 		if(state.equals(GameState.FIRST_TURN)){
 			currentTime = time;
-			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", time+"")));
-			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", time+"")));
+			updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", time+"")));
+			updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", time+"")));
 		} else if (state.equals(GameState.SECOND_TURN)){
 			currentTime = time;
-			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", time+"")));
-			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", time+"")));			
+			updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", time+"")));
+			updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", time+"")));
 		}
 	}
 
@@ -1004,8 +1003,8 @@ public class Game{
 			showInventory(true, true);
 			showInventory(false, false);*/
 			currentTime = time;
-			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", time+"")));
-			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", time+"")));
+			updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", time+"")));
+			updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", time+"")));
 			
 		} else {
 			/*firstOthers = setState(firstCurrentState.replaceAll("%timer%", time+""), firstOthers);F
@@ -1013,8 +1012,8 @@ public class Game{
 			showInventory(true, false);
 			showInventory(false, true);*/
 			currentTime = time;
-			updater.updateTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", time+"")));
-			updater.updateTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", time+"")));
+			updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", time+"")));
+			updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", time+"")));
 			
 		}
 		//Bukkit.getConsoleSender().sendMessage("Changing title   time: "+time); // XXX
@@ -1235,6 +1234,6 @@ public class Game{
 
 	public void updateTitle(boolean isFirst) {
 		Player player = isFirst?first:second;
-		updater.updateTitle(player, chatColor(isFirst?firstCurrentState:secondCurrentState));
+		updater.updateInventoryTitle(player, chatColor(isFirst?firstCurrentState:secondCurrentState));
 	}
 }
