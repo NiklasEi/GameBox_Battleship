@@ -393,7 +393,6 @@ public class GameManager implements IGameManager{
 	@Override
 	public int startGame(Player[] player, boolean b, String... strings) {
 
-		// TodO
 		GameRules rule = gameTypes.get(strings[0]);
 		if(rule == null){
 			return GameBox.GAME_NOT_STARTED_ERROR;
