@@ -1,0 +1,2 @@
+
+- replace all non numbers in gb version
