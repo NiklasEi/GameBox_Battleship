@@ -2,9 +2,9 @@ package me.nikl.battleship.game;
 
 import java.util.*;
 
-import me.nikl.battleship.Sounds;
 import me.nikl.gamebox.GameBox;
 import me.nikl.gamebox.Permissions;
+import me.nikl.gamebox.Sounds;
 import me.nikl.gamebox.data.SaveType;
 import me.nikl.gamebox.game.IGameManager;
 import org.bukkit.Bukkit;
@@ -406,7 +406,7 @@ public class GameManager implements IGameManager{
 			if (Main.econ.getBalance(player[0]) >= cost) {
 
 			} else {
-				player[0].sendMessage(plugin.chatColor(lang.PREFIX + plugin.lang.GAME_NOT_ENOUGH_MONEY));
+				player[0].sendMessage(GameBox.chatColor(lang.PREFIX + plugin.lang.GAME_NOT_ENOUGH_MONEY));
 				firstCanPay = false;
 			}
 		}
@@ -416,7 +416,7 @@ public class GameManager implements IGameManager{
 			if (Main.econ.getBalance(player[1]) >= cost) {
 
 			} else {
-				player[1].sendMessage(plugin.chatColor(lang.PREFIX + plugin.lang.GAME_NOT_ENOUGH_MONEY));
+				player[1].sendMessage(GameBox.chatColor(lang.PREFIX + plugin.lang.GAME_NOT_ENOUGH_MONEY));
 				if(firstCanPay){
 					// only second player cannot pay
 					return GameBox.GAME_NOT_ENOUGH_MONEY_2;
@@ -437,11 +437,11 @@ public class GameManager implements IGameManager{
 
 		if (plugin.getEconEnabled()) {
 			Main.econ.withdrawPlayer(player[0], cost);
-			player[0].sendMessage(plugin.chatColor(lang.PREFIX + plugin.lang.GAME_PAYED.replaceAll("%cost%", String.valueOf(cost))));
+			player[0].sendMessage(GameBox.chatColor(lang.PREFIX + plugin.lang.GAME_PAYED.replaceAll("%cost%", String.valueOf(cost))));
 
 
 			Main.econ.withdrawPlayer(player[1], cost);
-			player[1].sendMessage(plugin.chatColor(lang.PREFIX + plugin.lang.GAME_PAYED.replaceAll("%cost%", String.valueOf(cost))));
+			player[1].sendMessage(GameBox.chatColor(lang.PREFIX + plugin.lang.GAME_PAYED.replaceAll("%cost%", String.valueOf(cost))));
 		}
 
 		games.add(new Game(plugin, player[0].getUniqueId(), player[1].getUniqueId(), rule));

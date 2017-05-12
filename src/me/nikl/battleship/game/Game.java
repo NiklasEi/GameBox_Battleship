@@ -4,8 +4,9 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.UUID;
 
-import me.nikl.battleship.Sounds;
+import me.nikl.gamebox.GameBox;
 import me.nikl.gamebox.Permissions;
+import me.nikl.gamebox.Sounds;
 import me.nikl.gamebox.nms.NMSUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -107,11 +108,11 @@ public class Game{
 			return;
 		}
 		if(second == null){
-			first.sendMessage(plugin.chatColor(lang.PREFIX+" &4The other player is offline"));
+			first.sendMessage(GameBox.chatColor(lang.PREFIX+" &4The other player is offline"));
 			manager.removeGame(this);
 			return;
 		} else if(first == null){
-			second.sendMessage(plugin.chatColor(lang.PREFIX+" &4The other player is offline"));
+			second.sendMessage(GameBox.chatColor(lang.PREFIX+" &4The other player is offline"));
 			manager.removeGame(this);
 			return;
 		}
@@ -765,10 +766,6 @@ public class Game{
 
 
 	public void setShipSetState(int time) {
-		//firstOwn = setState(firstCurrentState.replaceAll("%timer%", time+""), firstOwn);
-		//secondOwn = setState(secondCurrentState.replaceAll("%timer%", time+""), secondOwn);
-		//showInventory(true, true);
-		//showInventory(false, true);
 		currentTime = time;
 		updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", time+"")));
 		updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", time+"")));
@@ -998,25 +995,16 @@ public class Game{
 
 	public void setChangingState(int time) {
 		if(firstSeesOwn){
-			/*firstOwn = setState(firstCurrentState.replaceAll("%timer%", time+""), firstOwn);
-			secondOthers = setState(secondCurrentState.replaceAll("%timer%", time+""), secondOthers);
-			showInventory(true, true);
-			showInventory(false, false);*/
 			currentTime = time;
 			updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", time+"")));
 			updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", time+"")));
 			
 		} else {
-			/*firstOthers = setState(firstCurrentState.replaceAll("%timer%", time+""), firstOthers);F
-			secondOwn = setState(secondCurrentState.replaceAll("%timer%", time+""), secondOwn);
-			showInventory(true, false);
-			showInventory(false, true);*/
 			currentTime = time;
 			updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", time+"")));
 			updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", time+"")));
 			
 		}
-		//Bukkit.getConsoleSender().sendMessage("Changing title   time: "+time); // XXX
 	}
 
 	private boolean getMaterials() {
@@ -1149,8 +1137,8 @@ public class Game{
 	}
 	
 	private void setDefaultMaterials() {
-		Bukkit.getConsoleSender().sendMessage(plugin.chatColor(lang.PREFIX+" &4Failed to load materials from config"));
-		Bukkit.getConsoleSender().sendMessage(plugin.chatColor(lang.PREFIX+" &4Using default materials"));
+		Bukkit.getConsoleSender().sendMessage(GameBox.chatColor(lang.PREFIX+" &4Failed to load materials from config"));
+		Bukkit.getConsoleSender().sendMessage(GameBox.chatColor(lang.PREFIX+" &4Using default materials"));
 		
 		this.ownShip = new ItemStack(Material.IRON_BLOCK);
 		ItemMeta metaownShip = ownShip.getItemMeta();
