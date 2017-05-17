@@ -10,3 +10,5 @@ v 2.2.0
 --- use ItemStackUtil from GameBox to load ItemStacks
 - removed deprecated methods and variables (now depends on GB version 1.3.0)
 - replace all non numbers in gb version
+- add mandarin lang file
+- add spanish lang file
