@@ -50,7 +50,7 @@ public class Main extends JavaPlugin{
 
 	private final String[][] depends =  new String[][]{
 		new String[]{"Vault", "1.5"},
-		new String[]{"GameBox", "1.3.0"}
+		new String[]{"GameBox", "1.5.0"}
 	};
 
 	private final String[] subCommands = new String[]{
@@ -125,7 +125,7 @@ public class Main extends JavaPlugin{
 
 		this.manager = new GameManager(this);
 
-		gameBox.getPluginManager().registerGame(manager, gameID, lang.NAME, 2);
+		gameBox.getPluginManager().registerGame(this, manager, gameID, lang.NAME, 2);
 
 		GameGui gameGui = new GameGui(gameBox, guiManager, 54, gameID, GUIManager.MAIN_GAME_GUI);
 		gameGui.setHelpButton(lang.GAME_HELP);
@@ -178,11 +178,11 @@ public class Main extends JavaPlugin{
 					meta.setLore(lore);
 				}
 
-				guiManager.registerGameGUI(gameID, buttonID, new StartMultiplayerGamePage(gameBox, guiManager, 54, gameID, buttonID, GameBox.chatColor(buttonSec.getString("inviteGuiTitle", "Title missing in config"))));
+				guiManager.registerGameGUI(new StartMultiplayerGamePage(gameBox, guiManager, 54, gameID, buttonID, GameBox.chatColor(buttonSec.getString("inviteGuiTitle", "Title missing in config"))));
 
 
 				button.setItemMeta(meta);
-				button.setAction(ClickAction.CHANGE_GAME_GUI);
+				button.setAction(ClickAction.OPEN_GAME_GUI);
 				button.setArgs(gameID, buttonID);
 
 				cost = buttonSec.getDouble("cost", 0.);
@@ -232,7 +232,7 @@ public class Main extends JavaPlugin{
 				meta.setLore(lore);
 			}
 			gameButton.setItemMeta(meta);
-			guiManager.registerGameGUI(gameID, GUIManager.MAIN_GAME_GUI, gameGui, gameButton, subCommands);
+			guiManager.registerMainGameGUI(gameGui, gameButton, subCommands);
 		} else {
 			Bukkit.getLogger().log(Level.WARNING, " Missing or wrong configured main button in the configuration file!");
 		}
@@ -322,7 +322,7 @@ public class Main extends JavaPlugin{
 						GameBox.chatColor(buttonSec.getString("inventoryTitle","Title missing in config")),
 						SaveType.WINS, lore);
 
-				guiManager.registerTopList(gameID, buttonID, topListPage);
+				guiManager.registerGameGUI(topListPage);
 			}
 		}
 	}
