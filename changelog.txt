@@ -1,5 +1,5 @@
 
-
+- fix error caused by initializing the GameManager in reload() before checking whether GameBox is enabled
 
 -----------------------------------------------------------------------------
 v 2.3.0
