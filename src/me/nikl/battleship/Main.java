@@ -63,17 +63,7 @@ public class Main extends JavaPlugin{
 		this.disabled = false;
 		this.con = new File(this.getDataFolder().toString() + File.separatorChar + "config.yml");
 
-		reload();
-		if(disabled) return;
-
-		hook();
-		if(disabled) return;
-
-		this.updater = gameBox.getNMS();
-	}
-
-
-	private void hook() {
+		// check for gamebox
 		if (Bukkit.getPluginManager().getPlugin("GameBox") == null || !Bukkit.getPluginManager().getPlugin("GameBox").isEnabled()) {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes( '&', " &cGameBox not found!"));
 			Bukkit.getLogger().log(Level.SEVERE, "   Get the newest version here:");
@@ -82,10 +72,6 @@ public class Main extends JavaPlugin{
 			disabled = true;
 			return;
 		}
-
-
-
-
 
 		gameBox = (me.nikl.gamebox.GameBox)Bukkit.getPluginManager().getPlugin("GameBox");
 
@@ -115,6 +101,18 @@ public class Main extends JavaPlugin{
 			disabled = true;
 			return;
 		}
+
+		reload();
+		if(disabled) return;
+
+		hook();
+		if(disabled) return;
+
+		this.updater = gameBox.getNMS();
+	}
+
+
+	private void hook() {
 
 
 		// disable economy if it is disabled for either one of the plugins
