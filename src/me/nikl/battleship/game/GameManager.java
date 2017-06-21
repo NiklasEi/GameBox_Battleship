@@ -108,7 +108,7 @@ public class GameManager implements IGameManager{
 		}
 		Player player = (Player) event.getWhoClicked();
 		Game game = getGame(player.getUniqueId());
-		if(!getGame(player.getUniqueId()).isCurrentInventory(event.getClickedInventory())){
+		if(!getGame(player.getUniqueId()).isCurrentInventory(event.getInventory())){
 			//Bukkit.getConsoleSender().sendMessage("not current inv."); // XXX
 			return false;
 		}
