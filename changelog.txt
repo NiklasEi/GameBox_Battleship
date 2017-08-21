@@ -2,6 +2,10 @@
 
 
 -----------------------------------------------------------------------------
+v2.3.2
+- check inventory title length if GB flag is set
+
+
 v 2.3.1
 - fix error caused by initializing the GameManager in reload() before checking whether GameBox is enabled
 - fix usage of getClickedInventory for CraftBukkit
