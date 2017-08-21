@@ -5,6 +5,7 @@ import java.util.Random;
 import java.util.UUID;
 
 import me.nikl.gamebox.GameBox;
+import me.nikl.gamebox.GameBoxSettings;
 import me.nikl.gamebox.Permissions;
 import me.nikl.gamebox.Sounds;
 import me.nikl.gamebox.nms.NMSUtil;
@@ -123,10 +124,20 @@ public class Game{
 		currentTime = shipSetTime;
 		this.firstCurrentState = lang.TITLE_SET_SHIP_1.replaceAll("%count%", numCarrier+"");
 		this.secondCurrentState = lang.TITLE_SET_SHIP_1.replaceAll("%count%", numCarrier+"");
-		this.firstOwn = Bukkit.getServer().createInventory(null, 54, ChatColor.translateAlternateColorCodes('&', firstCurrentState.replaceAll("%timer%", shipSetTime+"")));
-		this.firstOthers = Bukkit.getServer().createInventory(null, 54, ChatColor.translateAlternateColorCodes('&', "Battleship"));
-		this.secondOwn = Bukkit.getServer().createInventory(null, 54, ChatColor.translateAlternateColorCodes('&', secondCurrentState.replaceAll("%timer%", shipSetTime+"")));
-		this.secondOthers = Bukkit.getServer().createInventory(null, 54, ChatColor.translateAlternateColorCodes('&', "Battleship"));
+
+		String title = ChatColor.translateAlternateColorCodes('&', firstCurrentState.replaceAll("%timer%", shipSetTime+""));
+		if(GameBoxSettings.checkInventoryLength && title.length() > 32){
+			title = "Title is too long!";
+		}
+		this.firstOwn = Bukkit.getServer().createInventory(null, 54, title);
+		this.firstOthers = Bukkit.getServer().createInventory(null, 54, "Battleship");
+
+		title = ChatColor.translateAlternateColorCodes('&', secondCurrentState.replaceAll("%timer%", shipSetTime+""));
+		if(GameBoxSettings.checkInventoryLength && title.length() > 32){
+			title = "Title is too long!";
+		}
+		this.secondOwn = Bukkit.getServer().createInventory(null, 54, title);
+		this.secondOthers = Bukkit.getServer().createInventory(null, 54, "Battleship");
 
 		BuildGrids();
 		
