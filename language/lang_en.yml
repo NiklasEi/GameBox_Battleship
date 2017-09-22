@@ -46,17 +46,19 @@ gameHelp:
 inventoryTitles:
   # use %count% for the number of ships to set
   # use %timer% to display the timer
-  setShip1: "Set Carrier: %count% x 5 Blocks   &4%timer%"
-  setShip2: "Set Battleship: %count% x 4 Blocks  &4%timer%"
-  setShip3: "Set Cruiser: %count% x 3 Blocks   &4%timer%"
-  setShip4: "Set Destroyer: %count% x 2 Blocks  &4%timer%"
+  setShip1: "Set %count% Carrier (5 Blocks)   &4%timer%"
+  setShip2: "Set %count% Battleship (4 Blocks)  &4%timer%"
+  setShip3: "Set %count% Cruiser (3 Blocks)   &4%timer%"
+  setShip4: "Set %count% Destroyer (2 Blocks)  &4%timer%"
+  # title while waiting for the other player to set his ship(s)
+  waiting: "&2Battleship | &rPlease wait..."
   # %timer%
-  attacker: "&2Battleship   &rClick to fire!      &4%timer%"
-  defender: "&4Battleship   &rWatch out!         &2%timer%"  
+  attacker: "&2Battleship | &rClick to fire!      &4%timer%"
+  defender: "&4Battleship | &rWatch out!         &2%timer%"
   
-  changingGrids: "&2Battleship   &rChanging Grids  &2%timer%"
+  changingGrids: "&2Battleship | &rChanging Grids  &2%timer%"
   
-  won: "&2Battleship    &2You won!"
-  lost: "&2Battleship    &4You lost!"
+  won: "&2Battleship       &2You won!"
+  lost: "&2Battleship       &4You lost!"
 
   

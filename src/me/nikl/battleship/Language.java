@@ -20,7 +20,7 @@ public class Language {
 	public String NAME, PREFIX;
 	public String GAME_PAYED, GAME_NOT_ENOUGH_MONEY, GAME_WON_MONEY, GAME_WON_MONEY_GAVE_UP, GAME_WON, GAME_LOSE, GAME_GAVE_UP, GAME_OTHER_GAVE_UP,
 		GAME_TOO_SLOW, GAME_WON_MONEY_TOO_SLOW, GAME_WON_TOO_SLOW;
-	public String TITLE_SET_SHIP_1, TITLE_SET_SHIP_2, TITLE_SET_SHIP_3, TITLE_SET_SHIP_4, TITLE_ATTACKER, TITLE_DEFENDER, TITLE_WON, TITLE_LOST;
+	public String TITLE_SET_SHIP_1, TITLE_SET_SHIP_2, TITLE_SET_SHIP_3, TITLE_SET_SHIP_4, TITLE_ATTACKER, TITLE_DEFENDER, TITLE_WON, TITLE_LOST, TITLE_WAITING;
 	
 	public List<String> GAME_HELP;
 	private YamlConfiguration defaultLang;
@@ -48,6 +48,7 @@ public class Language {
 		this.TITLE_SET_SHIP_4 = getString("inventoryTitles.setShip4");
 		this.TITLE_ATTACKER = getString("inventoryTitles.attacker");
 		this.TITLE_DEFENDER = getString("inventoryTitles.defender");
+		this.TITLE_WAITING = getString("inventoryTitles.waiting");
 		this.TITLE_WON = getString("inventoryTitles.won");		
 		this.TITLE_LOST = getString("inventoryTitles.lost");
 

@@ -134,11 +134,11 @@ public class GameManager implements IGameManager{
 					game.lockShips(isFirst);
 					game.setShipsSet(isFirst, true);
 					if(isFirst){
-						game.setFirstCurrentState("&2Battleship   " + "&rWaiting...           &2");
+						game.setFirstCurrentState(lang.TITLE_WAITING);
 					} else {
-						game.setSecondCurrentState("&2Battleship   " + "&rWaiting...           &2");
+						game.setSecondCurrentState(lang.TITLE_WAITING);
 					}
-					game.setState("&2Battleship   " + "&rWaiting...", isFirst, true);
+					game.setState(lang.TITLE_WAITING, isFirst, true);
 					game.updateTitle(isFirst);
 					if(game.getShipsSet(!isFirst, true)){
 						game.setState(GameState.SETTING_SHIP2);
@@ -164,11 +164,11 @@ public class GameManager implements IGameManager{
 					game.lockShips(isFirst);
 					game.setShipsSet(isFirst, true);
 					if(isFirst){
-						game.setFirstCurrentState("&2Battleship   " + "&rWaiting...           &2");
+						game.setFirstCurrentState(lang.TITLE_WAITING);
 					} else {
-						game.setSecondCurrentState("&2Battleship   " + "&rWaiting...           &2");
+						game.setSecondCurrentState(lang.TITLE_WAITING);
 					}
-					game.setState("&2Battleship   &rWaiting...", isFirst, true);
+					game.setState(lang.TITLE_WAITING, isFirst, true);
 					game.updateTitle(isFirst);
 					if(game.getShipsSet(!isFirst, true)){
 						game.setState(GameState.SETTING_SHIP3);
@@ -193,11 +193,11 @@ public class GameManager implements IGameManager{
 					game.lockShips(isFirst);
 					game.setShipsSet(isFirst, true);
 					if(isFirst){
-						game.setFirstCurrentState("&2Battleship   " + "&rWaiting...           &2");
+						game.setFirstCurrentState(lang.TITLE_WAITING);
 					} else {
-						game.setSecondCurrentState("&2Battleship   " + "&rWaiting...           &2");
+						game.setSecondCurrentState(lang.TITLE_WAITING);
 					}
-					game.setState("&2Battleship   " + "&rWaiting...", isFirst, true);
+					game.setState(lang.TITLE_WAITING, isFirst, true);
 					game.updateTitle(isFirst);
 					if(game.getShipsSet(!isFirst, true)){
 						game.setState(GameState.SETTING_SHIP4);
@@ -222,11 +222,11 @@ public class GameManager implements IGameManager{
 					game.lockShips(isFirst);
 					game.setShipsSet(isFirst, true);
 					if(isFirst){
-						game.setFirstCurrentState("&2Battleship   " + "&rWaiting...           &2");
+						game.setFirstCurrentState(lang.TITLE_WAITING);
 					} else {
-						game.setSecondCurrentState("&2Battleship   " + "&rWaiting...           &2");
+						game.setSecondCurrentState(lang.TITLE_WAITING);
 					}
-					game.setState("&2Battleship   " + "&rWaiting...", isFirst, true);
+					game.setState(lang.TITLE_WAITING, isFirst, true);
 					game.updateTitle(isFirst);
 					if(game.getShipsSet(!isFirst, true)){
 						// if this is true, all ships are set and the game can start

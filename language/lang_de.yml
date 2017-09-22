@@ -51,10 +51,12 @@ gameHelp:
 inventoryTitles:
   # use %count% for the number of ships to set
   # use %timer% to display the timer
-  setShip1: "Carrier: %count% x 5 Felder   &4%timer%"
-  setShip2: "Battleship: %count% x 4 Felder  &4%timer%"
-  setShip3: "Cruiser: %count% x 3 Felder   &4%timer%"
-  setShip4: "Destroyer: %count% x 2 Felder  &4%timer%"
+  setShip1: "%count% Carrier (5 Blöcke)     &4%timer%"
+  setShip2: "%count% Battleship (4 Blöcke)  &4%timer%"
+  setShip3: "%count% Cruiser (3 Blöcke)     &4%timer%"
+  setShip4: "%count% Destroyer (2 Blöcke)   &4%timer%"
+  # title while waiting for the other player to set his ship(s)
+  waiting: "&2Battleship | &rBitte warten..."
   # %timer%
   attacker: "&2Battleship   &rFeuer frei!     &4%timer%"
   defender: "&4Battleship   &rAchtung!        &2%timer%"
