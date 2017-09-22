@@ -2,6 +2,11 @@
 
 
 -----------------------------------------------------------------------------
+v2.3.3
+- improve default lang
+- add 'waiting' title to language file
+
+
 v2.3.2
 - check inventory title length if GB flag is set
 
