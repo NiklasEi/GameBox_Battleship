@@ -6,21 +6,21 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class BattleshipPlugin extends JavaPlugin{
-	public static final String BATTLESHIP = "battleship";
-	private GameBox gameBox;
+public class BattleshipPlugin extends JavaPlugin {
+    public static final String BATTLESHIP = "battleship";
+    private GameBox gameBox;
 
-	@Override
-	public void onEnable(){
-		Plugin plugin = Bukkit.getPluginManager().getPlugin("GameBox");
-		if(plugin == null || !plugin.isEnabled()){
-			getLogger().warning(" GameBox was not found! Disabling Battleship...");
-			Bukkit.getPluginManager().disablePlugin(this);
-			return;
-		}
-		gameBox = (GameBox) plugin;
-		new Module(gameBox, BATTLESHIP
-				, "me.nikl.gamebox.games.battleship.Battleship"
-				, this, BATTLESHIP, "bs");
-	}
+    @Override
+    public void onEnable() {
+        Plugin plugin = Bukkit.getPluginManager().getPlugin("GameBox");
+        if (plugin == null || !plugin.isEnabled()) {
+            getLogger().warning(" GameBox was not found! Disabling Battleship...");
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
+        gameBox = (GameBox) plugin;
+        new Module(gameBox, BATTLESHIP
+                , "me.nikl.gamebox.games.battleship.Battleship"
+                , this, BATTLESHIP, "bs");
+    }
 }

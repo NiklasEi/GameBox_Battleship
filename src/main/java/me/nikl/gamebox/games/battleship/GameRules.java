@@ -10,7 +10,7 @@ public class GameRules extends GameRuleRewards {
     private boolean changeGridAfterHit, switchGridsAfterFireTimerRanOut;
     private int aircraftCarrier, battleship, cruiser, destroyer;
 
-    public GameRules(double cost, double reward, int tokens, int aircraftCarrier, int battleship, int cruiser, int destroyer, boolean changeGridAfterHit, boolean switchGridsAfterFireTimerRanOut, String key, boolean saveStats){
+    public GameRules(double cost, double reward, int tokens, int aircraftCarrier, int battleship, int cruiser, int destroyer, boolean changeGridAfterHit, boolean switchGridsAfterFireTimerRanOut, String key, boolean saveStats) {
         super(key, saveStats, SaveType.WINS, cost, reward, tokens);
         this.changeGridAfterHit = changeGridAfterHit;
         this.switchGridsAfterFireTimerRanOut = switchGridsAfterFireTimerRanOut;
