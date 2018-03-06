@@ -1,38 +1,23 @@
 package me.nikl.gamebox.games.battleship;
 
+import me.nikl.gamebox.data.toplist.SaveType;
+import me.nikl.gamebox.game.rules.GameRuleRewards;
+
 /**
  * Created by Niklas on 15.02.2017.
  */
-public class GameRules {
-    private double cost, reward;
-    private boolean saveStats, changeGridAfterHit, switchGridsAfterFireTimerRanOut;
-    private int aircraftCarrier, battleship, cruiser, destroyer, tokens;
-    private String key;
+public class GameRules extends GameRuleRewards {
+    private boolean changeGridAfterHit, switchGridsAfterFireTimerRanOut;
+    private int aircraftCarrier, battleship, cruiser, destroyer;
 
     public GameRules(double cost, double reward, int tokens, int aircraftCarrier, int battleship, int cruiser, int destroyer, boolean changeGridAfterHit, boolean switchGridsAfterFireTimerRanOut, String key, boolean saveStats){
-        this.cost = cost;
-        this.reward = reward;
-        this.tokens = tokens;
-        this.saveStats = saveStats;
+        super(key, saveStats, SaveType.WINS, cost, reward, tokens);
         this.changeGridAfterHit = changeGridAfterHit;
         this.switchGridsAfterFireTimerRanOut = switchGridsAfterFireTimerRanOut;
         this.aircraftCarrier = aircraftCarrier;
         this.battleship = battleship;
         this.cruiser = cruiser;
         this.destroyer = destroyer;
-        this.key = key;
-    }
-
-    public double getCost() {
-        return cost;
-    }
-
-    public double getReward() {
-        return reward;
-    }
-
-    public boolean isSaveStats() {
-        return saveStats;
     }
 
     public boolean isChangeGridAfterHit() {
@@ -57,13 +42,5 @@ public class GameRules {
 
     public int getDestroyer() {
         return destroyer;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public int getTokens() {
-        return tokens;
     }
 }

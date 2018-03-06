@@ -8,7 +8,7 @@ import me.nikl.gamebox.games.BattleshipPlugin;
  */
 public class Battleship extends me.nikl.gamebox.game.Game {
     public Battleship(GameBox gameBox) {
-        super(gameBox, BattleshipPlugin.gameID);
+        super(gameBox, BattleshipPlugin.BATTLESHIP);
     }
 
     @Override
@@ -28,11 +28,11 @@ public class Battleship extends me.nikl.gamebox.game.Game {
 
     @Override
     public void loadLanguage() {
-
+        gameLang = new Language(this);
     }
 
     @Override
     public void loadGameManager() {
-
+        gameManager = new GameManager(this);
     }
 }

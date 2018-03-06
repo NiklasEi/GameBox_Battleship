@@ -1,6 +1,5 @@
 package me.nikl.gamebox.games.battleship;
 
-import me.nikl.gamebox.games.BattleshipPlugin;
 import me.nikl.gamebox.game.GameLanguage;
 
 
@@ -10,8 +9,12 @@ public class Language extends GameLanguage {
 	public String TITLE_SET_SHIP_1, TITLE_SET_SHIP_2, TITLE_SET_SHIP_3, TITLE_SET_SHIP_4, TITLE_ATTACKER, TITLE_DEFENDER, TITLE_WON, TITLE_LOST, TITLE_WAITING;
 	public String TITLE_CHANGING;
 	
-	public Language(BattleshipPlugin plugin){
-		super();
+	public Language(Battleship game){
+		super(game);
+	}
+
+	@Override
+	protected void loadMessages() {
 		getGameMessages();
 		getInvTitles();
 	}
@@ -26,9 +29,7 @@ public class Language extends GameLanguage {
 		this.TITLE_WAITING = getString("inventoryTitles.waiting");
 		this.TITLE_WON = getString("inventoryTitles.won");		
 		this.TITLE_LOST = getString("inventoryTitles.lost");
-
 		this.TITLE_CHANGING = getString("inventoryTitles.changingGrids");
-		
 	}
 
 	private void getGameMessages() {
@@ -43,9 +44,7 @@ public class Language extends GameLanguage {
 		this.GAME_OTHER_GAVE_UP = getString("game.otherGaveUp");	
 		this.GAME_TOO_SLOW = getString("game.tooSlow");	
 		this.GAME_WON_TOO_SLOW = getString("game.otherTooSlow");
-
 		this.GAME_HELP = getStringList("gameHelp");
-
 	}
 }
 

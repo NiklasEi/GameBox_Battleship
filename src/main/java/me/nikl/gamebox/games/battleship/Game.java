@@ -1,20 +1,16 @@
 package me.nikl.gamebox.games.battleship;
 
-import java.util.Arrays;
-import java.util.Random;
-import java.util.UUID;
-
+import me.nikl.gamebox.GameBox;
 import me.nikl.gamebox.GameBoxSettings;
-import me.nikl.gamebox.Permissions;
-import me.nikl.gamebox.Sounds;
-import me.nikl.gamebox.nms.NMSUtil;
+import me.nikl.gamebox.games.BattleshipPlugin;
 import me.nikl.gamebox.nms.NmsFactory;
 import me.nikl.gamebox.nms.NmsUtility;
+import me.nikl.gamebox.utility.Permission;
+import me.nikl.gamebox.utility.Sound;
 import me.nikl.gamebox.utility.StringUtility;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -22,84 +18,45 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import me.nikl.gamebox.games.BattleshipPlugin;
+import java.util.Arrays;
+import java.util.Random;
+import java.util.UUID;
 
 public class Game{
-	// items that make up the game
 	private ItemStack ownShip, ownWater, ownMiss, ownHit, othersCover, othersMiss, othersHit, lockedShip;
-	
-	// the four grids the players play on
 	private Inventory firstOwn, firstOthers, secondOwn, secondOthers;
-	
-	// count of the specific ships
 	private int numCarrier, numBattleship, numCruiser, numDestroyer;
-	
-	// state of tha game
 	private GameState state;
-	
 	private GameManager manager;
-	
-	// UUIDs of the first and second player
 	private UUID firstUUID, secondUUID;
-	
-	// first is the player that invited, second is the one that excepted
 	private Player first, second;
-	
-	// which inventory is open atm
 	private boolean firstSeesOwn, secondSeesOwn;
-	
-	// is the game closing an inv. atm?
 	private boolean closingInv;
-	
-	// has one of the player set the ships?
 	private boolean firstShipsSet, secondShipsSet;
-	
-	// save the config
 	private FileConfiguration config;
-	
-	// language class
 	private Language lang;
-	
-	// updater for the inventory titles
 	private NmsUtility updater;
-	
-	// timer stuff during ship-set phase
 	private GameTimer timer;
 	private int shipSetTime, fireTime, changeTime;
 	private int currentTime;
 	private String firstCurrentState, secondCurrentState;
-	
-	// rules
-	// change attacker and defender if a fire timer ran out
-	//   if this is false the player whose timer ran out will lose!
 	private boolean switchGridsAfterFireTimerRanOut;
-	
 	private Sound yourTurnNotice;
-
 	private GameRules rule;
-
 	private float volume = 0.5f, pitch = 1f;
-	
-	
-	private BattleshipPlugin plugin;
+	private Battleship battleship;
 	public boolean ruleFireAgainAfterHit;
 	
-	public Game(BattleshipPlugin plugin, UUID firstUUID, UUID secondUUID, GameRules rule){
-		this.yourTurnNotice = me.nikl.gamebox.utility.Sound.NOTE_PIANO.bukkitSound();
+	public Game(Battleship battleship, UUID firstUUID, UUID secondUUID, GameRules rule){
+		this.yourTurnNotice = Sound.NOTE_PIANO;
 		this.updater = NmsFactory.getNmsUtility();
 		this.setState(GameState.BUILDING);
-		this.plugin = plugin;
-		this.lang = plugin.lang;
-		this.config = plugin.getConfig();
-
+		this.battleship = battleship;
+		this.lang = (Language) battleship.getGameLang();
+		this.config = battleship.getConfig();
 		this.rule = rule;
-		if(config == null){
-			Bukkit.getConsoleSender().sendMessage(lang.PREFIX + " Failed to load config!");
-			Bukkit.getPluginManager().disablePlugin(plugin);
-		}
 		getValuesFromConfig();
-		
-		this.manager = plugin.getManager();
+		this.manager = (GameManager) battleship.getGameManager();
 		this.firstUUID = firstUUID;
 		this.secondUUID = secondUUID;
 		this.first = Bukkit.getPlayer(firstUUID);
@@ -130,31 +87,32 @@ public class Game{
 		if(GameBoxSettings.checkInventoryLength && title.length() > 32){
 			title = "Title is too long!";
 		}
-		this.firstOwn = Bukkit.getServer().createInventory(null, 54, title);
-		this.firstOthers = Bukkit.getServer().createInventory(null, 54, "Battleship");
+		this.firstOwn = battleship.createInventory(54, title);
+		this.firstOthers = battleship.createInventory(54, "Battleship");
 
 		title = ChatColor.translateAlternateColorCodes('&', secondCurrentState.replaceAll("%timer%", shipSetTime+""));
 		if(GameBoxSettings.checkInventoryLength && title.length() > 32){
 			title = "Title is too long!";
 		}
-		this.secondOwn = Bukkit.getServer().createInventory(null, 54, title);
-		this.secondOthers = Bukkit.getServer().createInventory(null, 54, "Battleship");
+		this.secondOwn = battleship.createInventory(54, title);
+		this.secondOthers = battleship.createInventory(54, "Battleship");
 
 		BuildGrids();
 		
 		setState(GameState.SETTING_SHIP1);
 		this.timer = new GameTimer(this);
-		
-		if(BattleshipPlugin.playSounds){
-			first.playSound(first.getLocation(), yourTurnNotice, volume, pitch );
-			second.playSound(second.getLocation(), yourTurnNotice, volume, pitch);
-		}
+		playSound(yourTurnNotice, first, second);
 		this.closingInv = true;
 		showInventory(true, true);
 		showInventory(false, true);
 		this.closingInv = false;
 	}
 
+	private void playSound(Sound yourTurnNotice, Player... players) {
+		for (Player player : players) {
+			battleship.playSound(player, yourTurnNotice, volume, pitch);
+		}
+	}
 
 	private void getValuesFromConfig() {
 		if(!config.isConfigurationSection("timers")){
@@ -289,10 +247,7 @@ public class Game{
 			updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
 			updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
-			if(BattleshipPlugin.playSounds){
-				first.playSound(first.getLocation(), yourTurnNotice, volume, pitch );
-				second.playSound(second.getLocation(), yourTurnNotice, volume, pitch );
-			}
+			playSound(yourTurnNotice, first, second);
 			break;
 			
 		case SETTING_SHIP3:
@@ -311,10 +266,7 @@ public class Game{
 			updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
 			updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
-			if(BattleshipPlugin.playSounds){
-				first.playSound(first.getLocation(), yourTurnNotice, volume, pitch );
-				second.playSound(second.getLocation(), yourTurnNotice, volume, pitch );
-			}
+			playSound(yourTurnNotice, first, second);
 			break;
 			
 		case SETTING_SHIP4:
@@ -333,10 +285,7 @@ public class Game{
 			updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
 			updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
-			if(BattleshipPlugin.playSounds){
-				first.playSound(first.getLocation(), yourTurnNotice, volume, pitch );
-				second.playSound(second.getLocation(), yourTurnNotice, volume, pitch );
-			}
+			playSound(yourTurnNotice, first, second);
 			break;
 			
 		case FIRST_TURN:
@@ -353,9 +302,7 @@ public class Game{
 			updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
 			updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
-			if(BattleshipPlugin.playSounds){
-				first.playSound(first.getLocation(), yourTurnNotice, volume, pitch );
-			}
+			playSound(yourTurnNotice, first);
 			break;
 			
 		case SECOND_TURN:
@@ -372,9 +319,7 @@ public class Game{
 			updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
 			updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
-			if(BattleshipPlugin.playSounds){
-				second.playSound(second.getLocation(), yourTurnNotice, volume, pitch );
-			}
+			playSound(yourTurnNotice, second);
 			break;
 			
 		case FINISHED:
@@ -423,11 +368,9 @@ public class Game{
 	}
 	
 	public Inventory setState(String state, Inventory inv){
-		//Bukkit.getConsoleSender().sendMessage("Called setState! Length of state: " + state.length()); // XXX
-
-		Inventory newInv = Bukkit.getServer().createInventory(null, 54, ChatColor.translateAlternateColorCodes('&', "&2Please Wait"));
+		Inventory newInv = battleship.createInventory(54, ChatColor.translateAlternateColorCodes('&', "&2Please Wait"));
 		try{
-			newInv = Bukkit.getServer().createInventory(null, 54, ChatColor.translateAlternateColorCodes('&', state));
+			newInv = battleship.createInventory(54, ChatColor.translateAlternateColorCodes('&', state));
 		} catch(Exception e){
 		}
 		newInv.setContents(inv.getContents());
@@ -657,7 +600,6 @@ public class Game{
 		secondOthers = setState(lang.TITLE_ATTACKER.replaceAll("%timer%", fireTime+""), secondOthers);
 	}
 
-
 	public boolean isCover(ItemStack currentItem) {
 		return othersCover.getType().equals(currentItem.getType()) && othersCover.getData().equals(currentItem.getData());
 	}
@@ -677,10 +619,6 @@ public class Game{
 		return true;
 	}
 
-	/*
-	 * Fire on a slot
-	 * returns true if it was a hit
-	 */
 	public boolean fire(boolean isFirst, int slot) {
 		if(isFirst){
 			if(secondOwn.getItem(slot).equals(ownShip)){
@@ -742,9 +680,9 @@ public class Game{
 			updater.updateInventoryTitle(second, chatColor(lang.TITLE_WON));
 		}
 
-		if(plugin.getEconEnabled()){
-			BattleshipPlugin.econ.depositPlayer(winner, rule.getReward());
-			winner.sendMessage(chatColor(lang.PREFIX + lang.GAME_WON_MONEY.replaceAll("%reward%", rule.getReward()+"")));
+		if(battleship.getSettings().isEconEnabled()){
+			GameBox.econ.depositPlayer(winner, rule.getMoneyToWin());
+			winner.sendMessage(chatColor(lang.PREFIX + lang.GAME_WON_MONEY.replaceAll("%reward%", rule.getMoneyToWin()+"")));
 		} else {
 			winner.sendMessage(chatColor(lang.PREFIX + lang.GAME_WON));
 		}
@@ -924,11 +862,9 @@ public class Game{
 					shipsSet++;
 					continue;
 				}
-				
 			}
 		}
 		return inv;
-		
 	}
 
 	public void cancelTimer() {
@@ -952,19 +888,16 @@ public class Game{
 		
 		cancelTimer();
 		if(loser == null || winner == null) return;
-		
-		if(BattleshipPlugin.playSounds) {
-			loser.playSound(loser.getLocation(), Sounds.VILLAGER_NO.bukkitSound(), volume, pitch);
-			winner.playSound(winner.getLocation(), Sounds.LEVEL_UP.bukkitSound(), volume, pitch);
-		}
+		playSound(Sound.VILLAGER_NO, loser);
+		playSound(Sound.LEVEL_UP, winner);
 		
 		
 		if(!getState().equals(GameState.FINISHED)){
 			this.setState(GameState.FINISHED);
-			if(plugin.getEconEnabled()){
-				if(!winner.hasPermission(Permissions.BYPASS_ALL.getPermission()) && !winner.hasPermission(Permissions.BYPASS_GAME.getPermission(BattleshipPlugin.gameID))){
-					BattleshipPlugin.econ.depositPlayer(winner, rule.getReward());
-					winner.sendMessage(chatColor(lang.PREFIX + lang.GAME_WON_MONEY_TOO_SLOW.replaceAll("%reward%", rule.getReward()+"").replaceAll("%loser%", loser.getName())));
+			if(battleship.getSettings().isEconEnabled()){
+				if(!Permission.BYPASS_GAME.hasPermission(winner, BattleshipPlugin.BATTLESHIP)){
+					GameBox.econ.depositPlayer(winner, rule.getMoneyToWin());
+					winner.sendMessage(chatColor(lang.PREFIX + lang.GAME_WON_MONEY_TOO_SLOW.replaceAll("%reward%", rule.getMoneyToWin()+"").replaceAll("%loser%", loser.getName())));
 				} else {
 					winner.sendMessage(chatColor(lang.PREFIX + lang.GAME_WON_TOO_SLOW.replaceAll("%loser%", loser.getName())));
 				}
@@ -974,10 +907,9 @@ public class Game{
 			loser.sendMessage(chatColor(lang.PREFIX + lang.GAME_TOO_SLOW));
 
 		}
-		plugin.getUpdater().updateInventoryTitle(winner, lang.TITLE_WON);
-		plugin.getUpdater().updateInventoryTitle(loser, lang.TITLE_LOST);
+		NmsFactory.getNmsUtility().updateInventoryTitle(winner, lang.TITLE_WON);
+		NmsFactory.getNmsUtility().updateInventoryTitle(loser, lang.TITLE_LOST);
 		manager.onGameEnd(winner, loser, rule.getKey());
-		
 	}
 
 	private String chatColor(String string) {
@@ -1010,19 +942,15 @@ public class Game{
 			currentTime = time;
 			updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", time+"")));
 			updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", time+"")));
-			
 		} else {
 			currentTime = time;
 			updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", time+"")));
 			updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", time+"")));
-			
 		}
 	}
 
 	private boolean getMaterials() {
 		boolean worked = true;
-		
-
 	    Material mat = null;
 	    int data = 0;
 	    for(String key : Arrays.asList("yourGrid.ship", "yourGrid.lockedShip", "yourGrid.miss", "yourGrid.hit", "yourGrid.water", "othersGrid.cover", "othersGrid.miss", "othersGrid.hit")){
