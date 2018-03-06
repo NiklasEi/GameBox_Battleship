@@ -2,6 +2,11 @@
 
 
 -----------------------------------------------------------------------------
+v3.0.0
+- update to GameBox v2
+- mavenize the repository
+
+
 v2.3.3
 - improve default lang
 - add 'waiting' title to language file
