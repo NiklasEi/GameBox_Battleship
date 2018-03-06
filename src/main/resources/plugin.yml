@@ -1,6 +1,6 @@
 name: Battleship
 author: Nikl
-main: me.nikl.battleship.Main
+main: me.nikl.gameboxin
 version: 2.3.3
 website: nikl.me
 depend: [GameBox]

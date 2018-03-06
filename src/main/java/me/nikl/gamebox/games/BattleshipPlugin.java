@@ -1,10 +1,9 @@
-package me.nikl.battleship;
+package me.nikl.gamebox.games;
 
-import me.nikl.battleship.game.GameManager;
-import me.nikl.battleship.game.GameRules;
-import me.nikl.gamebox.ClickAction;
 import me.nikl.gamebox.GameBox;
 import me.nikl.gamebox.GameBoxSettings;
+import me.nikl.gamebox.games.battleship.*;
+import me.nikl.gamebox.ClickAction;
 import me.nikl.gamebox.data.SaveType;
 import me.nikl.gamebox.guis.GUIManager;
 import me.nikl.gamebox.guis.button.AButton;
@@ -36,7 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-public class Main extends JavaPlugin{
+public class BattleshipPlugin extends JavaPlugin{
 
 	private GameManager manager;
 	private FileConfiguration config;
@@ -44,12 +43,12 @@ public class Main extends JavaPlugin{
 	public static Economy econ = null;
 	public static final String gameID = "battleship";
 	public Boolean econEnabled;
-	public Language lang;
+	public me.nikl.gamebox.games.battleship.Language lang;
 	public boolean disabled;
 	private NMSUtil updater;
 
 	private GameBox gameBox;
-	
+
 	public static boolean playSounds = true;
 
 	private final String[][] depends =  new String[][]{
@@ -373,9 +372,9 @@ public class Main extends JavaPlugin{
 		}
 		reloadConfig();
 		
-		this.lang = new Language(this);
+		this.lang = new me.nikl.gamebox.games.battleship.Language(this);
 		
-		Main.playSounds = getConfig().getBoolean("gameRules.playSounds", true);
+		BattleshipPlugin.playSounds = getConfig().getBoolean("gameRules.playSounds", true);
 		
 		this.econEnabled = false;
 		if(getConfig().getBoolean("economy.enabled")){

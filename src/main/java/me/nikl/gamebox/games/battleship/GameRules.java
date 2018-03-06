@@ -1,4 +1,4 @@
-package me.nikl.battleship.game;
+package me.nikl.gamebox.games.battleship;
 
 /**
  * Created by Niklas on 15.02.2017.

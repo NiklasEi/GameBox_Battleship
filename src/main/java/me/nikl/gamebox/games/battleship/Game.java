@@ -1,14 +1,16 @@
-package me.nikl.battleship.game;
+package me.nikl.gamebox.games.battleship;
 
 import java.util.Arrays;
 import java.util.Random;
 import java.util.UUID;
 
-import me.nikl.gamebox.GameBox;
 import me.nikl.gamebox.GameBoxSettings;
 import me.nikl.gamebox.Permissions;
 import me.nikl.gamebox.Sounds;
 import me.nikl.gamebox.nms.NMSUtil;
+import me.nikl.gamebox.nms.NmsFactory;
+import me.nikl.gamebox.nms.NmsUtility;
+import me.nikl.gamebox.utility.StringUtility;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -20,8 +22,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import me.nikl.battleship.Language;
-import me.nikl.battleship.Main;
+import me.nikl.gamebox.games.BattleshipPlugin;
 
 public class Game{
 	// items that make up the game
@@ -60,7 +61,7 @@ public class Game{
 	private Language lang;
 	
 	// updater for the inventory titles
-	private NMSUtil updater;
+	private NmsUtility updater;
 	
 	// timer stuff during ship-set phase
 	private GameTimer timer;
@@ -80,12 +81,12 @@ public class Game{
 	private float volume = 0.5f, pitch = 1f;
 	
 	
-	private Main plugin;
+	private BattleshipPlugin plugin;
 	public boolean ruleFireAgainAfterHit;
 	
-	public Game(Main plugin, UUID firstUUID, UUID secondUUID, GameRules rule){
-		this.yourTurnNotice = Sounds.NOTE_PIANO.bukkitSound();
-		this.updater = plugin.getUpdater();
+	public Game(BattleshipPlugin plugin, UUID firstUUID, UUID secondUUID, GameRules rule){
+		this.yourTurnNotice = me.nikl.gamebox.utility.Sound.NOTE_PIANO.bukkitSound();
+		this.updater = NmsFactory.getNmsUtility();
 		this.setState(GameState.BUILDING);
 		this.plugin = plugin;
 		this.lang = plugin.lang;
@@ -109,11 +110,11 @@ public class Game{
 			return;
 		}
 		if(second == null){
-			first.sendMessage(GameBox.chatColor(lang.PREFIX+" &4The other player is offline"));
+			first.sendMessage(StringUtility.color(lang.PREFIX+" &4The other player is offline"));
 			manager.removeGame(this);
 			return;
 		} else if(first == null){
-			second.sendMessage(GameBox.chatColor(lang.PREFIX+" &4The other player is offline"));
+			second.sendMessage(StringUtility.color(lang.PREFIX+" &4The other player is offline"));
 			manager.removeGame(this);
 			return;
 		}
@@ -144,7 +145,7 @@ public class Game{
 		setState(GameState.SETTING_SHIP1);
 		this.timer = new GameTimer(this);
 		
-		if(Main.playSounds){
+		if(BattleshipPlugin.playSounds){
 			first.playSound(first.getLocation(), yourTurnNotice, volume, pitch );
 			second.playSound(second.getLocation(), yourTurnNotice, volume, pitch);
 		}
@@ -288,7 +289,7 @@ public class Game{
 			updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
 			updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
-			if(Main.playSounds){
+			if(BattleshipPlugin.playSounds){
 				first.playSound(first.getLocation(), yourTurnNotice, volume, pitch );
 				second.playSound(second.getLocation(), yourTurnNotice, volume, pitch );
 			}
@@ -310,7 +311,7 @@ public class Game{
 			updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
 			updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
-			if(Main.playSounds){
+			if(BattleshipPlugin.playSounds){
 				first.playSound(first.getLocation(), yourTurnNotice, volume, pitch );
 				second.playSound(second.getLocation(), yourTurnNotice, volume, pitch );
 			}
@@ -332,7 +333,7 @@ public class Game{
 			updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
 			updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
-			if(Main.playSounds){
+			if(BattleshipPlugin.playSounds){
 				first.playSound(first.getLocation(), yourTurnNotice, volume, pitch );
 				second.playSound(second.getLocation(), yourTurnNotice, volume, pitch );
 			}
@@ -352,7 +353,7 @@ public class Game{
 			updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
 			updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
-			if(Main.playSounds){
+			if(BattleshipPlugin.playSounds){
 				first.playSound(first.getLocation(), yourTurnNotice, volume, pitch );
 			}
 			break;
@@ -371,7 +372,7 @@ public class Game{
 			updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime+"")));
 			updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime+"")));
 			this.timer = new GameTimer(this);
-			if(Main.playSounds){
+			if(BattleshipPlugin.playSounds){
 				second.playSound(second.getLocation(), yourTurnNotice, volume, pitch );
 			}
 			break;
@@ -742,7 +743,7 @@ public class Game{
 		}
 
 		if(plugin.getEconEnabled()){
-			Main.econ.depositPlayer(winner, rule.getReward());
+			BattleshipPlugin.econ.depositPlayer(winner, rule.getReward());
 			winner.sendMessage(chatColor(lang.PREFIX + lang.GAME_WON_MONEY.replaceAll("%reward%", rule.getReward()+"")));
 		} else {
 			winner.sendMessage(chatColor(lang.PREFIX + lang.GAME_WON));
@@ -952,7 +953,7 @@ public class Game{
 		cancelTimer();
 		if(loser == null || winner == null) return;
 		
-		if(Main.playSounds) {
+		if(BattleshipPlugin.playSounds) {
 			loser.playSound(loser.getLocation(), Sounds.VILLAGER_NO.bukkitSound(), volume, pitch);
 			winner.playSound(winner.getLocation(), Sounds.LEVEL_UP.bukkitSound(), volume, pitch);
 		}
@@ -961,8 +962,8 @@ public class Game{
 		if(!getState().equals(GameState.FINISHED)){
 			this.setState(GameState.FINISHED);
 			if(plugin.getEconEnabled()){
-				if(!winner.hasPermission(Permissions.BYPASS_ALL.getPermission()) && !winner.hasPermission(Permissions.BYPASS_GAME.getPermission(Main.gameID))){
-					Main.econ.depositPlayer(winner, rule.getReward());
+				if(!winner.hasPermission(Permissions.BYPASS_ALL.getPermission()) && !winner.hasPermission(Permissions.BYPASS_GAME.getPermission(BattleshipPlugin.gameID))){
+					BattleshipPlugin.econ.depositPlayer(winner, rule.getReward());
 					winner.sendMessage(chatColor(lang.PREFIX + lang.GAME_WON_MONEY_TOO_SLOW.replaceAll("%reward%", rule.getReward()+"").replaceAll("%loser%", loser.getName())));
 				} else {
 					winner.sendMessage(chatColor(lang.PREFIX + lang.GAME_WON_TOO_SLOW.replaceAll("%loser%", loser.getName())));
@@ -1148,8 +1149,8 @@ public class Game{
 	}
 	
 	private void setDefaultMaterials() {
-		Bukkit.getConsoleSender().sendMessage(GameBox.chatColor(lang.PREFIX+" &4Failed to load materials from config"));
-		Bukkit.getConsoleSender().sendMessage(GameBox.chatColor(lang.PREFIX+" &4Using default materials"));
+		Bukkit.getConsoleSender().sendMessage(StringUtility.color(lang.PREFIX+" &4Failed to load materials from config"));
+		Bukkit.getConsoleSender().sendMessage(StringUtility.color(lang.PREFIX+" &4Using default materials"));
 		
 		this.ownShip = new ItemStack(Material.IRON_BLOCK);
 		ItemMeta metaownShip = ownShip.getItemMeta();

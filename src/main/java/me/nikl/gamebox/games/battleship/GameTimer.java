@@ -1,8 +1,8 @@
-package me.nikl.battleship.game;
+package me.nikl.gamebox.games.battleship;
 
 import org.bukkit.scheduler.BukkitRunnable;
 
-import me.nikl.battleship.Main;
+import me.nikl.gamebox.games.BattleshipPlugin;
 
 public class GameTimer extends BukkitRunnable{
 	
@@ -24,7 +24,7 @@ public class GameTimer extends BukkitRunnable{
 			return;
 		}
 		
-		this.runTaskTimer(Main.getPlugin(Main.class), 20, 20);
+		this.runTaskTimer(BattleshipPlugin.getPlugin(BattleshipPlugin.class), 20, 20);
 	}
 	GameTimer(Game game, boolean newAttacker){
 		this.game = game;	
@@ -33,7 +33,7 @@ public class GameTimer extends BukkitRunnable{
 		this.time = game.getChangeTime();
 		game.setState(GameState.CHANGING);
 		
-		this.runTaskTimer(Main.getPlugin(Main.class), 20, 20);	
+		this.runTaskTimer(BattleshipPlugin.getPlugin(BattleshipPlugin.class), 20, 20);
 	}
 	
 

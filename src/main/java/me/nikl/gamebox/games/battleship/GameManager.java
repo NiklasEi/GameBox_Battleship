@@ -1,4 +1,21 @@
-package me.nikl.battleship.game;
+package me.nikl.gamebox.games.battleship;
+
+import me.nikl.gamebox.GameBox;
+import me.nikl.gamebox.games.BattleshipPlugin;
+import me.nikl.gamebox.Permissions;
+import me.nikl.gamebox.Sounds;
+import me.nikl.gamebox.data.SaveType;
+import me.nikl.gamebox.game.IGameManager;
+import me.nikl.gamebox.game.manager.EasyManager;
+import me.nikl.gamebox.game.rules.GameRule;
+import me.nikl.gamebox.utility.Sound;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -7,25 +24,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import me.nikl.gamebox.GameBox;
-import me.nikl.gamebox.Permissions;
-import me.nikl.gamebox.Sounds;
-import me.nikl.gamebox.data.SaveType;
-import me.nikl.gamebox.game.IGameManager;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Sound;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryAction;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-
-import me.nikl.battleship.Language;
-import me.nikl.battleship.Main;
-
-public class GameManager implements IGameManager{
-
-	private Main plugin;
+public class GameManager extends EasyManager {
+	private BattleshipPlugin plugin;
 	private Set<Game> games;
 	private Language lang;
 
@@ -36,23 +36,19 @@ public class GameManager implements IGameManager{
 
 	private float volume = 0.5f, pitch = 1f;
 
-	public GameManager(Main plugin){
+	public GameManager(BattleshipPlugin plugin){
 		this.plugin = plugin;
 		this.games = new HashSet<>();
 		this.lang = plugin.lang;
-		
-		
-		this.ownMissSound = Sounds.SPLASH2.bukkitSound();
-		this.othersMissSound = Sounds.SPLASH2.bukkitSound();
-		
-		this.ownHitSound = Sounds.ANVIL_LAND.bukkitSound();
-		this.othersHitSound = Sounds.HURT_FLESH.bukkitSound();
-		
-		this.setShipSound = Sounds.ANVIL_LAND.bukkitSound();
-		this.unSetShipSound = Sounds.CLICK.bukkitSound();
-		
-		this.won = Sounds.LEVEL_UP.bukkitSound();
-		this.lost = Sounds.VILLAGER_NO.bukkitSound();
+
+		this.ownMissSound = Sound.SPLASH2;
+		this.othersMissSound = Sound.SPLASH2;
+		this.ownHitSound = Sound.ANVIL_LAND;
+		this.othersHitSound = Sound.HURT_FLESH;
+		this.setShipSound = Sound.ANVIL_LAND;
+		this.unSetShipSound = Sound.CLICK;
+		this.won = Sound.LEVEL_UP;
+		this.lost = Sound.VILLAGER_NO;
 	}
 	
 
@@ -66,7 +62,7 @@ public class GameManager implements IGameManager{
 		return null;
 	}
 	
-	public Main getPlugin(){
+	public BattleshipPlugin getPlugin(){
 		return this.plugin;
 	}
 
@@ -124,11 +120,11 @@ public class GameManager implements IGameManager{
 				if(game.isWater(event.getCurrentItem())){
 					//player.sendMessage("clicked water"); // XXX
 					game.setShip(slot, isFirst);
-					if(Main.playSounds)player.playSound(player.getLocation(), setShipSound, this.volume, pitch);
+					if(BattleshipPlugin.playSounds)player.playSound(player.getLocation(), setShipSound, this.volume, pitch);
 				} else if(game.isShip(event.getCurrentItem())){
 					//player.sendMessage("clicked something else"); // XXX
 					game.setWater(slot, isFirst);
-					if(Main.playSounds)player.playSound(player.getLocation(), unSetShipSound, volume, pitch);
+					if(BattleshipPlugin.playSounds)player.playSound(player.getLocation(), unSetShipSound, volume, pitch);
 				}
 				if(game.shipsSet(1, isFirst)){
 					game.lockShips(isFirst);
@@ -155,10 +151,10 @@ public class GameManager implements IGameManager{
 				}
 				if(game.isWater(event.getCurrentItem())){
 					game.setShip(slot, isFirst);
-					if(Main.playSounds)player.playSound(player.getLocation(), setShipSound, volume, pitch);
+					if(BattleshipPlugin.playSounds)player.playSound(player.getLocation(), setShipSound, volume, pitch);
 				} else if(game.isShip(event.getCurrentItem())){
 					game.setWater(slot, isFirst);
-					if(Main.playSounds)player.playSound(player.getLocation(), unSetShipSound, volume, pitch);
+					if(BattleshipPlugin.playSounds)player.playSound(player.getLocation(), unSetShipSound, volume, pitch);
 				}
 				if(game.shipsSet(2, isFirst)){
 					game.lockShips(isFirst);
@@ -184,10 +180,10 @@ public class GameManager implements IGameManager{
 				}
 				if(game.isWater(event.getCurrentItem())){
 					game.setShip(slot, isFirst);
-					if(Main.playSounds)	player.playSound(player.getLocation(), setShipSound, volume, pitch);
+					if(BattleshipPlugin.playSounds)	player.playSound(player.getLocation(), setShipSound, volume, pitch);
 				} else if(game.isShip(event.getCurrentItem())){
 					game.setWater(slot, isFirst);
-					if(Main.playSounds)	player.playSound(player.getLocation(), unSetShipSound, volume, pitch);
+					if(BattleshipPlugin.playSounds)	player.playSound(player.getLocation(), unSetShipSound, volume, pitch);
 				}
 				if(game.shipsSet(3, isFirst)){
 					game.lockShips(isFirst);
@@ -213,10 +209,10 @@ public class GameManager implements IGameManager{
 				}
 				if(game.isWater(event.getCurrentItem())){
 					game.setShip(slot, isFirst);
-					if(Main.playSounds)player.playSound(player.getLocation(), setShipSound, volume, pitch);
+					if(BattleshipPlugin.playSounds)player.playSound(player.getLocation(), setShipSound, volume, pitch);
 				} else if(game.isShip(event.getCurrentItem())){
 					game.setWater(slot, isFirst);
-					if(Main.playSounds)player.playSound(player.getLocation(), unSetShipSound, volume, pitch);
+					if(BattleshipPlugin.playSounds)player.playSound(player.getLocation(), unSetShipSound, volume, pitch);
 				}
 				if(game.shipsSet(4, isFirst)){
 					game.lockShips(isFirst);
@@ -249,7 +245,7 @@ public class GameManager implements IGameManager{
 				if(!isFirst) return false;
 				if(game.isCover(event.getCurrentItem())){
 					if(!game.fire(isFirst, slot)){
-						if(Main.playSounds) {
+						if(BattleshipPlugin.playSounds) {
 							player.playSound(player.getLocation(), ownMissSound, volume, pitch);
 							Player secondPlayer = Bukkit.getPlayer(game.getSecondUUID());
 							secondPlayer.playSound(secondPlayer.getLocation(), othersMissSound, volume, pitch);
@@ -260,13 +256,13 @@ public class GameManager implements IGameManager{
 						if(game.isWon(isFirst)){
 							game.setState(GameState.FINISHED);
 							game.won(isFirst);
-							if(Main.playSounds) {
+							if(BattleshipPlugin.playSounds) {
 								player.playSound(player.getLocation(), won, volume, pitch);
 								Player secondPlayer = Bukkit.getPlayer(game.getSecondUUID());
 								secondPlayer.playSound(secondPlayer.getLocation(), lost, volume, pitch);
 							}
 						} else {
-							if(Main.playSounds) {
+							if(BattleshipPlugin.playSounds) {
 								player.playSound(player.getLocation(), ownHitSound, volume, pitch);
 								Player secondPlayer = Bukkit.getPlayer(game.getSecondUUID());
 								secondPlayer.playSound(secondPlayer.getLocation(), othersHitSound, volume, pitch);
@@ -285,7 +281,7 @@ public class GameManager implements IGameManager{
 				if(game.isCover(event.getCurrentItem())){
 					if(!game.fire(isFirst, slot)){
 						game.changeAttacker(true);
-						if(Main.playSounds) {
+						if(BattleshipPlugin.playSounds) {
 							player.playSound(player.getLocation(), ownMissSound, volume, pitch);
 							Player firstPlayer = Bukkit.getPlayer(game.getFirstUUID());
 							firstPlayer.playSound(firstPlayer.getLocation(), othersMissSound, volume, pitch);
@@ -295,13 +291,13 @@ public class GameManager implements IGameManager{
 						if(game.isWon(isFirst)){
 							game.setState(GameState.FINISHED);
 							game.won(isFirst);
-							if(Main.playSounds) {
+							if(BattleshipPlugin.playSounds) {
 								player.playSound(player.getLocation(), won, volume, pitch);
 								Player firstPlayer = Bukkit.getPlayer(game.getFirstUUID());
 								firstPlayer.playSound(firstPlayer.getLocation(), lost, volume, pitch);
 							}
 						} else {
-							if(Main.playSounds) {
+							if(BattleshipPlugin.playSounds) {
 								player.playSound(player.getLocation(), ownHitSound, volume, pitch);
 								Player firstPlayer = Bukkit.getPlayer(game.getFirstUUID());
 								firstPlayer.playSound(firstPlayer.getLocation(), othersHitSound, volume, pitch);
@@ -357,8 +353,8 @@ public class GameManager implements IGameManager{
 
 
 				if(plugin.getEconEnabled()){
-					if(!winner.hasPermission(Permissions.BYPASS_ALL.getPermission()) && !winner.hasPermission(Permissions.BYPASS_GAME.getPermission(Main.gameID))){
-						Main.econ.depositPlayer(winner, game.getRule().getReward());
+					if(!winner.hasPermission(Permissions.BYPASS_ALL.getPermission()) && !winner.hasPermission(Permissions.BYPASS_GAME.getPermission(BattleshipPlugin.gameID))){
+						BattleshipPlugin.econ.depositPlayer(winner, game.getRule().getReward());
 						winner.sendMessage(chatColor(lang.PREFIX + lang.GAME_WON_MONEY_GAVE_UP.replaceAll("%reward%", game.getRule().getReward()+"").replaceAll("%loser%", loser.getName())));
 					} else {
 						winner.sendMessage(chatColor(lang.PREFIX + lang.GAME_OTHER_GAVE_UP.replaceAll("%loser%", loser.getName())));
@@ -382,7 +378,7 @@ public class GameManager implements IGameManager{
 	}
 
 	public void addWin(UUID uuid, String key){
-		plugin.getGameBox().getStatistics().addStatistics(uuid, Main.gameID, key, 1., SaveType.WINS);
+		plugin.getGameBox().getStatistics().addStatistics(uuid, BattleshipPlugin.gameID, key, 1., SaveType.WINS);
 	}
 
 	@Override
@@ -397,29 +393,21 @@ public class GameManager implements IGameManager{
 
 	@Override
 	public int startGame(Player[] player, boolean b, String... strings) {
-
 		GameRules rule = gameTypes.get(strings[0]);
 		if(rule == null){
 			return GameBox.GAME_NOT_STARTED_ERROR;
 		}
-
 		double cost = rule.getCost();
-
 		boolean firstCanPay = true;
-
-		if (plugin.getEconEnabled() && !player[0].hasPermission(Permissions.BYPASS_ALL.getPermission()) && !player[0].hasPermission(Permissions.BYPASS_GAME.getPermission(Main.gameID)) && cost > 0.0) {
-			if (Main.econ.getBalance(player[0]) >= cost) {
-
+		if (plugin.getEconEnabled() && !player[0].hasPermission(Permissions.BYPASS_ALL.getPermission()) && !player[0].hasPermission(Permissions.BYPASS_GAME.getPermission(BattleshipPlugin.gameID)) && cost > 0.0) {
+			if (BattleshipPlugin.econ.getBalance(player[0]) >= cost) {
 			} else {
 				player[0].sendMessage(GameBox.chatColor(lang.PREFIX + plugin.lang.GAME_NOT_ENOUGH_MONEY));
 				firstCanPay = false;
 			}
 		}
-
-
-		if (plugin.getEconEnabled() && !player[1].hasPermission(Permissions.BYPASS_ALL.getPermission()) && !player[1].hasPermission(Permissions.BYPASS_GAME.getPermission(Main.gameID)) && cost > 0.0) {
-			if (Main.econ.getBalance(player[1]) >= cost) {
-
+		if (plugin.getEconEnabled() && !player[1].hasPermission(Permissions.BYPASS_ALL.getPermission()) && !player[1].hasPermission(Permissions.BYPASS_GAME.getPermission(BattleshipPlugin.gameID)) && cost > 0.0) {
+			if (BattleshipPlugin.econ.getBalance(player[1]) >= cost) {
 			} else {
 				player[1].sendMessage(GameBox.chatColor(lang.PREFIX + plugin.lang.GAME_NOT_ENOUGH_MONEY));
 				if(firstCanPay){
@@ -431,24 +419,17 @@ public class GameManager implements IGameManager{
 				}
 			}
 		}
-
 		if(!firstCanPay){
 			// only first player cannot pay
 			return GameBox.GAME_NOT_ENOUGH_MONEY_1;
 		}
-
 		// both players can pay!
-
-
 		if (plugin.getEconEnabled()) {
-			Main.econ.withdrawPlayer(player[0], cost);
+			BattleshipPlugin.econ.withdrawPlayer(player[0], cost);
 			player[0].sendMessage(GameBox.chatColor(lang.PREFIX + plugin.lang.GAME_PAYED.replaceAll("%cost%", String.valueOf(cost))));
-
-
-			Main.econ.withdrawPlayer(player[1], cost);
+			BattleshipPlugin.econ.withdrawPlayer(player[1], cost);
 			player[1].sendMessage(GameBox.chatColor(lang.PREFIX + plugin.lang.GAME_PAYED.replaceAll("%cost%", String.valueOf(cost))));
 		}
-
 		games.add(new Game(plugin, player[0].getUniqueId(), player[1].getUniqueId(), rule));
 		return GameBox.GAME_STARTED;
 	}
@@ -483,8 +464,14 @@ public class GameManager implements IGameManager{
 		return;
 	}
 
-	public void setGameTypes(Map<String,GameRules> gameTypes) {
-		this.gameTypes = gameTypes;
+	@Override
+	public void loadGameRules(ConfigurationSection configurationSection, String s) {
+
+	}
+
+	@Override
+	public Map<String, ? extends GameRule> getGameRules() {
+		return gameTypes;
 	}
 
 	public void onGameEnd(Player winner, Player loser, String key) {
@@ -495,7 +482,7 @@ public class GameManager implements IGameManager{
 			addWin(winner.getUniqueId(), rule.getKey());
 		}
 		if(rule.getTokens() > 0){
-			plugin.getGameBox().wonTokens(winner.getUniqueId(), rule.getTokens(), Main.gameID);
+			plugin.getGameBox().wonTokens(winner.getUniqueId(), rule.getTokens(), BattleshipPlugin.gameID);
 		}
 	}
 }
