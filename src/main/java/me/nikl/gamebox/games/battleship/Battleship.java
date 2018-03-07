@@ -1,6 +1,7 @@
 package me.nikl.gamebox.games.battleship;
 
 import me.nikl.gamebox.GameBox;
+import me.nikl.gamebox.game.GameSettings;
 import me.nikl.gamebox.games.BattleshipPlugin;
 
 /**
@@ -23,7 +24,7 @@ public class Battleship extends me.nikl.gamebox.game.Game {
 
     @Override
     public void loadSettings() {
-
+        gameSettings.setGameType(GameSettings.GameType.TWO_PLAYER);
     }
 
     @Override
