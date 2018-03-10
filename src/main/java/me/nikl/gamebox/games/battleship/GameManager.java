@@ -299,9 +299,6 @@ public class GameManager extends EasyManager {
         if (!isInGame(event.getPlayer().getUniqueId())) {
             return;
         }
-        if (getGame(event.getPlayer().getUniqueId()).getClosingInv()) {
-            return;
-        }
         Game game = getGame(event.getPlayer().getUniqueId());
         game.cancelTimer();
         boolean firstClosed = event.getPlayer().getUniqueId().equals(game.getFirstUUID());

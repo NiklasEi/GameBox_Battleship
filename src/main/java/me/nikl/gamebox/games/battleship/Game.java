@@ -32,7 +32,6 @@ public class Game {
     private UUID firstUUID, secondUUID;
     private Player first, second;
     private boolean firstSeesOwn, secondSeesOwn;
-    private boolean closingInv;
     private boolean firstShipsSet, secondShipsSet;
     private FileConfiguration config;
     private Language lang;
@@ -61,7 +60,6 @@ public class Game {
         this.secondUUID = secondUUID;
         this.first = Bukkit.getPlayer(firstUUID);
         this.second = Bukkit.getPlayer(secondUUID);
-        this.closingInv = false;
         if (first == null && second == null) {
             manager.removeGame(this);
             return;
@@ -102,10 +100,13 @@ public class Game {
         setState(GameState.SETTING_SHIP1);
         this.timer = new GameTimer(this);
         playSound(yourTurnNotice, first, second);
-        this.closingInv = true;
-        showInventory(true, true);
-        showInventory(false, true);
-        this.closingInv = false;
+        try {
+            GameBox.openingNewGUI = true;
+            showInventory(true, true);
+            showInventory(false, true);
+        } finally {
+            GameBox.openingNewGUI = false;
+        }
     }
 
     private void playSound(Sound yourTurnNotice, Player... players) {
@@ -168,25 +169,28 @@ public class Game {
      * Only use this function to show a new inv. so the game always knows who is seeing which inv.
      */
     void showInventory(boolean isFirst, boolean ownInv) {
-        setClosingInv(true);
-        if (isFirst) {
-            setFirstSeesOwn(ownInv);
-            if (ownInv) {
-                first.openInventory(firstOwn);
+        try {
+            setClosingInv(true);
+            if (isFirst) {
+                setFirstSeesOwn(ownInv);
+                if (ownInv) {
+                    first.openInventory(firstOwn);
+                } else {
+                    first.openInventory(firstOthers);
+                }
+                updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime + "")));
             } else {
-                first.openInventory(firstOthers);
+                setSecondSeesOwn(ownInv);
+                if (ownInv) {
+                    second.openInventory(secondOwn);
+                } else {
+                    second.openInventory(secondOthers);
+                }
+                updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime + "")));
             }
-            updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime + "")));
-        } else {
-            setSecondSeesOwn(ownInv);
-            if (ownInv) {
-                second.openInventory(secondOwn);
-            } else {
-                second.openInventory(secondOthers);
-            }
-            updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime + "")));
+        } finally {
+            setClosingInv(false);
         }
-        setClosingInv(false);
     }
 
     private void BuildGrids() {
@@ -229,21 +233,20 @@ public class Game {
     public void setState(GameState state) {
         this.state = state;
         switch (state) {
-
             case SETTING_SHIP2:
-
                 this.timer.cancel();
                 currentTime = shipSetTime;
                 setShipsSet(true, false); // reset shipset info for both players
                 setShipsSet(false, false);
                 setFirstCurrentState(lang.TITLE_SET_SHIP_2.replaceAll("%count%", numBattleship + ""));
                 setSecondCurrentState(lang.TITLE_SET_SHIP_2.replaceAll("%count%", numBattleship + ""));
-
-                closingInv = true;
-                showInventory(true, true);
-                showInventory(false, true);
-                closingInv = false;
-
+                try {
+                    GameBox.openingNewGUI = true;
+                    showInventory(true, true);
+                    showInventory(false, true);
+                } finally {
+                    GameBox.openingNewGUI = false;
+                }
                 updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime + "")));
                 updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime + "")));
                 this.timer = new GameTimer(this);
@@ -257,12 +260,13 @@ public class Game {
                 setShipsSet(false, false);
                 setFirstCurrentState(lang.TITLE_SET_SHIP_3.replaceAll("%count%", numCruiser + ""));
                 setSecondCurrentState(lang.TITLE_SET_SHIP_3.replaceAll("%count%", numCruiser + ""));
-
-                closingInv = true;
-                showInventory(true, true);
-                showInventory(false, true);
-                closingInv = false;
-
+                try {
+                    GameBox.openingNewGUI = true;
+                    showInventory(true, true);
+                    showInventory(false, true);
+                } finally {
+                    GameBox.openingNewGUI = false;
+                }
                 updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime + "")));
                 updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime + "")));
                 this.timer = new GameTimer(this);
@@ -276,12 +280,13 @@ public class Game {
                 setShipsSet(false, false);
                 setFirstCurrentState(lang.TITLE_SET_SHIP_4.replaceAll("%count%", numDestroyer + ""));
                 setSecondCurrentState(lang.TITLE_SET_SHIP_4.replaceAll("%count%", numDestroyer + ""));
-
-                closingInv = true;
-                showInventory(true, true);
-                showInventory(false, true);
-                closingInv = false;
-
+                try {
+                    GameBox.openingNewGUI = true;
+                    showInventory(true, true);
+                    showInventory(false, true);
+                } finally {
+                    GameBox.openingNewGUI = false;
+                }
                 updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime + "")));
                 updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime + "")));
                 this.timer = new GameTimer(this);
@@ -293,12 +298,13 @@ public class Game {
                 currentTime = fireTime;
                 setFirstCurrentState(lang.TITLE_ATTACKER);
                 setSecondCurrentState(lang.TITLE_DEFENDER);
-
-                closingInv = true;
-                showInventory(true, false);
-                showInventory(false, true);
-                closingInv = false;
-
+                try {
+                    GameBox.openingNewGUI = true;
+                    showInventory(true, false);
+                    showInventory(false, true);
+                } finally {
+                    GameBox.openingNewGUI = false;
+                }
                 updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime + "")));
                 updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime + "")));
                 this.timer = new GameTimer(this);
@@ -310,12 +316,13 @@ public class Game {
                 currentTime = fireTime;
                 setFirstCurrentState(lang.TITLE_DEFENDER);
                 setSecondCurrentState(lang.TITLE_ATTACKER);
-
-                closingInv = true;
-                showInventory(true, true);
-                showInventory(false, false);
-                closingInv = false;
-
+                try {
+                    GameBox.openingNewGUI = true;
+                    showInventory(true, true);
+                    showInventory(false, false);
+                } finally {
+                    GameBox.openingNewGUI = false;
+                }
                 updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime + "")));
                 updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime + "")));
                 this.timer = new GameTimer(this);
@@ -326,7 +333,6 @@ public class Game {
                 this.timer.cancel();
                 break;
 
-
             case CHANGING:
                 this.timer.cancel();
                 currentTime = changeTime;
@@ -335,7 +341,6 @@ public class Game {
                 updater.updateInventoryTitle(first, chatColor(firstCurrentState.replaceAll("%timer%", currentTime + "")));
                 updater.updateInventoryTitle(second, chatColor(secondCurrentState.replaceAll("%timer%", currentTime + "")));
                 break;
-
 
             default:
                 break;
@@ -415,14 +420,12 @@ public class Game {
         } else {
             isItOpen = inventoryEquals(secondOthers, inventory);
         }
-        //Bukkit.getConsoleSender().sendMessage("isCurrentInventory: tested second: " +isItOpen); // XXX
         if (isItOpen) return true;
         if (firstSeesOwn) {
             isItOpen = inventoryEquals(firstOwn, inventory);
         } else {
             isItOpen = inventoryEquals(firstOthers, inventory);
         }
-        //Bukkit.getConsoleSender().sendMessage("isCurrentInventory: tested first: " +isItOpen); // XXX
         return isItOpen;
     }
 
@@ -535,7 +538,6 @@ public class Game {
             }
             anzLeftRight = rightAnz + leftAnz;
             anzUpDown = upAnz + downAnz;
-            //Bukkit.getConsoleSender().sendMessage("AnzLR: " + anzLeftRight +"   AnzUD: " + anzUpDown); // XXX
             if (anzLeftRight < length - 1 && anzUpDown < length - 1) return false;
         }
         return true;
@@ -650,12 +652,8 @@ public class Game {
 
     }
 
-    public boolean getClosingInv() {
-        return closingInv;
-    }
-
     public void setClosingInv(boolean closingInv) {
-        this.closingInv = closingInv;
+        GameBox.openingNewGUI = closingInv;
     }
 
     public void won(boolean isFirst) {
@@ -940,7 +938,6 @@ public class Game {
         Material mat = null;
         int data = 0;
         for (String key : Arrays.asList("yourGrid.ship", "yourGrid.lockedShip", "yourGrid.miss", "yourGrid.hit", "yourGrid.water", "othersGrid.cover", "othersGrid.miss", "othersGrid.hit")) {
-
             // get the material information
             String value;
             if (!config.isSet("materials." + key + ".material")) {
