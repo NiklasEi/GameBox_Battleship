@@ -308,7 +308,6 @@ public class GameManager extends EasyManager {
             removeGame(game);
             return;
         }
-
         // make sure the player is not counted as in game anymore
         if (firstClosed) {
             game.setFirst(null);
@@ -317,12 +316,10 @@ public class GameManager extends EasyManager {
             game.setSecond(null);
             game.setSecondUUID(null);
         }
-
         if (game.getState() != GameState.FINISHED) {
             if (game.getState() == GameState.CHANGING || game.getState() == GameState.FIRST_TURN || game.getState() == GameState.SECOND_TURN) {
                 if (this.game.getSettings().isEconEnabled()) {
                     if (!Permission.BYPASS_GAME.hasPermission(winner, BattleshipPlugin.BATTLESHIP)) {
-                        GameBox.econ.depositPlayer(winner, game.getRule().getMoneyToWin());
                         winner.sendMessage(chatColor(lang.PREFIX + lang.GAME_WON_MONEY_GAVE_UP.replaceAll("%reward%", game.getRule().getMoneyToWin() + "").replaceAll("%loser%", loser.getName())));
                     } else {
                         winner.sendMessage(chatColor(lang.PREFIX + lang.GAME_OTHER_GAVE_UP.replaceAll("%loser%", loser.getName())));
@@ -331,18 +328,12 @@ public class GameManager extends EasyManager {
                     winner.sendMessage(chatColor(lang.PREFIX + lang.GAME_WON.replaceAll("%loser%", loser.getName())));
                 }
                 loser.sendMessage(chatColor(lang.PREFIX + lang.GAME_GAVE_UP));
-
-
             }
             NmsFactory.getNmsUtility().updateInventoryTitle(winner, lang.TITLE_WON);
             game.setState(GameState.FINISHED);
             onGameEnd(winner, loser, game.getRule().getKey());
         }
         return;
-    }
-
-    public void addWin(UUID uuid, String key) {
-        game.getGameBox().getDataBase().addStatistics(uuid, BattleshipPlugin.BATTLESHIP, key, 1., SaveType.WINS);
     }
 
     @Override
@@ -420,10 +411,6 @@ public class GameManager extends EasyManager {
 
         game.setState(GameState.FINISHED);
         NmsFactory.getNmsUtility().updateInventoryTitle(firstClosed ? second : first, lang.TITLE_WON);
-
-        if (game.getRule().isSaveStats()) {
-            addWin(firstClosed ? game.getSecondUUID() : game.getFirstUUID(), game.getRule().getKey());
-        }
         return;
     }
 
@@ -450,11 +437,6 @@ public class GameManager extends EasyManager {
 
     public void onGameEnd(Player winner, Player loser, String key) {
         GameRules rule = gameTypes.get(key);
-        if (rule.isSaveStats()) {
-            addWin(winner.getUniqueId(), rule.getKey());
-        }
-        if (rule.getTokenToWin() > 0) {
-            game.getGameBox().wonTokens(winner.getUniqueId(), rule.getTokenToWin(), BattleshipPlugin.BATTLESHIP);
-        }
+        game.onGameWon(winner, rule, 1.);
     }
 }

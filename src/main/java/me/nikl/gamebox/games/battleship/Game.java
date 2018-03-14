@@ -670,17 +670,13 @@ public class Game {
             updater.updateInventoryTitle(first, chatColor(lang.TITLE_LOST));
             updater.updateInventoryTitle(second, chatColor(lang.TITLE_WON));
         }
-
         if (battleship.getSettings().isEconEnabled()) {
-            GameBox.econ.depositPlayer(winner, rule.getMoneyToWin());
             winner.sendMessage(chatColor(lang.PREFIX + lang.GAME_WON_MONEY.replaceAll("%reward%", rule.getMoneyToWin() + "")));
         } else {
             winner.sendMessage(chatColor(lang.PREFIX + lang.GAME_WON));
         }
         loser.sendMessage(chatColor(lang.PREFIX + lang.GAME_LOSE));
-
         manager.onGameEnd(winner, loser, rule.getKey());
-
     }
 
     public void setShipsSet(boolean isFirst, boolean b) {
@@ -869,18 +865,14 @@ public class Game {
         }
         Player loser = isFirst ? Bukkit.getPlayer(this.getFirstUUID()) : Bukkit.getPlayer(this.getSecondUUID());
         Player winner = !isFirst ? Bukkit.getPlayer(this.getFirstUUID()) : Bukkit.getPlayer(this.getSecondUUID());
-
         cancelTimer();
         if (loser == null || winner == null) return;
         playSound(Sound.VILLAGER_NO, loser);
         playSound(Sound.LEVEL_UP, winner);
-
-
         if (!getState().equals(GameState.FINISHED)) {
             this.setState(GameState.FINISHED);
             if (battleship.getSettings().isEconEnabled()) {
                 if (!Permission.BYPASS_GAME.hasPermission(winner, BattleshipPlugin.BATTLESHIP)) {
-                    GameBox.econ.depositPlayer(winner, rule.getMoneyToWin());
                     winner.sendMessage(chatColor(lang.PREFIX + lang.GAME_WON_MONEY_TOO_SLOW.replaceAll("%reward%", rule.getMoneyToWin() + "").replaceAll("%loser%", loser.getName())));
                 } else {
                     winner.sendMessage(chatColor(lang.PREFIX + lang.GAME_WON_TOO_SLOW.replaceAll("%loser%", loser.getName())));
@@ -889,7 +881,6 @@ public class Game {
                 winner.sendMessage(chatColor(lang.PREFIX + lang.GAME_WON_TOO_SLOW.replaceAll("%loser%", loser.getName())));
             }
             loser.sendMessage(chatColor(lang.PREFIX + lang.GAME_TOO_SLOW));
-
         }
         NmsFactory.getNmsUtility().updateInventoryTitle(winner, lang.TITLE_WON);
         NmsFactory.getNmsUtility().updateInventoryTitle(loser, lang.TITLE_LOST);
