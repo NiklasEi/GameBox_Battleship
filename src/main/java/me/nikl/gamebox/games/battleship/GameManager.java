@@ -1,7 +1,6 @@
 package me.nikl.gamebox.games.battleship;
 
 import me.nikl.gamebox.GameBox;
-import me.nikl.gamebox.data.toplist.SaveType;
 import me.nikl.gamebox.game.exceptions.GameStartException;
 import me.nikl.gamebox.game.manager.EasyManager;
 import me.nikl.gamebox.game.rules.GameRule;
