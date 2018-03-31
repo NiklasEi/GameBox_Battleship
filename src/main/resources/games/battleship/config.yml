@@ -10,11 +10,6 @@
 #   you can use the default file if you just want to have the up to date english default messages
 langFile: "default"
 
-
-
-
-
-
 gameBox:
   mainButton:
     # define the Material and data for the button (format: 'material:data')
@@ -30,16 +25,14 @@ gameBox:
     #   if not set they will all default to 1
     normalGame:
       materialData: "IRON_BLOCK"
-      displayName: "&l&1Normal"
+      displayName: "&a&lNormal"
       lore:
       - ""
-      - '&l&51 Carrier, 1 Battleship,'
-      - '   &l&52 Cruisers, 1 Destroyer'
       - '&1Cost: &45'
       - '&1Reward: &210'
       # slot of the button in the gui
       #   be careful to not use the same twice ;)
-      slot: 12
+      slot: 23
       cost: 5
       reward: 10
       tokens: 1
@@ -48,33 +41,11 @@ gameBox:
       cruiser: 2
       destroyer: 1
       inviteGuiTitle: "   Start a game of &3Battleship"
-    specialRules:
-      materialData: "COAL_BLOCK"
-      displayName: "&l&1Special rule"
-      lore:
-      - ""
-      - '&l&5One ship of each kind'
-      - '&1Cost: &410'
-      - '&1Reward: &215'
-      - '&l&5In this game the attacker'
-      - '   &l&5will even change after a hit'
-      slot: 14
-      cost: 5
-      # false by default
-      #   this changes attacker even if you hit a ship
-      changeGridAfterHit: true
-      # false by default
-      #   this changes attacker when the fire timer ran out instead of ending the game
-      switchGridsAfterFireTimerRanOut: true
-      reward: 10
-      inviteGuiTitle: "   &3Battleship&r with special rules"
     withTopList:
       materialData: "nether_star"
-      displayName: "&l&1Combat"
+      displayName: "&a&lBattle"
       lore:
       - ""
-      - '&l&52 Cruisers otherwise'
-      - '   &l&5one of each ship'
       - '&1Cost: &450'
       - '&1Reward: &2100'
       - '&1Tokens: &25'
@@ -82,7 +53,7 @@ gameBox:
       - '   &l&5in this game will be tracked!'
       - '&l&5Compare yourself'
       - '   &l&5with others in the top list.'
-      slot: 30
+      slot: 21
       cost: 50
       reward: 80
       tokens: 5
@@ -95,11 +66,11 @@ gameBox:
     #   for that button 'saveStats' must be true (see above)
     withTopList:
       materialData: "nether_star"
-      displayName: "&l&cTop list"
+      displayName: "&a&lTop list"
       lore:
       - ""
       - "&1Combat &1top list"
-      slot: 32
+      slot: 30
       # inventory title of the top list (%player% and %game%)
       inventoryTitle: '              Top List'
       # Lore of the skulls in the inventory. Use %rank% for the rank and %wins% for the number of wins
@@ -108,16 +79,9 @@ gameBox:
       - '&6Rank:&1 %rank%'
       - '&6Wins:&1 %wins%'
 
-
-
-
-
-
-
 gameRules:
   # play sounds in the game
   playSounds: true
-
 
 # requires vault and an economy plugin
 economy:
@@ -154,7 +118,6 @@ materials:
     hit:
       material: "Iron_block"
       name: "&2Booom! Gotcha"
-
     
 # Customise the timers used in the game (all times in seconds)
 timers:
