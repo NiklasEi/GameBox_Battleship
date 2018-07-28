@@ -1,3 +1,6 @@
+### v 3.1.0
+- compatibility with minecraft 1.13
+- clean up material loading
 
 ### v3.0.0
 - update to GameBox v2

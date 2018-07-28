@@ -56,7 +56,7 @@ gameBox:
       slot: 21
       cost: 50
       reward: 80
-      tokens: 5
+      tokens: 2
       # if true the best score of this button is saved
       saveStats: true
       cruiser: 2
@@ -97,23 +97,23 @@ materials:
       material: "Iron_block"
       name: "&7Ship"
     lockedShip:
-      material: "7"
+      material: "bedrock"
       name: "&8Locked ship"
     miss:
-      material: "160:3"
+      material: "stained_glass_pane:3"
       name: "&2Yeah! A miss!"
     hit:
-      material: "35:14"
+      material: "WOOL:14"
       name: "&4Damn! A hit..."
     water:
-      material: "160:11"
+      material: "stained_glass_pane:11"
       name: "&1Water"
   othersGrid:
     cover:
       material: "WOOL:7"
       name: "&6Cover"
     miss:
-      material: "160:11"
+      material: "stained_glass_pane:11"
       name: "&4That did not hit..."
     hit:
       material: "Iron_block"
