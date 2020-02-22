@@ -418,31 +418,31 @@ public class Game {
         }
     }
 
-    public boolean isCurrentInventory(Inventory inventory) {
-        boolean isItOpen = false;
-        if (secondSeesOwn) {
-            isItOpen = inventoryEquals(secondOwn, inventory);
-        } else {
-            isItOpen = inventoryEquals(secondOthers, inventory);
-        }
-        if (isItOpen) return true;
-        if (firstSeesOwn) {
-            isItOpen = inventoryEquals(firstOwn, inventory);
-        } else {
-            isItOpen = inventoryEquals(firstOthers, inventory);
-        }
-        return isItOpen;
-    }
+//    public boolean isCurrentInventory(Inventory inventory) {
+//        boolean isItOpen = false;
+//        if (secondSeesOwn) {
+//            isItOpen = inventoryEquals(secondOwn, inventory);
+//        } else {
+//            isItOpen = inventoryEquals(secondOthers, inventory);
+//        }
+//        if (isItOpen) return true;
+//        if (firstSeesOwn) {
+//            isItOpen = inventoryEquals(firstOwn, inventory);
+//        } else {
+//            isItOpen = inventoryEquals(firstOthers, inventory);
+//        }
+//        return isItOpen;
+//    }
 
-    private boolean inventoryEquals(Inventory inventory1, Inventory inventory2) {
-        if (!inventory1.getType().equals(inventory2.getType())) return false;
-        if (!inventory1.getTitle().equals(inventory2.getTitle())) return false;
-        int slots = inventory1.getSize();
-        for (int slot = 0; slot < slots; slot++) {
-            if (!inventory1.getItem(slot).equals(inventory2.getItem(slot))) return false;
-        }
-        return true;
-    }
+//    private boolean inventoryEquals(Inventory inventory1, Inventory inventory2) {
+//        if (!inventory1.getType().equals(inventory2.getType())) return false;
+//        if (!inventory1.getTitle().equals(inventory2.getTitle())) return false;
+//        int slots = inventory1.getSize();
+//        for (int slot = 0; slot < slots; slot++) {
+//            if (!inventory1.getItem(slot).equals(inventory2.getItem(slot))) return false;
+//        }
+//        return true;
+//    }
 
     public void setFirstSeesOwn(boolean firstSeesOwn) {
         this.firstSeesOwn = firstSeesOwn;
