@@ -1,26 +1,18 @@
 package me.nikl.gamebox.games;
 
-import me.nikl.gamebox.GameBox;
-import me.nikl.gamebox.Module;
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
+import me.nikl.gamebox.games.battleship.Battleship;
+import me.nikl.gamebox.module.GameBoxModule;
 
-public class BattleshipPlugin extends JavaPlugin {
+public class BattleshipPlugin extends GameBoxModule {
     public static final String BATTLESHIP = "battleship";
-    private GameBox gameBox;
 
     @Override
     public void onEnable() {
-        Plugin plugin = Bukkit.getPluginManager().getPlugin("GameBox");
-        if (plugin == null || !plugin.isEnabled()) {
-            getLogger().warning(" GameBox was not found! Disabling Battleship...");
-            Bukkit.getPluginManager().disablePlugin(this);
-            return;
-        }
-        gameBox = (GameBox) plugin;
-        new Module(gameBox, BATTLESHIP
-                , "me.nikl.gamebox.games.battleship.Battleship"
-                , this, BATTLESHIP, "bs");
+        registerGame(BATTLESHIP, Battleship.class, "bs");
+    }
+
+    @Override
+    public void onDisable() {
+
     }
 }

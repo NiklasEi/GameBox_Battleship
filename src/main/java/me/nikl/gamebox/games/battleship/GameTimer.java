@@ -23,7 +23,7 @@ public class GameTimer extends BukkitRunnable {
             return;
         }
 
-        this.runTaskTimer(BattleshipPlugin.getPlugin(BattleshipPlugin.class), 20, 20);
+        this.runTaskTimer(game.getBattleship().getGameBox(), 20, 20);
     }
 
     GameTimer(Game game, boolean newAttacker) {
@@ -33,7 +33,7 @@ public class GameTimer extends BukkitRunnable {
         this.time = game.getChangeTime();
         game.setState(GameState.CHANGING);
 
-        this.runTaskTimer(BattleshipPlugin.getPlugin(BattleshipPlugin.class), 20, 20);
+        this.runTaskTimer(game.getBattleship().getGameBox(), 20, 20);
     }
 
 

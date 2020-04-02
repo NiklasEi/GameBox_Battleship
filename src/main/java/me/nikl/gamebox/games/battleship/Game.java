@@ -87,16 +87,10 @@ public class Game {
         this.secondCurrentState = lang.TITLE_SET_SHIP_1.replaceAll("%count%", numCarrier + "");
 
         String title = ChatColor.translateAlternateColorCodes('&', firstCurrentState.replaceAll("%timer%", shipSetTime + ""));
-        if (GameBoxSettings.checkInventoryLength && title.length() > 32) {
-            title = "Title is too long!";
-        }
         this.firstOwn = battleship.createInventory(54, title);
         this.firstOthers = battleship.createInventory(54, "Battleship");
 
         title = ChatColor.translateAlternateColorCodes('&', secondCurrentState.replaceAll("%timer%", shipSetTime + ""));
-        if (GameBoxSettings.checkInventoryLength && title.length() > 32) {
-            title = "Title is too long!";
-        }
         this.secondOwn = battleship.createInventory(54, title);
         this.secondOthers = battleship.createInventory(54, "Battleship");
 
@@ -395,11 +389,11 @@ public class Game {
     }
 
     public boolean isWater(ItemStack currentItem) {
-        return ownWater.getType().equals(currentItem.getType()) && ownWater.getData().equals(currentItem.getData());
+        return ownWater.getType().equals(currentItem.getType());
     }
 
     public boolean isShip(ItemStack currentItem) {
-        return ownShip.getType().equals(currentItem.getType()) && ownShip.getData().equals(currentItem.getData());
+        return ownShip.getType().equals(currentItem.getType());
     }
 
     public void setShip(int slot, boolean isFirst) {
@@ -604,7 +598,7 @@ public class Game {
     }
 
     public boolean isCover(ItemStack currentItem) {
-        return othersCover.getType().equals(currentItem.getType()) && othersCover.getData().equals(currentItem.getData());
+        return othersCover.getType().equals(currentItem.getType());
     }
 
     public boolean isWon(boolean isFirst) {
@@ -952,5 +946,9 @@ public class Game {
     public void updateTitle(boolean isFirst) {
         Player player = isFirst ? first : second;
         updater.updateInventoryTitle(player, chatColor(isFirst ? firstCurrentState : secondCurrentState));
+    }
+
+    public Battleship getBattleship() {
+        return this.battleship;
     }
 }
