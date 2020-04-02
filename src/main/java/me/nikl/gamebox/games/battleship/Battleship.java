@@ -7,7 +7,9 @@ import me.nikl.gamebox.utility.StringUtility;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Arrays;
@@ -143,8 +145,10 @@ public class Battleship extends me.nikl.gamebox.game.Game {
 
             } else if (key.equals("othersGrid.cover")) {
                 this.othersCover = new ItemStack(mat, 1);
-                if (obj.length == 2) othersCover.setDurability((short) data);
                 ItemMeta meta = othersCover.getItemMeta();
+                if (obj.length == 2 && meta instanceof Damageable) {
+                    ((Damageable) meta).setDamage(data);
+                }
                 meta.setDisplayName("Cover");
                 // if a name was specified use it instead of default
                 if (config.isSet("materials." + key + ".name") || config.isString("materials." + key + ".name"))
@@ -187,49 +191,48 @@ public class Battleship extends me.nikl.gamebox.game.Game {
 
         this.lockedShip = new ItemStack(Material.BEDROCK);
         ItemMeta metaLockedShip = lockedShip.getItemMeta();
-        metaLockedShip.setDisplayName("Ship");
+        metaLockedShip.setDisplayName("Ship (Locked)");
         lockedShip.setItemMeta(metaLockedShip);
         lockedShip.setAmount(1);
 
-        this.ownWater = new ItemStack(Material.STAINED_GLASS_PANE);
-        ownWater.setDurability((short) 11);
+        this.ownWater = new ItemStack(Material.BLUE_STAINED_GLASS_PANE);
         ItemMeta metaownWater = ownWater.getItemMeta();
         metaownWater.setDisplayName("Water");
         ownWater.setItemMeta(metaownWater);
         ownWater.setAmount(1);
 
-        this.ownMiss = new ItemStack(Material.WOOL);
-        ownMiss.setDurability((short) 13);
+        this.ownMiss = new ItemStack(Material.GREEN_WOOL);
         ItemMeta metaownMiss = ownMiss.getItemMeta();
         metaownMiss.setDisplayName("Yeah! A miss!");
         ownMiss.setItemMeta(metaownMiss);
         ownMiss.setAmount(1);
 
-        this.ownHit = new ItemStack(Material.WOOL);
-        ownHit.setDurability((short) 14);
+        this.ownHit = new ItemStack(Material.RED_WOOL);
         ItemMeta metaownHit = ownHit.getItemMeta();
         metaownHit.setDisplayName("Damn! A hit...");
         ownHit.setItemMeta(metaownHit);
         ownHit.setAmount(1);
 
-        this.othersCover = new ItemStack(Material.WOOL);
-        othersCover.setDurability((short) 7);
+        this.othersCover = new ItemStack(Material.GRAY_WOOL);
         ItemMeta metaothersCover = othersCover.getItemMeta();
         metaothersCover.setDisplayName("Cover");
         othersCover.setItemMeta(metaothersCover);
         othersCover.setAmount(1);
 
-        this.othersMiss = new ItemStack(Material.STAINED_GLASS_PANE);
-        othersMiss.setDurability((short) 11);
+        this.othersMiss = new ItemStack(Material.BLUE_STAINED_GLASS_PANE);
         ItemMeta metaothersMiss = othersMiss.getItemMeta();
         metaothersMiss.setDisplayName("That did not hit...");
         othersMiss.setItemMeta(metaothersMiss);
         othersMiss.setAmount(1);
 
-        this.othersHit = new ItemStack(Material.IRON_BLOCK);
-        ItemMeta metaothersHit = othersHit.getItemMeta();
-        metaothersHit.setDisplayName("Booom! Gotcha");
-        othersHit.setItemMeta(metaothersHit);
-        othersHit.setAmount(1);
+        this.othersHit = prepItem(Material.IRON_BLOCK, "Booom! Gotcha");
+    }
+
+    private ItemStack prepItem(Material material, String displayName) {
+        ItemStack item = new ItemStack(material, 1);
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(StringUtility.color(displayName));
+        item.setItemMeta(meta);
+        return item;
     }
 }

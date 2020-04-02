@@ -101,10 +101,10 @@ public class GameManager extends EasyManager {
         }
         Player player = (Player) event.getWhoClicked();
         Game game = getGame(player.getUniqueId());
-        if (!getGame(player.getUniqueId()).isCurrentInventory(event.getInventory())) {
-            //Bukkit.getConsoleSender().sendMessage("not current inv."); // XXX
-            return;
-        }
+//        if (!getGame(player.getUniqueId()).isCurrentInventory(event.getInventory())) {
+//            //Bukkit.getConsoleSender().sendMessage("not current inv."); // XXX
+//            return;
+//        }
         boolean isFirst = isFirst(player.getUniqueId(), game);
         int slot = event.getSlot();
         switch (game.getState()) {

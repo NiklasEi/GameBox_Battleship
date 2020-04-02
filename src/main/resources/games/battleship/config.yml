@@ -100,25 +100,25 @@ materials:
       material: "bedrock"
       name: "&8Locked ship"
     miss:
-      material: "stained_glass_pane:3"
+      material: "LIGHT_BLUE_STAINED_GLASS_PANE"
       name: "&2Yeah! A miss!"
     hit:
-      material: "WOOL:14"
+      material: "RED_WOOL"
       name: "&4Damn! A hit..."
     water:
-      material: "stained_glass_pane:11"
+      material: "BLUE_STAINED_GLASS_PANE"
       name: "&1Water"
   othersGrid:
     cover:
-      material: "WOOL:7"
+      material: "GRAY_WOOL"
       name: "&6Cover"
     miss:
-      material: "stained_glass_pane:11"
+      material: "BLUE_STAINED_GLASS_PANE"
       name: "&4That did not hit..."
     hit:
       material: "Iron_block"
       name: "&2Booom! Gotcha"
-    
+
 # Customise the timers used in the game (all times in seconds)
 timers:
   # timer used during the ship-set part of the game
